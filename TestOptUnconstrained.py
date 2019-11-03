@@ -36,13 +36,15 @@ ProbRosenbrock.optimize()
 
 
 ProbRosenbrockNumpy = OptimizationSetup(Rosenbrock)
-nx = 10
+ProbRosenbrockNumpy.RunFolder = False
+nx = 15
 ProbRosenbrockNumpy.x0 = np.ones(nx,)*+0
 ProbRosenbrockNumpy.RemoveRunFolder = False
-ProbRosenbrockNumpy.SaveEvaluations = True
+ProbRosenbrockNumpy.SaveEvaluations = False
 ProbRosenbrockNumpy.xL = np.ones(nx,)*-5
 ProbRosenbrockNumpy.xU = np.ones(nx,)*+5
 ProbRosenbrockNumpy.xNorm = [True]*nx
+ProbRosenbrockNumpy.xDelta = 1e-8
 ProbRosenbrockNumpy.xType = ["continuous"]*nx
 ProbRosenbrockNumpy.f = ["obj"]
 ProbRosenbrockNumpy.fNorm = [False]
@@ -52,7 +54,8 @@ ProbRosenbrockNumpy.optimize()
 
 
 ProbRosenbrockSens = OptimizationSetup(Rosenbrock)
-nx = 10
+ProbRosenbrockNumpy.RunFolder = False
+nx = 15
 ProbRosenbrockSens.x0 = np.ones(nx,)*+0
 ProbRosenbrockSens.xL = np.ones(nx,)*-5
 ProbRosenbrockSens.xU = np.ones(nx,)*+5
@@ -63,4 +66,5 @@ ProbRosenbrockSens.fNorm = [False]
 ProbRosenbrockSens.Alg = "NLPQLP"
 ProbRosenbrockSens.Primal = "calc"
 ProbRosenbrockSens.Sensitivity = "calcSens"
+ProbRosenbrockSens.fNabla = ["objNabla"]
 ProbRosenbrockSens.optimize()

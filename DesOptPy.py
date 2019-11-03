@@ -1,6 +1,9 @@
 """
 TODOS:
-TODO new github repository
+
+TODO return arrays!!! not lists, for gradients important!
+TODO test gradients that they work well!!!
+xTODO new github repository
 TODO add pygmo
 TODO add scipy optimization
 scipy.optimize https://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html
@@ -8,7 +11,7 @@ TODO add or-tools?
 TODO add Hybrid Cellular Automata
 https://developers.google.com/optimization/introduction/python
 TODO add algorithm list?
-TODO variable function for primal and sens
+xTODO variable function for primal and sens
 xTODO different way to define design variables with x vector
 xTODO read in history at end
 TODO renorm etc with history!!! Iteration values, Optimal values
@@ -19,16 +22,19 @@ TODO Postprocessing for shadow prices
 TODO surrogating?
 TODO ResultReport
 TODO Optimization live monitoring!
+
 sources
  mdao py for pyopt???
 """
 
 import datetime
-import platform
 import os
 from copy import deepcopy
 import shutil
-
+import numpy as np
+try:
+    import cpuinfo
+except: pass
 
 __title__ = "DESign OPTimization in PYthon"
 __shorttitle__ = "DesOptPy"
@@ -74,7 +80,8 @@ def OptimizationSetup(Model):
         xNorm = True
         fNorm = True
         Primal = "calc"
-        Sens = None
+        Sensitivity  = None
+        xDelta = 1e-3
         Alg = "NLPQLP"
         pyOptAlg = True
         pyGmoAlg = False
@@ -82,10 +89,31 @@ def OptimizationSetup(Model):
         ModelName = str(Model.__name__)
         fNormMultiplier = 1000
         Alarm = True
-        OS = platform.uname()[0]
         RunFolder = True
         RemoveRunFolder = True
         SaveEvaluations = False
+        OS = os.uname()[0]
+        Computer = os.uname()[1]
+        architecture = os.uname()[4]
+        nProcessors = os.cpu_count()
+        userName = os.getlogin()
+        try:
+            cpu = cpuinfo.get_cpu_info()['brand']
+        except: pass
+
+        class KaruschKuhnTucker(object):
+            from numpy.linalg import norm, lstsq
+            kkteps = 1e-3
+            def checkKKT(self):
+                self.PrimalFeas = (max(self.gOpt) < self.kkteps)
+                self.ComplSlack = (max(self.gOpt@self.Lambda) < self.kkteps)
+                self.DualFeas = (min(self.Lambda) > -self.kkteps)
+                self.kktOpt = bool(self.PrimalFeas*self.DualFeas*self.ComplSlack)
+                self.Opt1Order = norm(self.OptResidual)
+                self.kktMax = max(abs(self.OptResidual))
+
+        def calcPosprocessing(self):
+            ShadowPrices = []
 
         def readHistory(self):
             # make function of new file
@@ -114,19 +142,39 @@ def OptimizationSetup(Model):
             gNablaIt = [l.tolist() for l in gNablaIt]
             failIt = [l.tolist() for l in failIt]
 
+            self.nIt = len(fNablaIt)
+            self.fIt = [None]*self.nIt
+            self.xIt = [None]*self.nIt
+            self.gIt = [None]*self.nIt
+            for ii in range(self.nIt):
+                Posdg = OptHist.cues["grad_con"][ii][0]
+                Posf = OptHist.cues["obj"][ii][0]
+                iii = 0
+                while Posdg > Posf:
+                    iii = iii + 1
+                    try:
+                        Posf = OptHist.cues["obj"][iii][0]
+                    except:
+                        Posf = Posdg + 1
+                iii = iii - 1
+                self.fIt[ii] = fAll[iii]
+                self.xIt[ii] = xAll[iii]
+                self.gIt[ii] = gAll[iii]
+
             self.xAll = xAll
             self.xNormAll = xNormAll
             self.fAll = fAll
             self.gAll = gAll
             self.gNablaIt = gNablaIt
             self.fNablaIt = fNablaIt
-            self.nIt = len(fNablaIt)
+            self.gOpt = self.gIt[-1]
 
         def optimize(self):
             self.t0 = datetime.datetime.now()
             self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
             self.Name = self.ModelName+self.Alg+self.t0str
             self.nEval = 0
+            self.nSensEval = 0
             self.f0 = None
 
             # File handling
@@ -140,9 +188,9 @@ def OptimizationSetup(Model):
                     self.Name = self.ModelName+self.Alg+self.t0str
                     self.RunDir = self.MainDir+os.sep+"DesOpt"+self.Name
                 shutil.copytree(self.MainDir, self.RunDir,
-                                ignore=shutil.ignore_patterns("DesOpt*",
-                                                              "*.pyc",
-                                                              "tmp*", "__*"))
+                                ignore=shutil.ignore_patterns("DesOpt*", ".*"
+                                                              "*.pyc", "tmp*",
+                                                              "__*"))
                 os.chdir(self.RunDir)
 
             def SysEq(xVal):
@@ -150,24 +198,30 @@ def OptimizationSetup(Model):
                     EvalDir = self.RunDir+os.sep+str(self.nEval+1).zfill(5)
                     shutil.copytree(self.MainDir, EvalDir,
                                     ignore=shutil.ignore_patterns("DesOpt*",
+                                                                  ".*",
                                                                   "*.pyc",
                                                                   "tmp*",
                                                                   "__*"))
                     os.chdir(EvalDir)
+
                 for i, xi in enumerate(xVal):
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
                     if self.x is None:
-                        self.calc(xVal)
+                        eval("self."+self.Primal+"(xVal)")
                     else:
                         setattr(self, self.x[i], xVal[i])
-                        self.calc()
+                        eval("self."+self.Primal+"()")
 
                 fVal = getattr(self, self.f[0])
                 if self.fNorm[0]:
                     if self.f0 is None:
                         self.f0 = fVal
                     fVal = fVal/self.f0*self.fNormMultiplier
+                #change the above to allow for multiobjective
+                #fVal = []
+                #for fi in self.f:
+                #    print(getattr(self, fi))
 
                 rconval = []
                 if self.g:
@@ -187,11 +241,6 @@ def OptimizationSetup(Model):
                 else:
                     gVal = []
 
-                #change the above to allow for multiobjective
-                #fVal = []
-                #for fi in self.f:
-                #    print(getattr(self, fi))
-
                 for i in range(len(self.x0)):
                     if self.xNorm[i]:
                         xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
@@ -201,41 +250,55 @@ def OptimizationSetup(Model):
                 return(fVal, gVal, 0)
 
             def SensEq(xVal, fVal, gVal):
+                if self.SaveEvaluations:
+                    EvalDir = self.RunDir+os.sep+str(self.nSensEval+1).zfill(5)+"Sens"
+                    shutil.copytree(self.MainDir, EvalDir,
+                                    ignore=shutil.ignore_patterns("DesOpt*",
+                                                                  "*.pyc",
+                                                                  "tmp*",
+                                                                  "__*"))
+                    os.chdir(EvalDir)
                 for i, xi in enumerate(xVal):
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
                     if self.x is None:
-                        self.calcSens(xVal)
+                        eval("self."+self.Sensitivity+"(xVal)")
                     else:
                         setattr(self, self.x[i], xVal[i])
-                        self.calcSens()
-
-                #TODO correct proper values for normalized fNabla
-                # normalized wrt fNorm AND xNorm
+                        eval("self."+self.Sensitivity+"()")
                 fNablaVal = getattr(self, self.fNabla[0])
                 if self.fNorm[0]:
-                    for i in range(len(xVal)):
-                        fNablaVal = (drdx)*np.tile((xU-xL), [np.shape(drdx)[0], 1])
-
-                #TODO correct proper values below gNablaVal, all are wrong
-                # normalized wrt gNorm AND xNorm
+                    fNablaVal = fVal/self.f0*self.fNormMultiplier
+                for i in range(len(xVal)):
+                    if self.xNorm[i]:
+                        fNablaVal[i] *= (self.xU[i]-self.xL[i])
                 if self.g:
-                    gNablaVal = [None]*len(self.g)
-                    for i, gi in enumerate(self.g):
-                        rconval = getattr(self, gi)
+                    gNablaVal = [None]*len(self.gNabla)
+                    for i, gNablai in enumerate(self.gNabla):
+                        rNablaVal = getattr(self, gNablai)
                         if self.gNorm[i]:
                             if self.gType[i] == "upper":
-                                gNablaVal[i] = rconval/self.gLimit[i]-1
+                                gNablaVal[i] = rNablaVal/self.gLimit[i]
                             elif self.gType[i] == "lower":
-                                gNablaVal[i] = 1-rconval/self.gLimit[i]
+                                gNablaVal[i] = -rNablaVal/self.gLimit[i]
                         else:
                             if self.gType[i] == "upper":
-                                gNablaVal[i] = rconval-self.gLimit[i]
+                                gNablaVal[i] = rNablaVal
                             elif self.gType[i] == "lower":
-                                gNablaVal[i] = self.gLimit[i]-rconval
+                                gNablaVal[i] = -rNablaVal
+                    for i in range(len(self.x0)):
+                        if self.xNorm[i]:
+                            for j in len(self.gNabla):
+                                gNablaVal[j][i] *= (self.xU[i]-self.xL[i])
                 else:
                     gNablaVal = []
-                return(fNablaVal, gNablaVal, 0)
+                for i in range(len(self.x0)):
+                    if self.xNorm[i]:
+                        xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
+                self.nSensEval += 1
+                if self.SaveEvaluations:
+                    os.chdir("..")
+                return(np.array([fNablaVal]), gNablaVal, 0)
 
             # Seperate file an dchild class??
             if self.pyOptAlg:
@@ -260,7 +323,15 @@ def OptimizationSetup(Model):
                         Problem.addCon('g'+str(i+1), 'i')
                 if self.PrintOutput:
                     print(Problem)
-                fOpt, xOpt, inform = Alg(Problem, store_hst=self.Name)
+
+                # Call
+                if self.Sensitivity is None:
+                    fOpt, xOpt, inform = Alg(Problem, sens_step=self.xDelta,
+                                             store_hst=self.Name)
+                else:
+                    fOpt, xOpt, inform = Alg(Problem, sens_type=SensEq,
+                                             store_hst=self.Name)
+
                 self.xOpt = [None]*len(self.x0)
                 for i in range(len(self.x0)):
                     if self.xNorm[i]:
@@ -293,10 +364,14 @@ def OptimizationSetup(Model):
                 print(lines)
                 print("Optimization algorithm = " + self.Alg)
                 print("f* = " + str(self.fOpt[0]))
-#                print("g* = " + str(gOpt))
-                if len(self.xOpt)>3:
+                if len(self.gOpt) > 3:
+                    print("g* = ")
+                    print(*self.gOpt, sep="\n", flush=True)
+                else:
+                    print("g* = " + str(self.gOpt))
+                if len(self.xOpt) > 3:
                     print("x* = ")
-                    print(*self.xOpt, sep="\n")
+                    print(*self.xOpt, sep="\n", flush=True)
                 else:
                     print("x* = " + str(self.xOpt))
 #                if np.size(lambda_c) > 0:
@@ -329,6 +404,10 @@ def OptimizationSetup(Model):
 
             # Seperate file and child class??
             elif self.scipyAlg:
+                pass
+
+            # Seperate file and child class??
+            elif self.ortoolsAlg:
                 pass
 
             def optimizeMutiobjective(self):
