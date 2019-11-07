@@ -22,6 +22,8 @@ TODO Postprocessing for shadow prices
 TODO surrogating?
 TODO ResultReport
 TODO Optimization live monitoring!
+TODO Algorithm options
+TODO Variable linking?
 
 sources
  mdao py for pyopt???
@@ -121,6 +123,7 @@ def OptimizationSetup(Model):
             OptHist = pyOpt.History(self.Name, "r")
             xAll = OptHist.read([0, -1], ["x"])[0]["x"]
             xNormAll = deepcopy(xAll)
+            #xNormAll = xAll.copy()
             for ei in range(len(xAll)):
                 for xi, xNormi in enumerate(self.xNorm):
                     if xNormi:
@@ -174,7 +177,7 @@ def OptimizationSetup(Model):
             self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
             self.Name = self.ModelName+self.Alg+self.t0str
             self.nEval = 0
-            self.nSensEval = 0
+            self.nSensEval = None
             self.f0 = None
 
             # File handling
@@ -188,31 +191,39 @@ def OptimizationSetup(Model):
                     self.Name = self.ModelName+self.Alg+self.t0str
                     self.RunDir = self.MainDir+os.sep+"DesOpt"+self.Name
                 shutil.copytree(self.MainDir, self.RunDir,
-                                ignore=shutil.ignore_patterns("DesOpt*", ".*"
+                                ignore=shutil.ignore_patterns("DesOpt*", ".*",
+                                                              ".git*",
                                                               "*.pyc", "tmp*",
                                                               "__*"))
                 os.chdir(self.RunDir)
 
             def SysEq(xVal):
+                # create folder and change into it
                 if self.SaveEvaluations:
                     EvalDir = self.RunDir+os.sep+str(self.nEval+1).zfill(5)
                     shutil.copytree(self.MainDir, EvalDir,
                                     ignore=shutil.ignore_patterns("DesOpt*",
+                                                                  ".git*",
                                                                   ".*",
                                                                   "*.pyc",
                                                                   "tmp*",
                                                                   "__*"))
                     os.chdir(EvalDir)
 
+                # Denorm and assign of design variables
                 for i, xi in enumerate(xVal):
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
-                    if self.x is None:
-                        eval("self."+self.Primal+"(xVal)")
-                    else:
+                    if self.x is not None:
                         setattr(self, self.x[i], xVal[i])
-                        eval("self."+self.Primal+"()")
 
+                # Call
+                if self.x is None:
+                    eval("self."+self.Primal+"(xVal)")
+                else:
+                    eval("self."+self.Primal+"()")
+
+                # Objective and scaling (norm)
                 fVal = getattr(self, self.f[0])
                 if self.fNorm[0]:
                     if self.f0 is None:
@@ -223,6 +234,7 @@ def OptimizationSetup(Model):
                 #for fi in self.f:
                 #    print(getattr(self, fi))
 
+                # Constraints
                 rconval = []
                 if self.g:
                     gVal = [None]*len(self.g)
@@ -241,37 +253,54 @@ def OptimizationSetup(Model):
                 else:
                     gVal = []
 
+                # Revert to normalized design variables (why necessary?)
                 for i in range(len(self.x0)):
                     if self.xNorm[i]:
                         xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
-                self.nEval += 1
+
+                # Move back into run folder
                 if self.SaveEvaluations:
                     os.chdir("..")
+
+                self.nEval += 1
                 return(fVal, gVal, 0)
 
             def SensEq(xVal, fVal, gVal):
+                # create folder and change into it
                 if self.SaveEvaluations:
-                    EvalDir = self.RunDir+os.sep+str(self.nSensEval+1).zfill(5)+"Sens"
+                    EvalDir = (self.RunDir + os.sep +
+                               str(self.nSensEval+1).zfill(5)+"Sens")
                     shutil.copytree(self.MainDir, EvalDir,
                                     ignore=shutil.ignore_patterns("DesOpt*",
+                                                                  ".git*",
+                                                                  ".*",
                                                                   "*.pyc",
                                                                   "tmp*",
                                                                   "__*"))
                     os.chdir(EvalDir)
+
+                # Denorm and assign of design variables
                 for i, xi in enumerate(xVal):
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
-                    if self.x is None:
-                        eval("self."+self.Sensitivity+"(xVal)")
-                    else:
+                    if self.x is not None:
                         setattr(self, self.x[i], xVal[i])
-                        eval("self."+self.Sensitivity+"()")
+
+                # Call
+                if self.x is None:
+                    eval("self."+self.Sensitivity+"(xVal)")
+                else:
+                    eval("self."+self.Sensitivity+"()")
+
+                # Senstivity of objective
                 fNablaVal = getattr(self, self.fNabla[0])
                 if self.fNorm[0]:
                     fNablaVal = fVal/self.f0*self.fNormMultiplier
                 for i in range(len(xVal)):
                     if self.xNorm[i]:
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
+
+                # Senstivity of constraints
                 if self.g:
                     gNablaVal = [None]*len(self.gNabla)
                     for i, gNablai in enumerate(self.gNabla):
@@ -288,7 +317,62 @@ def OptimizationSetup(Model):
                                 gNablaVal[i] = -rNablaVal
                     for i in range(len(self.x0)):
                         if self.xNorm[i]:
-                            for j in len(self.gNabla):
+                            for j in range(len(self.gNabla)):
+                                gNablaVal[j][i] *= (self.xU[i]-self.xL[i])
+                else:
+                    gNablaVal = []
+
+                # Revert to normalized design variables (why necessary?)
+                for i in range(len(self.x0)):
+                    if self.xNorm[i]:
+                        xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
+
+                # Move back into run folder
+                if self.SaveEvaluations:
+                    os.chdir("..")
+
+                self.nSensEval += 1
+                return(np.array([fNablaVal]), gNablaVal, 0)
+
+            # Maybe all too much, can i just put this as a function in opt call?
+            def ObjCon(xVal):
+                f, g, fail = SysEq(xVal)
+                np.array([f])
+                np.array(g)
+                if self.g is not None:
+                    f = np.concatenate((f, g))
+                return(f)
+
+            def AutoSensEq(xVal, fVal, gVal):
+                import autograd
+                for i, xi in enumerate(xVal):
+                    if self.xNorm[i]:
+                        xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
+                ObjConNabla = autograd.jacobian(ObjCon)
+                fNablaVal = ObjConNabla(xVal)
+                if self.g is not None:
+                    fNablaVal, rNablaVal = fNablaVal[0], fNablaVal[1:]
+                if self.fNorm[0]:
+                    fNablaVal = fVal/self.f0*self.fNormMultiplier
+                for i in range(len(xVal)):
+                    if self.xNorm[i]:
+                        fNablaVal[i] *= (self.xU[i]-self.xL[i])
+                if self.g:
+                    gNablaVal = [None]*len(self.gNabla)
+                    for i, gNablai in enumerate(self.gNabla):
+                        if self.gNorm[i]:
+                            if self.gType[i] == "upper":
+                                gNablaVal[i] = rNablaVal[i]/self.gLimit[i]
+                            elif self.gType[i] == "lower":
+                                gNablaVal[i] = -rNablaVal[i]/self.gLimit[i]
+                        else:
+                            if self.gType[i] == "upper":
+                                gNablaVal[i] = rNablaVal[i]
+                            elif self.gType[i] == "lower":
+                                gNablaVal[i] = -rNablaVal[i]
+                    for i in range(len(self.x0)):
+                        if self.xNorm[i]:
+                            for j in range(len(self.gNabla)):
                                 gNablaVal[j][i] *= (self.xU[i]-self.xL[i])
                 else:
                     gNablaVal = []
@@ -296,9 +380,6 @@ def OptimizationSetup(Model):
                     if self.xNorm[i]:
                         xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
                 self.nSensEval += 1
-                if self.SaveEvaluations:
-                    os.chdir("..")
-                return(np.array([fNablaVal]), gNablaVal, 0)
 
             # Seperate file an dchild class??
             if self.pyOptAlg:
@@ -328,7 +409,11 @@ def OptimizationSetup(Model):
                 if self.Sensitivity is None:
                     fOpt, xOpt, inform = Alg(Problem, sens_step=self.xDelta,
                                              store_hst=self.Name)
+                elif self.Sensitivity == "autograd":
+                    fOpt, xOpt, inform = Alg(Problem, sens_type=AutoSensEq,
+                                             store_hst=self.Name)
                 else:
+                    self.nSensEval = 0
                     fOpt, xOpt, inform = Alg(Problem, sens_type=SensEq,
                                              store_hst=self.Name)
 
@@ -391,6 +476,8 @@ def OptimizationSetup(Model):
                 except:
                     print("nIt = " + str(self.nIt))
                 print("nEval = " + str(self.nEval))
+                if self.nSensEval is not None:
+                    print("nSensEval = " + str(self.nSensEval))
                 if self.RunFolder and self.RemoveRunFolder is False:
                     print("See run directory: " + self.RunDir)
                 elif self.RemoveRunFolder:
