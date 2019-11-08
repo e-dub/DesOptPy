@@ -99,6 +99,9 @@ def OptimizationSetup(Model):
         architecture = os.uname()[4]
         nProcessors = os.cpu_count()
         userName = os.getlogin()
+        Monitoring = True
+        RunDir = None
+        MainDir = None
         try:
             cpu = cpuinfo.get_cpu_info()['brand']
         except: pass
@@ -196,6 +199,12 @@ def OptimizationSetup(Model):
                                                               "*.pyc", "tmp*",
                                                               "__*"))
                 os.chdir(self.RunDir)
+
+            if self.Monitoring and self.RunFolder:
+                print("\nTo start monitoring visualization enter, run folder" +
+                      "\n\n    " + self.RunDir + "\n\n"
+                      "and enter the following command in terminal:" +
+                      "\n\n    bokeh serve --show DesOptMonitor.py \n\n")
 
             def SysEq(xVal):
                 # create folder and change into it
@@ -480,7 +489,7 @@ def OptimizationSetup(Model):
                     print("nSensEval = " + str(self.nSensEval))
                 if self.RunFolder and self.RemoveRunFolder is False:
                     print("See run directory: " + self.RunDir)
-                elif self.RemoveRunFolder:
+                elif self.RunFolder and self.RemoveRunFolder:
                     print("Run cleaned, run directory deleted")
                 else:
                     print("Local run, all results saved in current directory")

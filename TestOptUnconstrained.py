@@ -2,10 +2,10 @@ import numpy as np
 from DesOptPy import OptimizationSetup
 from TestModelsUnconstrained import Ackley, Michalewicz, Styblinski, Rosenbrock
 
-
-ProbAckley = OptimizationSetup(Ackley)
-ProbMichalewicz = OptimizationSetup(Michalewicz)
-
+#
+#ProbAckley = OptimizationSetup(Ackley)
+#ProbMichalewicz = OptimizationSetup(Michalewicz)
+#
 ProbStyblinski = OptimizationSetup(Styblinski)
 ProbStyblinski.x = ["z", "y"]
 ProbStyblinski.x0 = [0, 0]
@@ -36,11 +36,11 @@ ProbRosenbrock.optimize()
 
 
 ProbRosenbrockNumpy = OptimizationSetup(Rosenbrock)
-ProbRosenbrockNumpy.RunFolder = False
+ProbRosenbrockNumpy.RunFolder = True
 nx = 15
 ProbRosenbrockNumpy.x0 = np.ones(nx,)*+0
 ProbRosenbrockNumpy.RemoveRunFolder = False
-ProbRosenbrockNumpy.SaveEvaluations = False
+ProbRosenbrockNumpy.SaveEvaluations = True
 ProbRosenbrockNumpy.xL = np.ones(nx,)*-5
 ProbRosenbrockNumpy.xU = np.ones(nx,)*+5
 ProbRosenbrockNumpy.xNorm = [True]*nx
@@ -54,7 +54,7 @@ ProbRosenbrockNumpy.optimize()
 
 
 ProbRosenbrockSens = OptimizationSetup(Rosenbrock)
-ProbRosenbrockNumpy.RunFolder = False
+ProbRosenbrockSens.RunFolder = False
 nx = 15
 ProbRosenbrockSens.x0 = np.ones(nx,)*+0
 ProbRosenbrockSens.xL = np.ones(nx,)*-5

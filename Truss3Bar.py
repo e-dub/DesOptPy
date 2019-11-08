@@ -1,7 +1,7 @@
 from DesOptPy import OptimizationSetup
 import numpy as np
 from copy import deepcopy
-
+import time
 
 class Truss3Bar:
     Fx = 1000
@@ -21,6 +21,7 @@ class Truss3Bar:
         self.displacementx = 2**0.5*self.el*self.Fx/(self.A1*self.E)
         self.displacementy = (2**0.5*self.el*self.Fy /
                               ((self.A1+2**0.5*self.A2)*self.E))
+        time.sleep(10)
 
     def sensitivity(self):
         self.volumeNabla = np.array([2*2**0.5, 1])
@@ -35,42 +36,44 @@ class Truss3Bar:
         self.displacementyNabla = np.array([-2**0.5*self.el*self.Fy/((self.A1+2**0.5*self.A2)**2*self.E),
                                             -2*self.el*self.Fy/((self.A1+2**0.5*self.A2)**2*self.E)])
 
-
-# System evaluation
-TBT = Truss3Bar()
-TBT.A1 = 10
-TBT.A2 = 10
-TBT.primal()
-
-# Analytical sensitivity evaluation
-TBT.sensitivity()
-
-# Finite difference
-xDelta = 0.000001
-TBT1 = Truss3Bar()
-TBT1.A1 = 10 + xDelta
-TBT1.A2 = 10
-TBT1.primal()
-TBT2 = Truss3Bar()
-TBT2.A1 = 10
-TBT2.A2 = 10 + xDelta
-TBT2.primal()
-volumeNabla1FD = (TBT1.volume-TBT.volume)/xDelta
-volumeNabla2FD = (TBT2.volume-TBT.volume)/xDelta
-sigma1Nabla1FD = (TBT1.stress1-TBT.stress1)/xDelta
-sigma1Nabla2FD = (TBT2.stress1-TBT.stress1)/xDelta
-sigma2Nabla1FD = (TBT1.stress2-TBT.stress2)/xDelta
-sigma2Nabla2FD = (TBT2.stress2-TBT.stress2)/xDelta
-sigma3Nabla1FD = (TBT1.stress3-TBT.stress3)/xDelta
-sigma3Nabla2FD = (TBT2.stress3-TBT.stress3)/xDelta
-displacementxNabla1FD = (TBT1.displacementx-TBT.displacementx)/xDelta
-displacementxNabla2FD = (TBT2.displacementx-TBT.displacementx)/xDelta
-displacementyNabla1FD = (TBT1.displacementy-TBT.displacementy)/xDelta
-displacementyNabla2FD = (TBT2.displacementy-TBT.displacementy)/xDelta
+#
+## System evaluation
+#TBT = Truss3Bar()
+#TBT.A1 = 10
+#TBT.A2 = 10
+#TBT.primal()
+#
+## Analytical sensitivity evaluation
+#TBT.sensitivity()
+#
+## Finite difference
+#xDelta = 0.000001
+#TBT1 = Truss3Bar()
+#TBT1.RunFolder = True
+#TBT1.A1 = 10 + xDelta
+#TBT1.A2 = 10
+#TBT1.primal()
+#TBT2 = Truss3Bar()
+#TBT2.A1 = 10
+#TBT2.A2 = 10 + xDelta
+#TBT2.primal()
+#volumeNabla1FD = (TBT1.volume-TBT.volume)/xDelta
+#volumeNabla2FD = (TBT2.volume-TBT.volume)/xDelta
+#sigma1Nabla1FD = (TBT1.stress1-TBT.stress1)/xDelta
+#sigma1Nabla2FD = (TBT2.stress1-TBT.stress1)/xDelta
+#sigma2Nabla1FD = (TBT1.stress2-TBT.stress2)/xDelta
+#sigma2Nabla2FD = (TBT2.stress2-TBT.stress2)/xDelta
+#sigma3Nabla1FD = (TBT1.stress3-TBT.stress3)/xDelta
+#sigma3Nabla2FD = (TBT2.stress3-TBT.stress3)/xDelta
+#displacementxNabla1FD = (TBT1.displacementx-TBT.displacementx)/xDelta
+#displacementxNabla2FD = (TBT2.displacementx-TBT.displacementx)/xDelta
+#displacementyNabla1FD = (TBT1.displacementy-TBT.displacementy)/xDelta
+#displacementyNabla2FD = (TBT2.displacementy-TBT.displacementy)/xDelta
 
 # Optimization with finite differences
 OptTBT = OptimizationSetup(Truss3Bar)
-OptTBT.RunFolder = False
+OptTBT.RunFolder = True
+OptTBT.RemoveRunFolder = False
 OptTBT.f = ["volume"]
 OptTBT.g = ["stress1", "stress2", "stress3", "displacementx", "displacementy"]
 OptTBT.gType = ["upper"]*5

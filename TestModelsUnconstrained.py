@@ -11,7 +11,7 @@ class Ackley:
         n = len(x)
         s1 = sum(x**2)
         s2 = sum(np.cos(self.c * x))
-        self.f = (-self.a*np.exp(-self.b*np.sqrt(s1 / n)) -
+        self.v = (-self.a*np.exp(-self.b*np.sqrt(s1 / n)) -
                   np.exp(s2 / n) + self.a + np.exp(1))
 
 
