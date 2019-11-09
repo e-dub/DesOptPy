@@ -77,6 +77,10 @@ def OptimizationSetup(Model):
         x = None
         f = None
         g = None
+        xLast = None
+        xOpt = None
+        fOpt = None
+        gOpt = None
         fNabla = None
         gNabla = None
         xNorm = True
@@ -85,8 +89,9 @@ def OptimizationSetup(Model):
         Sensitivity  = None
         xDelta = 1e-3
         Alg = "NLPQLP"
-        pyOptAlg = True
-        pyGmoAlg = False
+        pyOptAlg = None
+        SciPyAlg = None
+        pyGmoAlg = None
         PrintOutput = True
         ModelName = str(Model.__name__)
         fNormMultiplier = 1000
@@ -175,6 +180,8 @@ def OptimizationSetup(Model):
             self.fNablaIt = fNablaIt
             self.gOpt = self.gIt[-1]
 
+
+
         def optimize(self):
             self.t0 = datetime.datetime.now()
             self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
@@ -182,6 +189,17 @@ def OptimizationSetup(Model):
             self.nEval = 0
             self.nSensEval = None
             self.f0 = None
+
+            # Optimization Algorithm
+            if (self.Alg).upper() in {"SLSQP", "NLPQLP", "COBYLA"}:
+                self.pyOptAlg = True
+                self.SciPyAlg = False
+                self.pyGmoAlg  = False
+            elif (self.Alg[:5]).upper() == "SCIPY" or (self.Alg[-5:]).upper == "SCIPY":
+                self.SciPyAlg = True
+                self.pyOptAlg = False
+                self.pyGmoAlg  = False
+
 
             # File handling
             if self.RunFolder:
@@ -273,6 +291,18 @@ def OptimizationSetup(Model):
 
                 self.nEval += 1
                 return(fVal, gVal, 0)
+                
+            def ObjFnSciPy(xVal):
+                if np.array_equal(self.xLast, xVal) != True:
+                    self.fVal, self.gVal, flag = SysEq(xVal)
+                    self.xLast = xVal.copy()
+                return(self.fVal)
+            
+            def ConFnSciPy(xVal):
+                if np.array_equal(self.xLast, xVal) != True:
+                    self.fVal, self.gVal, flag = SysEq(xVal)
+                    self.xLast = xVal.copy()
+                return(self.gVal)
 
             def SensEq(xVal, fVal, gVal):
                 # create folder and change into it
@@ -390,22 +420,28 @@ def OptimizationSetup(Model):
                         xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
                 self.nSensEval += 1
 
+            # Normalization
+            x0 = [None]*len(self.x0)
+            xL = [None]*len(self.x0)
+            xU = [None]*len(self.x0)
+            for i in range(len(self.x0)):
+                if self.xNorm[i]:
+                    x0[i] = normalize(self.x0[i], self.xL[i], self.xU[i])
+                    xL[i] = 0
+                    xU[i] = 1
+                else:
+                    x0[i] = self.x0[i]
+                    xL[i] = self.xL[i]
+                    xU[i] = self.xU[i]
+                
             # Seperate file an dchild class??
             if self.pyOptAlg:
                 import pyOpt
                 Alg = eval("pyOpt." + self.Alg + '()')
                 Problem = pyOpt.Optimization(self.ModelName, SysEq)
-                for i in range(len(self.x0)):
-                    if self.xNorm[i]:
-                        x0i = normalize(self.x0[i], self.xL[i], self.xU[i])
-                        xLi = 0
-                        xUi = 1
-                    else:
-                        x0i = self.x0[i]
-                        xLi = self.xL[i]
-                        xUi = self.xU[i]
-                    Problem.addVar('x'+str(i+1), 'c', value=x0i, lower=xLi,
-                                   upper=xUi)
+                for i in range(len(self.x0)):   
+                    Problem.addVar('x'+str(i+1), 'c', value=x0[i], lower=xL[i],
+                                   upper=xU[i])
                 for i in range(len(self.f)):
                     Problem.addObj('f'+str(i+1))
                 if self.g:
@@ -426,6 +462,13 @@ def OptimizationSetup(Model):
                     fOpt, xOpt, inform = Alg(Problem, sens_type=SensEq,
                                              store_hst=self.Name)
 
+                if self.PrintOutput:
+                    pass
+
+                self.inform = Alg.getInform(0)
+                self.readHistory()
+                
+                # Denormalization
                 self.xOpt = [None]*len(self.x0)
                 for i in range(len(self.x0)):
                     if self.xNorm[i]:
@@ -437,19 +480,58 @@ def OptimizationSetup(Model):
                     self.fOpt = fOpt*self.f0/self.fNormMultiplier
                 else:
                     self.fOpt = fOpt
-                if self.PrintOutput:
-                    pass
-
-                inform = Alg.getInform(0)
-                self.readHistory()
-
 
             # Seperate file and child class??
             elif self.pyGmoAlg:
                 import pygmo
+
+
+            # Seperate file and child class??
+            elif self.SciPyAlg:
+                from scipy import optimize as spopt
+                Alg = "SLSQP"
+                #Alg = "trust-constr"
+                Results = spopt.minimize(ObjFnSciPy, x0, method=Alg, 
+                                         bounds=spopt.Bounds(xL, xU),
+                                         constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
+                                         options={"eps": self.xDelta, 
+                                                  "ftol": 1e-6,
+                                                  "disp": False,
+                                                  "iprint": 1,
+                                                  "maxiter": 100})
+                xOpt = Results.x
+                fOpt = Results.fun
+                self.fNablaOpt = Results.jac
+                self.nIt = Results.nit
+                self.nEval = Results.nfev
+                self.nSensEval = Results.njev
+                self.inform = Results.success
+                
+                # Denormalization
+                self.xOpt = [None]*len(self.x0)
+                for i in range(len(self.x0)):
+                    if self.xNorm[i]:
+                        self.xOpt[i] = denormalize(xOpt[i], self.xL[i],
+                                                   self.xU[i])
+                    else:
+                        self.xOpt[i] = xOpt[i]
+                if self.fNorm[0]:
+                    self.fOpt = [fOpt*self.f0/self.fNormMultiplier]
+                else:
+                    self.fOpt = [fOpt]
+                
+            # Seperate file and child class??
+            elif self.ortoolsAlg:
+                pass
+
+            def optimizeMutiobjective(self):
+                pass
+            
+
+                
+                
             self.t1 = datetime.datetime.now()
             self.tOpt = (self.t1-self.t0)
-
             if self.PrintOutput:
                 lines = "-"*75
                 print()
@@ -458,11 +540,12 @@ def OptimizationSetup(Model):
                 print(lines)
                 print("Optimization algorithm = " + self.Alg)
                 print("f* = " + str(self.fOpt[0]))
-                if len(self.gOpt) > 3:
-                    print("g* = ")
-                    print(*self.gOpt, sep="\n", flush=True)
-                else:
-                    print("g* = " + str(self.gOpt))
+                if self.gOpt is not None:
+                    if len(self.gOpt) > 3:
+                        print("g* = ")
+                        print(*self.gOpt, sep="\n", flush=True)
+                    else:
+                        print("g* = " + str(self.gOpt))
                 if len(self.xOpt) > 3:
                     print("x* = ")
                     print(*self.xOpt, sep="\n", flush=True)
@@ -497,17 +580,6 @@ def OptimizationSetup(Model):
                 if self.OS == "Linux" and self.Alarm:
                     os.system("play --no-show-progress --null --channels 1 " +
                               "synth 2 sine 329.63 fade q 0.05 0.9 0.05")
-
-            # Seperate file and child class??
-            elif self.scipyAlg:
-                pass
-
-            # Seperate file and child class??
-            elif self.ortoolsAlg:
-                pass
-
-            def optimizeMutiobjective(self):
-                pass
 
             if self.RunFolder:
                 os.chdir(self.MainDir)
