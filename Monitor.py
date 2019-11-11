@@ -47,3 +47,5 @@ l = p.circle(x='x', y='y', source=source)
 doc.add_root(p)
 thread = Thread(target=blocking_task)
 thread.start()
+
+

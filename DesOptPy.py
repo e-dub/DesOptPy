@@ -5,8 +5,13 @@ TODO return arrays!!! not lists, for gradients important!
 TODO test gradients that they work well!!!
 xTODO new github repository
 TODO add pygmo
-TODO add scipy optimization
-scipy.optimize https://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html
+TODO add deap
+https://deap.readthedocs.io/en/master/tutorials/advanced/constraints.html
+TODO add cvxopt
+http://cvxopt.org/userguide/index.html
+TODO add nlopt
+https://nlopt.readthedocs.io/en/latest/
+xTODO add scipy optimization
 TODO add or-tools?
 TODO add Hybrid Cellular Automata
 https://developers.google.com/optimization/introduction/python
@@ -20,6 +25,7 @@ xTODO File handling save all evaluation data
 TODO filehandling for saving all evaluation to find if it is a new iteration or a finite differencing iteration (or also step length)
 TODO Postprocessing for shadow prices
 TODO surrogating?
+TODO sampling and ploting of design space
 TODO ResultReport
 TODO Optimization live monitoring!
 TODO Algorithm options
