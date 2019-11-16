@@ -22,7 +22,8 @@ class Truss3Bar:
                               ((self.A1+2**0.5*self.A2)*self.E))
         #print([self.stress1, self.stress2, self.stress3, self.displacementx,
         #       self.displacementy])
-        time.sleep(10)
+        self.displacementx = -np.inf
+        #stime.sleep(10)
 
     def sensitivity(self):
         self.volumeNabla = np.array([2*2**0.5, 1])
@@ -74,7 +75,7 @@ class Truss3Bar:
 # Optimization with finite differences
 OptTBT = OptimizationSetup(Truss3Bar)
 OptTBT.RunFolder = True
-OptTBT.RemoveRunFolder = False
+OptTBT.RemoveRunFolder = True
 OptTBT.pyOptAlg = True
 #OptTBT.SciPyAlg = True
 
