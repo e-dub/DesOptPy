@@ -47,7 +47,7 @@ except: pass
 __title__ = "DESign OPTimization in PYthon"
 __shorttitle__ = "DesOptPy"
 __version__ = "2.0 prerelease"
-__all__ = ["DesOpt"]
+#__all__ = ["DesOpt"]
 __author__ = "E. J. Wehrle"
 __copyright__ = "Copyright 2019 E. J. Wehrle"
 __email__ = "Erich.Wehrle(a)unibz.it"
@@ -184,7 +184,11 @@ def OptimizationSetup(Model):
             self.gAll = gAll
             self.gNablaIt = gNablaIt
             self.fNablaIt = fNablaIt
-            self.gOpt = self.gIt[-1]
+            #TODO
+            try:
+                self.gOpt = self.gIt[-1]
+            except:
+                self.gOpt = []
 
 
 
@@ -225,10 +229,11 @@ def OptimizationSetup(Model):
                 os.chdir(self.RunDir)
 
             if self.Monitoring and self.RunFolder:
-                print("\nTo start monitoring visualization enter, run folder" +
-                      "\n\n    " + self.RunDir + "\n\n"
-                      "and enter the following command in terminal:" +
-                      "\n\n    bokeh serve --show DesOptMonitor.py \n\n")
+                print("\nTo start monitoring visualization," +
+                      " enter the following command in terminal:" +
+                      "\n\n    bokeh serve --show DesOptMonitor.py \n\n" +
+                      "from the following folder:"
+                      "\n\n    " + self.RunDir + "\n\n")
 
             def SysEq(xVal):
                 # create folder and change into it
@@ -244,7 +249,9 @@ def OptimizationSetup(Model):
                     os.chdir(EvalDir)
 
                 # Denorm and assign of design variables
-                for i, xi in enumerate(xVal):
+                for i in range(len(self.xL)):
+                #for i, xi in enumerate(xVal):
+                    xi = xVal[i]
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
                     if self.x is not None:
@@ -297,13 +304,13 @@ def OptimizationSetup(Model):
 
                 self.nEval += 1
                 return(fVal, gVal, 0)
-                
+
             def ObjFnSciPy(xVal):
                 if np.array_equal(self.xLast, xVal) != True:
                     self.fVal, self.gVal, flag = SysEq(xVal)
                     self.xLast = xVal.copy()
                 return(self.fVal)
-            
+
             def ConFnSciPy(xVal):
                 if np.array_equal(self.xLast, xVal) != True:
                     self.fVal, self.gVal, flag = SysEq(xVal)
@@ -325,7 +332,9 @@ def OptimizationSetup(Model):
                     os.chdir(EvalDir)
 
                 # Denorm and assign of design variables
-                for i, xi in enumerate(xVal):
+                for i in range(len(self.xL)):
+                #for i, xi in enumerate(xVal):
+                    xi = xVal[i]
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
                     if self.x is not None:
@@ -340,8 +349,10 @@ def OptimizationSetup(Model):
                 # Senstivity of objective
                 fNablaVal = getattr(self, self.fNabla[0])
                 if self.fNorm[0]:
-                    fNablaVal = fVal/self.f0*self.fNormMultiplier
-                for i in range(len(xVal)):
+                    fNablaVal = fNablaVal/self.f0*self.fNormMultiplier
+
+                for i in range(len(self.xL)):
+                #for i in range(len(xVal)):
                     if self.xNorm[i]:
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
 
@@ -439,13 +450,13 @@ def OptimizationSetup(Model):
                     x0[i] = self.x0[i]
                     xL[i] = self.xL[i]
                     xU[i] = self.xU[i]
-                
+
             # Seperate file an dchild class??
             if self.pyOptAlg:
                 import pyOpt
                 Alg = eval("pyOpt." + self.Alg + '()')
                 Problem = pyOpt.Optimization(self.ModelName, SysEq)
-                for i in range(len(self.x0)):   
+                for i in range(len(self.x0)):
                     Problem.addVar('x'+str(i+1), 'c', value=x0[i], lower=xL[i],
                                    upper=xU[i])
                 for i in range(len(self.f)):
@@ -458,8 +469,15 @@ def OptimizationSetup(Model):
 
                 # Call
                 if self.Sensitivity is None:
-                    fOpt, xOpt, inform = Alg(Problem, sens_step=self.xDelta,
-                                             store_hst=self.Name)
+                    if  self.Alg in ["NLPQLP", "MMA", "GCMMA", "IPOPT", "FSQP",
+                                     "PSQP", "CONMIN", "MMFD", "SLSQP",
+                                     "SOLVEOPT"]:
+                        fOpt, xOpt, inform = Alg(Problem,
+                                                 sens_step=self.xDelta,
+                                                 store_hst=self.Name)
+                    else:
+                        fOpt, xOpt, inform = Alg(Problem, store_hst=self.Name)
+
                 elif self.Sensitivity == "autograd":
                     fOpt, xOpt, inform = Alg(Problem, sens_type=AutoSensEq,
                                              store_hst=self.Name)
@@ -468,17 +486,27 @@ def OptimizationSetup(Model):
                     fOpt, xOpt, inform = Alg(Problem, sens_type=SensEq,
                                              store_hst=self.Name)
 
+                # proper size xOpt
+                xOpt = np.array(xOpt).reshape(len(xOpt),)
+
+                # proper size fOpt
+                fOpt = np.array(fOpt).reshape(1,)
+
                 if self.PrintOutput:
                     pass
 
-                self.inform = Alg.getInform(0)
+                try:
+                    self.inform = Alg.getInform(0)
+                except:
+                    self.inform = inform
+
                 self.readHistory()
-                
+
                 # Denormalization
                 self.xOpt = [None]*len(self.x0)
                 for i in range(len(self.x0)):
                     if self.xNorm[i]:
-                        self.xOpt[i] = denormalize(xOpt[i][0], self.xL[i],
+                        self.xOpt[i] = denormalize(xOpt[i], self.xL[i],
                                                    self.xU[i])
                     else:
                         self.xOpt[i] = xOpt[i]
@@ -497,10 +525,10 @@ def OptimizationSetup(Model):
                 from scipy import optimize as spopt
                 Alg = "SLSQP"
                 #Alg = "trust-constr"
-                Results = spopt.minimize(ObjFnSciPy, x0, method=Alg, 
+                Results = spopt.minimize(ObjFnSciPy, x0, method=Alg,
                                          bounds=spopt.Bounds(xL, xU),
                                          constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
-                                         options={"eps": self.xDelta, 
+                                         options={"eps": self.xDelta,
                                                   "ftol": 1e-6,
                                                   "disp": False,
                                                   "iprint": 1,
@@ -512,7 +540,7 @@ def OptimizationSetup(Model):
                 self.nEval = Results.nfev
                 self.nSensEval = Results.njev
                 self.inform = Results.success
-                
+
                 # Denormalization
                 self.xOpt = [None]*len(self.x0)
                 for i in range(len(self.x0)):
@@ -525,17 +553,17 @@ def OptimizationSetup(Model):
                     self.fOpt = [fOpt*self.f0/self.fNormMultiplier]
                 else:
                     self.fOpt = [fOpt]
-                
+
             # Seperate file and child class??
             elif self.ortoolsAlg:
                 pass
 
             def optimizeMutiobjective(self):
                 pass
-            
 
-                
-                
+
+
+
             self.t1 = datetime.datetime.now()
             self.tOpt = (self.t1-self.t0)
             if self.PrintOutput:

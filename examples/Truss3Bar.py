@@ -1,8 +1,10 @@
 from DesOptPy import OptimizationSetup
 import numpy as np
 import time
+from copy import deepcopy
 
 class Truss3Bar:
+    # initialize parametric terms
     Fx = 1000
     Fy = 1000
     A1 = 5
@@ -22,7 +24,7 @@ class Truss3Bar:
                               ((self.A1+2**0.5*self.A2)*self.E))
         #print([self.stress1, self.stress2, self.stress3, self.displacementx,
         #       self.displacementy])
-        self.displacementx = -np.inf
+        #self.displacementx = -np.inf
         #stime.sleep(10)
 
     def sensitivity(self):
@@ -79,8 +81,41 @@ OptTBT.RemoveRunFolder = True
 OptTBT.pyOptAlg = True
 #OptTBT.SciPyAlg = True
 
-#OptTBT.Alg = "SciPySLSQP"
+
+OptTBT.Alg = "ALGENCAN"
+# OptTBT.Alg = "CONMIN"
+# OptTBT.Alg = "SciPySLSQP"
+# OptTBT.Alg = "PSQP"
+# OptTBT.Alg = "GCMMA"
+# OptTBT.Alg = "KSOPT"
+# OptTBT.Alg = "MMA"
 OptTBT.Alg = "NLPQLP"
+# OptTBT.Alg = "SLSQP"
+
+
+# default error
+#OptTBT.Alg = "FILTERSD"
+
+# check?
+#OptTBT.Alg = "SOLVOPT"
+
+# correctable - ipopt install
+#OptTBT.Alg = "IPOPT"
+
+# not installed
+#OptTBT.Alg = "SNOPT"
+#OptTBT.Alg = "MMFD"
+#OptTBT.Alg = "FSQP"
+
+
+# correctable - sens_step
+#OptTBT.Alg = "ALHSO"
+#OptTBT.Alg = "ALPSO"
+#OptTBT.Alg = "COBYLA"
+#OptTBT.Alg = "MIDACO"
+#OptTBT.Alg = "NSGA2"
+#OptTBT.Alg = "SDPEN"
+
 
 OptTBT.f = ["volume"]
 OptTBT.g = ["stress1", "stress2", "stress3", "displacementx", "displacementy"]
@@ -100,12 +135,12 @@ OptTBT.optimize()
 
 # Optimization with analytical senstivities
 # copied from FD optimization changing sensitivity analysis type and rerunning
-#OptTBTsens = deepcopy(OptTBT)
-#OptTBTsens.Sensitivity = "sensitivity"
-#OptTBTsens.fNabla = ["volumeNabla"]
-#OptTBTsens.gNabla = ["stress1Nabla", "stress2Nabla", "stress3Nabla",
-#                     "displacementxNabla", "displacementyNabla"]
-#OptTBTsens.optimize()
+OptTBTsens = deepcopy(OptTBT)
+OptTBTsens.Sensitivity = "sensitivity"
+OptTBTsens.fNabla = ["volumeNabla"]
+OptTBTsens.gNabla = ["stress1Nabla", "stress2Nabla", "stress3Nabla",
+                    "displacementxNabla", "displacementyNabla"]
+OptTBTsens.optimize()
 
 
 #OptTBTautosens = deepcopy(OptTBTsens)
