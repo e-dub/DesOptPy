@@ -2,7 +2,7 @@
 xOpt = [ 2.35342485  3.32421007]
 fOpt = 7.82327859
 """
-from DesOptPy import OptimizationSetup
+from DesOptPy import OptimizationProblem
 import numpy as np
 
 
@@ -27,7 +27,7 @@ class Cantilever:
         self.D4 = D1*np.sqrt(D2)/self.D0
 
 
-Prob1 = OptimizationSetup(Cantilever)
+Prob1 = OptimizationProblem(Cantilever)
 Prob1.x = ["w", "t"]
 Prob1.x0 = [1.8, 1.0]
 Prob1.xL = [1.0, 1.0]
@@ -45,7 +45,7 @@ Prob1.Primal = "calc"
 Prob1.optimize()
 
 
-Prob2 = OptimizationSetup(Cantilever)
+Prob2 = OptimizationProblem(Cantilever)
 Prob2.x = ["w"]
 Prob2.x0 = [1.8]
 Prob2.xL = [1.0]
@@ -62,7 +62,7 @@ Prob2.Alg = "NLPQLP"
 Prob2.Primal = "calc"
 Prob2.optimize()
 
-Prob3 = OptimizationSetup(Cantilever)
+Prob3 = OptimizationProblem(Cantilever)
 Prob3.x = ["t"]
 Prob3.x0 = [1.8]
 Prob3.xL = [1.0]

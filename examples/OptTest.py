@@ -1,8 +1,8 @@
-from DesOptPy import OptimizationSetup
+from DesOptPy import OptimizationProblem
 from ModelTest1 import Model as Model1
 from ModelTest2 import Model as Model2
 
-Prob1 = OptimizationSetup(Model1)
+Prob1 = OptimizationProblem(Model1)
 Prob1.x = ["A", "el"]
 Prob1.xL = [0.1, 0.1]
 Prob1.xU = [1000.0, 1000.0]

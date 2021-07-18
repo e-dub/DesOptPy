@@ -1,7 +1,7 @@
-from DesOptPy import OptimizationSetup
+from DesOptPy import OptimizationProblem
 import numpy as np
-import time
 from copy import deepcopy
+
 
 class Truss3Bar:
     # initialize parametric terms
@@ -29,23 +29,34 @@ class Truss3Bar:
 
     def sensitivity(self):
         self.volumeNabla = np.array([2*2**0.5, 1])
-        self.stress1Nabla = np.array([-self.Fx/(2**0.5*self.A1**2) - 2**0.5*self.Fy/(2**0.5*self.A1 + 2*self.A2)**2,
-                                      -2*self.Fy/(2**0.5*self.A1 + 2*self.A2)**2])
-        self.stress2Nabla = np.array([-2**0.5*self.Fy/(self.A1 + 2**0.5*self.A2)**2,
-                                      -2*self.Fy/(self.A1 + 2**0.5*self.A2)**2])
-        self.stress3Nabla = np.array([+self.Fx/(2**0.5*self.A1**2) - 2**0.5*self.Fy/(2**0.5*self.A1 + 2*self.A2)**2,
-                                      -2*self.Fy/(2**0.5*self.A1 + 2*self.A2)**2])
-        self.displacementxNabla = np.array([-2**0.5*self.el*self.Fx/(self.A1**2*self.E),
+        self.stress1Nabla = np.array([-self.Fx/(2**0.5*self.A1**2) -
+                                      2**0.5*self.Fy/(2**0.5*self.A1 +
+                                                      2*self.A2)**2,
+                                      -2*self.Fy/(2**0.5*self.A1 +
+                                                  2*self.A2)**2])
+        self.stress2Nabla = np.array([-2**0.5*self.Fy/(self.A1 +
+                                                       2**0.5*self.A2)**2,
+                                      -2*self.Fy/(self.A1 +
+                                                  2**0.5*self.A2)**2])
+        self.stress3Nabla = np.array([+self.Fx/(2**0.5*self.A1**2) -
+                                      2**0.5*self.Fy/(2**0.5*self.A1 +
+                                                      2*self.A2)**2,
+                                      -2*self.Fy/(2**0.5*self.A1 +
+                                                  2*self.A2)**2])
+        self.displacementxNabla = np.array([-2**0.5*self.el*self.Fx/
+                                            (self.A1**2*self.E),
                                             0])
-        self.displacementyNabla = np.array([-2**0.5*self.el*self.Fy/((self.A1+2**0.5*self.A2)**2*self.E),
-                                            -2*self.el*self.Fy/((self.A1+2**0.5*self.A2)**2*self.E)])
+        self.displacementyNabla = np.array([-2**0.5*self.el*self.Fy/
+                                            ((self.A1+2**0.5*self.A2)**2*self.E),
+                                            -2*self.el*self.Fy/
+                                            ((self.A1+2**0.5*self.A2)**2*self.E)])
 
-#
-## System evaluation
-#TBT = Truss3Bar()
-#TBT.A1 = 10
-#TBT.A2 = 10
-#TBT.primal()
+
+# System evaluation
+TBT = Truss3Bar()
+TBT.A1 = 10
+TBT.A2 = 10
+TBT.primal()
 #
 ## Analytical sensitivity evaluation
 #TBT.sensitivity()
@@ -75,7 +86,7 @@ class Truss3Bar:
 #displacementyNabla2FD = (TBT2.displacementy-TBT.displacementy)/xDelta
 
 # Optimization with finite differences
-OptTBT = OptimizationSetup(Truss3Bar)
+OptTBT = OptimizationProblem(Truss3Bar)
 OptTBT.RunFolder = True
 OptTBT.RemoveRunFolder = True
 OptTBT.pyOptAlg = True
@@ -85,12 +96,19 @@ OptTBT.pyOptAlg = True
 OptTBT.Alg = "ALGENCAN"
 # OptTBT.Alg = "CONMIN"
 # OptTBT.Alg = "SciPySLSQP"
-# OptTBT.Alg = "PSQP"
+OptTBT.Alg = "PSQP"
 # OptTBT.Alg = "GCMMA"
 # OptTBT.Alg = "KSOPT"
-# OptTBT.Alg = "MMA"
-OptTBT.Alg = "NLPQLP"
+#OptTBT.Alg = "MMA"
+#OptTBT.Alg = "NLPQLP"
 # OptTBT.Alg = "SLSQP"
+
+#OptTBT.Alg = "ALHSO"
+#OptTBT.Alg = "ALPSO"
+#OptTBT.Alg = "COBYLA"
+#OptTBT.Alg = "MIDACO"
+#OptTBT.Alg = "NSGA2"
+#OptTBT.Alg = "SDPEN"
 
 
 # default error
@@ -107,14 +125,6 @@ OptTBT.Alg = "NLPQLP"
 #OptTBT.Alg = "MMFD"
 #OptTBT.Alg = "FSQP"
 
-
-# correctable - sens_step
-#OptTBT.Alg = "ALHSO"
-#OptTBT.Alg = "ALPSO"
-#OptTBT.Alg = "COBYLA"
-#OptTBT.Alg = "MIDACO"
-#OptTBT.Alg = "NSGA2"
-#OptTBT.Alg = "SDPEN"
 
 
 OptTBT.f = ["volume"]
@@ -143,9 +153,9 @@ OptTBTsens.gNabla = ["stress1Nabla", "stress2Nabla", "stress3Nabla",
 OptTBTsens.optimize()
 
 
-#OptTBTautosens = deepcopy(OptTBTsens)
-#OptTBTsens.Sensitivity = "autograd"
-#OptTBTsens.optimize()
+# OptTBTautosens = deepcopy(OptTBTsens)
+# OptTBTsens.Sensitivity = "autograd"
+# OptTBTsens.optimize()
 
 #TBT.A1 = OptTBT.A1
 #TBT.A2 = OptTBT.A2

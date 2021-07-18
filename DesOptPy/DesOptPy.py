@@ -1,40 +1,3 @@
-"""
-TODOS:
-
-TODO return arrays!!! not lists, for gradients important!
-TODO test gradients that they work well!!!
-xTODO new github repository
-TODO add pygmo
-TODO add deap
-https://deap.readthedocs.io/en/master/tutorials/advanced/constraints.html
-TODO add cvxopt
-http://cvxopt.org/userguide/index.html
-TODO add nlopt
-https://nlopt.readthedocs.io/en/latest/
-xTODO add scipy optimization
-TODO add or-tools?
-TODO add Hybrid Cellular Automata
-https://developers.google.com/optimization/introduction/python
-TODO add algorithm list?
-xTODO variable function for primal and sens
-xTODO different way to define design variables with x vector
-xTODO read in history at end
-TODO renorm etc with history!!! Iteration values, Optimal values
-xTODO File handling and run results folder (no run only modelname with time stamp)
-xTODO File handling save all evaluation data
-TODO filehandling for saving all evaluation to find if it is a new iteration or a finite differencing iteration (or also step length)
-TODO Postprocessing for shadow prices
-TODO surrogating?
-TODO sampling and ploting of design space
-TODO ResultReport
-TODO Optimization live monitoring!
-TODO Algorithm options
-TODO Variable linking?
-
-sources
- mdao py for pyopt???
-"""
-
 import datetime
 import os
 from copy import deepcopy
@@ -42,14 +5,15 @@ import shutil
 import numpy as np
 try:
     import cpuinfo
-except: pass
+except:
+    pass
 
 __title__ = "DESign OPTimization in PYthon"
 __shorttitle__ = "DesOptPy"
-__version__ = "2.0 prerelease"
+__version__ = "2.0 development"
 #__all__ = ["DesOpt"]
 __author__ = "E. J. Wehrle"
-__copyright__ = "Copyright 2019 E. J. Wehrle"
+__copyright__ = "Copyright 2021 E. J. Wehrle"
 __email__ = "Erich.Wehrle(a)unibz.it"
 __url__ = 'github.com/edub/DesOptPy2'
 #TODO decide on license for new version
@@ -78,7 +42,7 @@ def denormalize(xNorm, xL, xU):
 PrintDesOptPy()
 
 
-def OptimizationSetup(Model):
+def OptimizationProblem(Model):
     class Opt(Model):
         x = None
         f = None
@@ -92,7 +56,7 @@ def OptimizationSetup(Model):
         xNorm = True
         fNorm = True
         Primal = "calc"
-        Sensitivity  = None
+        Sensitivity = None
         xDelta = 1e-3
         Alg = "NLPQLP"
         pyOptAlg = None
@@ -115,7 +79,8 @@ def OptimizationSetup(Model):
         MainDir = None
         try:
             cpu = cpuinfo.get_cpu_info()['brand']
-        except: pass
+        except:
+            pass
 
         class KaruschKuhnTucker(object):
             from numpy.linalg import norm, lstsq
@@ -151,13 +116,13 @@ def OptimizationSetup(Model):
             fNablaIt = OptHist.read([0, -1], ["grad_obj"])[0]["grad_obj"]
             failIt = OptHist.read([0, -1], ["fail"])[0]["fail"]
             OptHist.close()
-            xAll = [l.tolist() for l in xAll]
-            xNormAll = [l.tolist() for l in xNormAll]
-            fAll = [l.tolist() for l in fAll]
-            gAll = [l.tolist() for l in gAll]
-            fNablaIt = [l.tolist() for l in fNablaIt]
-            gNablaIt = [l.tolist() for l in gNablaIt]
-            failIt = [l.tolist() for l in failIt]
+            xAll = [i.tolist() for i in xAll]
+            xNormAll = [i.tolist() for i in xNormAll]
+            fAll = [i.tolist() for i in fAll]
+            gAll = [i.tolist() for i in gAll]
+            fNablaIt = [i.tolist() for i in fNablaIt]
+            gNablaIt = [i.tolist() for i in gNablaIt]
+            failIt = [i.tolist() for i in failIt]
 
             self.nIt = len(fNablaIt)
             self.fIt = [None]*self.nIt
@@ -190,8 +155,6 @@ def OptimizationSetup(Model):
             except:
                 self.gOpt = []
 
-
-
         def optimize(self):
             self.t0 = datetime.datetime.now()
             self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
@@ -204,12 +167,11 @@ def OptimizationSetup(Model):
             if (self.Alg).upper() in {"SLSQP", "NLPQLP", "COBYLA"}:
                 self.pyOptAlg = True
                 self.SciPyAlg = False
-                self.pyGmoAlg  = False
+                self.pyGmoAlg = False
             elif (self.Alg[:5]).upper() == "SCIPY" or (self.Alg[-5:]).upper == "SCIPY":
                 self.SciPyAlg = True
                 self.pyOptAlg = False
-                self.pyGmoAlg  = False
-
+                self.pyGmoAlg = False
 
             # File handling
             if self.RunFolder:
@@ -469,9 +431,9 @@ def OptimizationSetup(Model):
 
                 # Call
                 if self.Sensitivity is None:
-                    if  self.Alg in ["NLPQLP", "MMA", "GCMMA", "IPOPT", "FSQP",
-                                     "PSQP", "CONMIN", "MMFD", "SLSQP",
-                                     "SOLVEOPT"]:
+                    if self.Alg in ["NLPQLP", "MMA", "GCMMA", "IPOPT", "FSQP",
+                                    "PSQP", "CONMIN", "MMFD", "SLSQP",
+                                    "SOLVEOPT"]:
                         fOpt, xOpt, inform = Alg(Problem,
                                                  sens_step=self.xDelta,
                                                  store_hst=self.Name)
@@ -519,7 +481,6 @@ def OptimizationSetup(Model):
             elif self.pyGmoAlg:
                 import pygmo
 
-
             # Seperate file and child class??
             elif self.SciPyAlg:
                 from scipy import optimize as spopt
@@ -560,9 +521,6 @@ def OptimizationSetup(Model):
 
             def optimizeMutiobjective(self):
                 pass
-
-
-
 
             self.t1 = datetime.datetime.now()
             self.tOpt = (self.t1-self.t0)
