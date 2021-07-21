@@ -1,53 +1,21 @@
 import datetime
 import os
-from copy import deepcopy
+import copy
 import shutil
 import numpy as np
 try:
     import cpuinfo
 except:
     pass
-
-__title__ = "DESign OPTimization in PYthon"
-__shorttitle__ = "DesOptPy"
-__version__ = "2.0 development"
-#__all__ = ["DesOpt"]
-__author__ = "E. J. Wehrle"
-__copyright__ = "Copyright 2021 E. J. Wehrle"
-__email__ = "Erich.Wehrle(a)unibz.it"
-__url__ = 'github.com/edub/DesOptPy2'
-#TODO decide on license for new version
-__license__ = "TBD"  #"GNU Lesser General Public License"
-
-
-def PrintDesOptPy():
-    print()
-    print("-"*75)
-    print(__title__+" - "+__shorttitle__)
-    print("-"*75)
-    print("Version:    "+__version__)
-    print("License:    "+__license__)
-    print("Internet:   "+__url__)
-    print("\n")
-
-
-def normalize(x, xL, xU):
-    return(x-xL)/(xU-xL)
-
-
-def denormalize(xNorm, xL, xU):
-    return(xNorm*(xU-xL)+xL)
-
-
-PrintDesOptPy()
-
+from DesOptPy.scaling import normalize, denormalize
+from DesOptPy.tools import printResults
 
 def OptimizationProblem(Model):
     class Opt(Model):
+        fType = "min"
         x = None
         f = None
         g = None
-        xLast = None
         xOpt = None
         fOpt = None
         gOpt = None
@@ -55,16 +23,19 @@ def OptimizationProblem(Model):
         gNabla = None
         xNorm = True
         fNorm = True
+        fNormMultiplier = 1000
+        xLast = None
         Primal = "calc"
         Sensitivity = None
         xDelta = 1e-3
         Alg = "NLPQLP"
+        nGen = None
         pyOptAlg = None
         SciPyAlg = None
         pyGmoAlg = None
+        nloptAlg = None
         PrintOutput = True
         ModelName = str(Model.__name__)
-        fNormMultiplier = 1000
         Alarm = True
         RunFolder = True
         RemoveRunFolder = True
@@ -82,26 +53,43 @@ def OptimizationProblem(Model):
         except:
             pass
 
-        class KaruschKuhnTucker(object):
-            from numpy.linalg import norm, lstsq
-            kkteps = 1e-3
-            def checkKKT(self):
-                self.PrimalFeas = (max(self.gOpt) < self.kkteps)
-                self.ComplSlack = (max(self.gOpt@self.Lambda) < self.kkteps)
-                self.DualFeas = (min(self.Lambda) > -self.kkteps)
-                self.kktOpt = bool(self.PrimalFeas*self.DualFeas*self.ComplSlack)
-                self.Opt1Order = norm(self.OptResidual)
-                self.kktMax = max(abs(self.OptResidual))
+        #class KaruschKuhnTucker:
+
+        def checkKKT(self):
+            from numpy.linalg import norm, lstsq, pinv
+            self.kkteps = 1e-3
+            iActive = list(np.array(self.gOpt) > -self.kkteps).index(True)
+            if len(iActive) == 1:
+               lam= np.divide(np.array(self.fNablaIt[-1]),
+                              np.array(self.gNablaIt[-1]).reshape(5,2)[iActive,:])
+               Lambda = np.average(lam)
+            self.PrimalFeas = (max(self.gOpt) < self.kkteps)
+            self.ComplSlack = (max(self.gOpt@self.Lambda) < self.kkteps)
+            self.DualFeas = (min(self.Lambda) > -self.kkteps)
+            self.kktOpt = bool(self.PrimalFeas*self.DualFeas*self.ComplSlack)
+            self.Opt1Order = np.linalg.norm(self.OptResidual)
+            self.kktMax = max(abs(self.OptResidual))
+            if np.size(lambda_c) > 0:
+                print("Lagrangian multipliers = " +
+                str(lambda_c.reshape(np.size(lambda_c,))))
+                print("Type of active constraints = " + str(gAllActiveType))
+                print("Shadow prices = " + str(SPg))
+            if kktOpt:
+                print("Karush-Kuhn-Tucker optimality criteria fulfilled")
+            elif kktOpt==0:
+                print("Karush-Kuhn-Tucker optimality criteria NOT fulfilled")
+            if Opt1Order:
+                print("First-order residual of Lagrangian function = " + str(Opt1Order))
 
         def calcPosprocessing(self):
-            ShadowPrices = []
+            self.ShadowPrices = []
 
         def readHistory(self):
             # make function of new file
             import pyOpt
             OptHist = pyOpt.History(self.Name, "r")
             xAll = OptHist.read([0, -1], ["x"])[0]["x"]
-            xNormAll = deepcopy(xAll)
+            xNormAll = copy.deepcopy(xAll)
             #xNormAll = xAll.copy()
             for ei in range(len(xAll)):
                 for xi, xNormi in enumerate(self.xNorm):
@@ -149,11 +137,9 @@ def OptimizationProblem(Model):
             self.gAll = gAll
             self.gNablaIt = gNablaIt
             self.fNablaIt = fNablaIt
-            #TODO
-            try:
-                self.gOpt = self.gIt[-1]
-            except:
-                self.gOpt = []
+            self.gOpt = self.gIt[-1]
+            self.gMax = np.max(self.gAll, 1)
+            self.g0 = self.gIt[0]
 
         def optimize(self):
             self.t0 = datetime.datetime.now()
@@ -162,16 +148,35 @@ def OptimizationProblem(Model):
             self.nEval = 0
             self.nSensEval = None
             self.f0 = None
+            self.g0 = None
+            self.nx = len(self.x)
+            self.ng = len(self.g)
+            self.nf = len(self.f)
+            # TODO
+            #if self.fType.upper()[0:3] == "MIN":
+            #
+            #
 
             # Optimization Algorithm
-            if (self.Alg).upper() in {"SLSQP", "NLPQLP", "COBYLA"}:
+            self.SciPyAlg = False
+            self.pyOptAlg = False
+            self.pyGmoAlg = False
+            self.nloptAlg = False
+            if (self.Alg).upper() in {"ALGENCAN", "ALHSO", "COBYLA", "CONMIN",
+                                      "FILTERSD", "FSQP", "GCMMA", "IPOPT",
+                                      "KSOPT", "MIDACO", "MMA", "MMFD",
+                                      "NLPQLP", "PSQP", "SDPEN", "SLSQP",
+                                      "SOLVOPT"}:
                 self.pyOptAlg = True
-                self.SciPyAlg = False
-                self.pyGmoAlg = False
-            elif (self.Alg[:5]).upper() == "SCIPY" or (self.Alg[-5:]).upper == "SCIPY":
+            elif ((self.Alg[:5]).upper() == "SCIPY" or
+                  (self.Alg[-5:]).upper == "SCIPY"):
                 self.SciPyAlg = True
-                self.pyOptAlg = False
-                self.pyGmoAlg = False
+            elif ((self.Alg[:5]).upper() == "PYGMO" or
+                  (self.Alg[-5:]).upper == "PYGMO"):
+                self.pyGmoAlg = True
+            elif ((self.Alg[:5]).upper() == "NLOPT" or
+                  (self.Alg[-5:]).upper == "NLOPT"):
+                self.nloptAlg = True
 
             # File handling
             if self.RunFolder:
@@ -210,10 +215,12 @@ def OptimizationProblem(Model):
                                                                   "__*"))
                     os.chdir(EvalDir)
 
+                # Use only physical design variables (some algorithms
+                # supplement design vector with other values, e.g. CONMIN)
+                xVal = xVal[0:len(self.xL)]
+
                 # Denorm and assign of design variables
-                for i in range(len(self.xL)):
-                #for i, xi in enumerate(xVal):
-                    xi = xVal[i]
+                for i, xi in enumerate(xVal):
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
                     if self.x is not None:
@@ -265,19 +272,9 @@ def OptimizationProblem(Model):
                     os.chdir("..")
 
                 self.nEval += 1
+
                 return(fVal, gVal, 0)
 
-            def ObjFnSciPy(xVal):
-                if np.array_equal(self.xLast, xVal) != True:
-                    self.fVal, self.gVal, flag = SysEq(xVal)
-                    self.xLast = xVal.copy()
-                return(self.fVal)
-
-            def ConFnSciPy(xVal):
-                if np.array_equal(self.xLast, xVal) != True:
-                    self.fVal, self.gVal, flag = SysEq(xVal)
-                    self.xLast = xVal.copy()
-                return(self.gVal)
 
             def SensEq(xVal, fVal, gVal):
                 # create folder and change into it
@@ -294,9 +291,7 @@ def OptimizationProblem(Model):
                     os.chdir(EvalDir)
 
                 # Denorm and assign of design variables
-                for i in range(len(self.xL)):
-                #for i, xi in enumerate(xVal):
-                    xi = xVal[i]
+                for i, xi in enumerate(xVal):
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
                     if self.x is not None:
@@ -312,9 +307,7 @@ def OptimizationProblem(Model):
                 fNablaVal = getattr(self, self.fNabla[0])
                 if self.fNorm[0]:
                     fNablaVal = fNablaVal/self.f0*self.fNormMultiplier
-
-                for i in range(len(self.xL)):
-                #for i in range(len(xVal)):
+                for i in range(len(xVal)):
                     if self.xNorm[i]:
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
 
@@ -399,11 +392,12 @@ def OptimizationProblem(Model):
                         xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
                 self.nSensEval += 1
 
+
             # Normalization
-            x0 = [None]*len(self.x0)
-            xL = [None]*len(self.x0)
-            xU = [None]*len(self.x0)
-            for i in range(len(self.x0)):
+            x0 = [None]*self.nx
+            xL = [None]*self.nx
+            xU = [None]*self.nx
+            for i in range(self.nx):
                 if self.xNorm[i]:
                     x0[i] = normalize(self.x0[i], self.xL[i], self.xU[i])
                     xL[i] = 0
@@ -413,18 +407,22 @@ def OptimizationProblem(Model):
                     xL[i] = self.xL[i]
                     xU[i] = self.xU[i]
 
-            # Seperate file an dchild class??
+#----------------------------------------------
+            # Seperate file an dchild class??...
             if self.pyOptAlg:
+                """
+                PyOpt
+                """
                 import pyOpt
                 Alg = eval("pyOpt." + self.Alg + '()')
                 Problem = pyOpt.Optimization(self.ModelName, SysEq)
-                for i in range(len(self.x0)):
+                for i in range(self.nx):
                     Problem.addVar('x'+str(i+1), 'c', value=x0[i], lower=xL[i],
                                    upper=xU[i])
-                for i in range(len(self.f)):
+                for i in range(self.nf):
                     Problem.addObj('f'+str(i+1))
                 if self.g:
-                    for i in range(len(self.g)):
+                    for i in range(self.ng):
                         Problem.addCon('g'+str(i+1), 'i')
                 if self.PrintOutput:
                     print(Problem)
@@ -454,18 +452,12 @@ def OptimizationProblem(Model):
                 # proper size fOpt
                 fOpt = np.array(fOpt).reshape(1,)
 
-                if self.PrintOutput:
-                    pass
-
-                try:
-                    self.inform = Alg.getInform(0)
-                except:
-                    self.inform = inform
-
-                self.readHistory()
-
+                # Todo: same for all algorithms?
+                # Todo change to array?
                 # Denormalization
-                self.xOpt = [None]*len(self.x0)
+                self.xOpt = [None]*self.nx
+                self.xNormOpt = xOpt
+                self.fNormOpt = fOpt
                 for i in range(len(self.x0)):
                     if self.xNorm[i]:
                         self.xOpt[i] = denormalize(xOpt[i], self.xL[i],
@@ -477,101 +469,47 @@ def OptimizationProblem(Model):
                 else:
                     self.fOpt = fOpt
 
-            # Seperate file and child class??
-            elif self.pyGmoAlg:
-                import pygmo
 
+                # if self.PrintOutput:
+                #     pass
+
+                try:
+                    self.inform = Alg.getInform(0)
+                except:
+                    self.inform = inform
+
+                self.readHistory()
+
+#----------------------------------------------
+            elif self.pyGmoAlg:
+                from DesOptPy.interfaces import PyGmo
+                PyGmo.OptPyGmo(self, x0, xL, xU, SysEq)
+
+#----------------------------------------------
             # Seperate file and child class??
             elif self.SciPyAlg:
-                from scipy import optimize as spopt
-                Alg = "SLSQP"
-                #Alg = "trust-constr"
-                Results = spopt.minimize(ObjFnSciPy, x0, method=Alg,
-                                         bounds=spopt.Bounds(xL, xU),
-                                         constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
-                                         options={"eps": self.xDelta,
-                                                  "ftol": 1e-6,
-                                                  "disp": False,
-                                                  "iprint": 1,
-                                                  "maxiter": 100})
-                xOpt = Results.x
-                fOpt = Results.fun
-                self.fNablaOpt = Results.jac
-                self.nIt = Results.nit
-                self.nEval = Results.nfev
-                self.nSensEval = Results.njev
-                self.inform = Results.success
+                from DesOptPy.interfaces import SciPy
+                SciPy.OptSciPy(self, x0, xL, xU, SysEq)
 
-                # Denormalization
-                self.xOpt = [None]*len(self.x0)
-                for i in range(len(self.x0)):
-                    if self.xNorm[i]:
-                        self.xOpt[i] = denormalize(xOpt[i], self.xL[i],
-                                                   self.xU[i])
-                    else:
-                        self.xOpt[i] = xOpt[i]
-                if self.fNorm[0]:
-                    self.fOpt = [fOpt*self.f0/self.fNormMultiplier]
-                else:
-                    self.fOpt = [fOpt]
-
+#----------------------------------------------
             # Seperate file and child class??
-            elif self.ortoolsAlg:
-                pass
+            elif self.nloptAlg:
+                from DesOptPy.interfaces import NlOpt
+                NlOpt.OptNlOpt(self, x0, xL, xU, SysEq)
+
+
 
             def optimizeMutiobjective(self):
-                pass
 
+
+#----------------------------------------------
+                pass
+# Optimization over...now postprocessing and such
             self.t1 = datetime.datetime.now()
             self.tOpt = (self.t1-self.t0)
+
             if self.PrintOutput:
-                lines = "-"*75
-                print()
-                print(lines)
-                print("Optimization results - DesOptPy 2.0")
-                print(lines)
-                print("Optimization algorithm = " + self.Alg)
-                print("f* = " + str(self.fOpt[0]))
-                if self.gOpt is not None:
-                    if len(self.gOpt) > 3:
-                        print("g* = ")
-                        print(*self.gOpt, sep="\n", flush=True)
-                    else:
-                        print("g* = " + str(self.gOpt))
-                if len(self.xOpt) > 3:
-                    print("x* = ")
-                    print(*self.xOpt, sep="\n", flush=True)
-                else:
-                    print("x* = " + str(self.xOpt))
-#                if np.size(lambda_c) > 0:
-#                    print("Lagrangian multipliers = " +
-#                          str(lambda_c.reshape(np.size(lambda_c,))))
-#                    print("Type of active constraints = " + str(gAllActiveType))
-#                    print("Shadow prices = " + str(SPg))
-#                if kktOpt:
-#                    print("Karush-Kuhn-Tucker optimality criteria fulfilled")
-#                elif kktOpt==0:
-#                    print("Karush-Kuhn-Tucker optimality criteria NOT fulfilled")
-#                if Opt1Order:
-#                    print("First-order residual of Lagrangian function = " + str(Opt1Order))
-                print("Time of optimization [h:mm:ss:ms] = " + str(self.tOpt))
-                try:
-                    print("nGen = " + str(self.nGen))
-                except:
-                    print("nIt = " + str(self.nIt))
-                print("nEval = " + str(self.nEval))
-                if self.nSensEval is not None:
-                    print("nSensEval = " + str(self.nSensEval))
-                if self.RunFolder and self.RemoveRunFolder is False:
-                    print("See run directory: " + self.RunDir)
-                elif self.RunFolder and self.RemoveRunFolder:
-                    print("Run cleaned, run directory deleted")
-                else:
-                    print("Local run, all results saved in current directory")
-                print(lines)
-                if self.OS == "Linux" and self.Alarm:
-                    os.system("play --no-show-progress --null --channels 1 " +
-                              "synth 2 sine 329.63 fade q 0.05 0.9 0.05")
+                printResults(self)
 
             if self.RunFolder:
                 os.chdir(self.MainDir)
