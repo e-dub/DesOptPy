@@ -4,6 +4,14 @@ import numpy as np
 
 
 def checkAlgorithms():
+    """
+
+
+    Returns
+    -------
+    None.
+
+    """
     print("The following algorithms are available")
     try:
         import pyOpt
@@ -21,10 +29,9 @@ def checkAlgorithms():
             except:
                 algNotAvail += "\n" + i + " NOT AVAILABLE"
                 na = 1
-        print('\033[32m' +  algAvail + '\033[0m')
+        print('\033[32m' + algAvail + '\033[0m')
         if na:
             print('\033[31m' + algNotAvail + '\033[0m')
-
     except:
         print('\033[41m' + "pyOpt NOT INSTALLED" + '\033[0m')
 
@@ -45,28 +52,37 @@ def checkAlgorithms():
                 except:
                     algNotAvail += "\n" + i + " NOT AVAILABLE"
                     na = 1
-            print('\033[32m' +  algAvail + '\033[0m')
+            print('\033[32m' + algAvail + '\033[0m')
             if na:
                 print('\033[31m' + algNotAvail + '\033[0m')
         else:
             print("\nDesOptPy tested with version SciPy version 1.7.0")
             print("update to this version, e.g.")
             print("    pip install scipy -U")
-
-
     except:
         print('\033[31m' + "SciPy NOT INSTALLED" + '\033[0m')
 
+
 def printResults(self):
+    """
+
+
+    Returns
+    -------
+    None.
+
+    """
     lines = "-" * 75
     print()
-    #print(lines)
+    # print(lines)
     print("Optimization results - DesOptPy 2.0")
-    #print(lines)
+    print()
+    # print(lines)
+    print(self.ModelName)
     print("Optimization algorithm = " + self.Alg)
     print()
-    print("Optimization model values")
-    print()
+    print("Optimization model values:")
+    # print()
     print("f* = ", end="")
     print(*self.fNormOpt, sep="\n     ", flush=True)
     print()
@@ -79,21 +95,31 @@ def printResults(self):
     print()
 
     # add function to normalize and denormlaize constraints, change here.
-    print("Evaluation system values")
-    print()
-    print("optimal objective response:")
+    # print("Evaluation system values")
+    # print()
+    print("objective response at optimum:")
     for i in range(self.nf):
-        print(self.f[i] +" = " + str((self.fOpt[i])))
+        print(self.f[i] + " = " + str((self.fOpt[i])))
     print()
-    print("optimal constrained response (limit):")
-    for i in range(self.ng):
-        print(self.g[i] +" = " +
-              str((self.gOpt[i]+1)*self.gLimit[i]) + " (" +
-              str(self.gLimit[i]) + ")")
+    print("constrained response at optimum (limit):")
+    #for i in range(self.ng):
+    for i, gi in enumerate(self.gOpt):
+        if self.gNorm[i]:
+            if self.gType[i] == "upper":
+                r = (gi+1)*self.gLimit[i]
+            elif self.gType[i] == "lower":
+                r = -(gi-1)*self.gLimit[i]
+        else:
+            if self.gType[i] == "upper":
+                r = gi+self.gLimit[i]
+            elif self.gType[i] == "lower":
+                r = self.gLimit[i]-gi
+        print(self.g[i] + " = " + str(r) + " (" + str(self.gLimit[i]) + ", " +
+              self.gType[i] + ")")
     print()
-    print("optimal design (lower bound, upper bound):")
+    print("design at optimum (lower bound, upper bound):")
     for i in range(self.nx):
-        print(self.x[i] +" = " + str((self.xOpt[i])) + " (" +
+        print(self.x[i] + " = " + str((self.xOpt[i])) + " (" +
               str(self.xL[i]) + ", " + str(self.xU[i]) + ")")
     print()
     print("t = " + str(self.tOpt) +
@@ -113,7 +139,7 @@ def printResults(self):
         print("Run cleaned, run directory deleted")
     else:
         print("Local run, all results saved in current directory")
-    #print(lines)
+    # print(lines)
     if self.OS == "Linux" and self.Alarm:
         os.system("play --no-show-progress --null --channels 1 " +
                   "-t alsa synth 2 sine 329.63 fade q 0.05 0.9 0.05")
