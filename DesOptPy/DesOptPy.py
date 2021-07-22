@@ -9,7 +9,7 @@ except:
     pass
 from DesOptPy.scaling import normalize, denormalize
 from DesOptPy.tools import printResults
-
+from DesOptPy import plotting
 def OptimizationProblem(Model):
     class Opt(Model):
         fType = "min"
@@ -243,7 +243,7 @@ def OptimizationProblem(Model):
                 #for fi in self.f:
                 #    print(getattr(self, fi))
 
-                # Constraints
+                # Formulate constraint function (upper/lower, normalized)
                 rconval = []
                 if self.g:
                     gVal = [None]*len(self.g)
@@ -274,7 +274,6 @@ def OptimizationProblem(Model):
                 self.nEval += 1
 
                 return(fVal, gVal, 0)
-
 
             def SensEq(xVal, fVal, gVal):
                 # create folder and change into it
@@ -346,6 +345,7 @@ def OptimizationProblem(Model):
                 return(np.array([fNablaVal]), gNablaVal, 0)
 
             # Maybe all too much, can i just put this as a function in opt call?
+            # TODO move the next 40 lines to new file
             def ObjCon(xVal):
                 f, g, fail = SysEq(xVal)
                 np.array([f])
