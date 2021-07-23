@@ -9,7 +9,8 @@ except:
     pass
 from DesOptPy.scaling import normalize, denormalize
 from DesOptPy.tools import printResults
-from DesOptPy import plotting
+#from DesOptPy import plotting
+
 def OptimizationProblem(Model):
     class Opt(Model):
         fType = "min"
@@ -21,8 +22,10 @@ def OptimizationProblem(Model):
         gOpt = None
         fNabla = None
         gNabla = None
-        xNorm = True
-        fNorm = True
+        xNorm = None
+        fNorm = None
+        gNorm = None
+        gType = None
         fNormMultiplier = 1000
         xLast = None
         Primal = "calc"
@@ -152,6 +155,29 @@ def OptimizationProblem(Model):
             self.nx = len(self.x)
             self.ng = len(self.g)
             self.nf = len(self.f)
+
+            if self.xNorm == None or self.xNorm == True or self.xNorm == [True]:
+                self.xNorm = [True]*self.nx
+            elif self.xNorm == False or self.xNorm == [False]:
+                self.xNorm = [False]*self.nx
+
+            if self.fNorm == None or self.fNorm == True or self.fNorm == [True]:
+                self.fNorm = [True]*self.nf
+            elif self.fNorm == False or self.fNorm == [False]:
+                self.fNorm = [False]*self.nf
+
+            if self.gNorm == None or self.gNorm == True or self.gNorm == [True]:
+                self.gNorm = [True]*self.ng
+            elif self.gNorm == False or self.gNorm == [False]:
+                self.gNorm = [False]*self.ng
+
+            if self.gType == None  or self.gType == "upper" or self.gType == ["upper"]:
+                self.gType = ["upper"]*self.ng
+            elif self.gType == "lower" or self.gType == ["lower"]:
+                self.xNorm = ["lower"]*self.nx
+            # TODO equality constraints?
+
+
             # TODO
             #if self.fType.upper()[0:3] == "MIN":
             #
