@@ -11,34 +11,52 @@ from DesOptPy.scaling import normalize, denormalize
 from DesOptPy.tools import printResults
 #from DesOptPy import plotting
 
+
+
 def OptimizationProblem(Model):
     class Opt(Model):
+        ModelName = str(Model.__name__)
         fType = "min"
         x = None
         f = None
         g = None
+
+        ng = None
+        nf = None
+        nx = None
+
         xOpt = None
         fOpt = None
         gOpt = None
+
         fNabla = None
         gNabla = None
+
         xNorm = None
         fNorm = None
         gNorm = None
         gType = None
-        fNormMultiplier = 1000
+
+        f0 = None
+        g0 = None
         xLast = None
+
+        nGen = None
+        nSensEval = None
+
+        fNormMultiplier = 1000
         Primal = "calc"
         Sensitivity = None
         xDelta = 1e-3
-        Alg = "NLPQLP"
-        nGen = None
+        Alg = "PSQ"
+
         pyOptAlg = None
         SciPyAlg = None
         pyGmoAlg = None
         nloptAlg = None
+
+
         PrintOutput = True
-        ModelName = str(Model.__name__)
         Alarm = True
         RunFolder = True
         RemoveRunFolder = True
@@ -54,7 +72,7 @@ def OptimizationProblem(Model):
         try:
             cpu = cpuinfo.get_cpu_info()['brand']
         except:
-            pass
+            cpu = None
 
         #class KaruschKuhnTucker:
 
@@ -145,15 +163,16 @@ def OptimizationProblem(Model):
             self.g0 = self.gIt[0]
 
         def optimize(self):
+            self.Model = Model
+            #self.ModelName = str(self.Model.__name__)
             self.t0 = datetime.datetime.now()
             self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
             self.Name = self.ModelName+self.Alg+self.t0str
             self.nEval = 0
-            self.nSensEval = None
-            self.f0 = None
-            self.g0 = None
+
+
             self.nx = len(self.x)
-            self.ng = len(self.g)
+            self.ng = max(len(self.g), len(self.gLimit))
             self.nf = len(self.f)
 
             if self.xNorm == None or self.xNorm == True or self.xNorm == [True]:
@@ -250,16 +269,16 @@ def OptimizationProblem(Model):
                     if self.xNorm[i]:
                         xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
                     if self.x is not None:
-                        setattr(self, self.x[i], xVal[i])
+                        setattr(self.Model, self.x[i], xVal[i])
 
                 # Call
                 if self.x is None:
                     eval("self."+self.Primal+"(xVal)")
                 else:
-                    eval("self."+self.Primal+"()")
+                    eval("self.Model."+self.Primal+"(self.Model)")
 
                 # Objective and scaling (norm)
-                fVal = getattr(self, self.f[0])
+                fVal = getattr(self.Model, self.f[0])
                 if self.fNorm[0]:
                     if self.f0 is None:
                         self.f0 = fVal
@@ -272,22 +291,26 @@ def OptimizationProblem(Model):
                 # Formulate constraint function (upper/lower, normalized)
                 rconval = []
                 if self.g:
-                    gVal = [None]*len(self.g)
+                    gVal = [None]*self.ng
                     for i, gi in enumerate(self.g):
-                        rconval = getattr(self, gi)
-                        if self.gNorm[i]:
-                            if self.gType[i] == "upper":
-                                gVal[i] = rconval/self.gLimit[i]-1
-                            elif self.gType[i] == "lower":
-                                gVal[i] = 1-rconval/self.gLimit[i]
-                        else:
-                            if self.gType[i] == "upper":
-                                gVal[i] = rconval-self.gLimit[i]
-                            elif self.gType[i] == "lower":
-                                gVal[i] = self.gLimit[i]-rconval
+                        rconvalAll = np.array(getattr(self.Model, gi))
+                        if np.size(rconvalAll) == 1:
+                            rconvalAll = rconvalAll.reshape((1,))
+                        #nr = np.size(rconval)
+                        #for j in range(nr):
+                        for j, rconval in enumerate(rconvalAll):
+                            if self.gNorm[i+j]:
+                                if self.gType[i+j] == "upper":
+                                    gVal[i+j] = rconval/self.gLimit[i+j]-1
+                                elif self.gType[i+j] == "lower":
+                                    gVal[i+j] = 1-rconval/self.gLimit[i+j]
+                            else:
+                                if self.gType[i+j] == "upper":
+                                    gVal[i+j] = rconval-self.gLimit[i+j]
+                                elif self.gType[i+j] == "lower":
+                                    gVal[i+j] = self.gLimit[i+j]-rconval
                 else:
                     gVal = []
-
                 # Revert to normalized design variables (why necessary?)
                 for i in range(len(self.x0)):
                     if self.xNorm[i]:
@@ -326,10 +349,10 @@ def OptimizationProblem(Model):
                 if self.x is None:
                     eval("self."+self.Sensitivity+"(xVal)")
                 else:
-                    eval("self."+self.Sensitivity+"()")
+                    eval("self.Model."+self.Sensitivity+"(self.Model)")
 
                 # Senstivity of objective
-                fNablaVal = getattr(self, self.fNabla[0])
+                fNablaVal = getattr(self.Model, self.fNabla[0])
                 if self.fNorm[0]:
                     fNablaVal = fNablaVal/self.f0*self.fNormMultiplier
                 for i in range(len(xVal)):
@@ -340,7 +363,7 @@ def OptimizationProblem(Model):
                 if self.g:
                     gNablaVal = [None]*len(self.gNabla)
                     for i, gNablai in enumerate(self.gNabla):
-                        rNablaVal = getattr(self, gNablai)
+                        rNablaVal = getattr(self.Model, gNablai)
                         if self.gNorm[i]:
                             if self.gType[i] == "upper":
                                 gNablaVal[i] = rNablaVal/self.gLimit[i]
