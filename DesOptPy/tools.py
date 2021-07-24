@@ -2,6 +2,18 @@ from packaging import version
 import os
 import numpy as np
 
+def checkProblem(self):
+        # idiot check
+    if self.x == None:
+        raise Exception("Design variables x not set. ")
+    #if self.xL == None:
+    #    raise Exception("Lower bound of design variables xL not set. ")
+    #if self.xU == None:
+    #    raise Exception("Lower bound of design variables xU not set. ")
+    if self.f == None:
+        raise Exception("Objective f not set. ")
+    if self.Primal == None:
+        raise Exception("Primal not set. ")
 
 def checkAlgorithms():
     """
@@ -89,9 +101,9 @@ def printResults(self):
     if self.gOpt is not None:
         print("g* = ", end="")
         print(*np.array(self.gOpt), sep="\n     ", flush=True)
-    print()
+        print()
     print("x* = ", end="")
-    print(*self.xNormOpt, sep="\n     ", flush=False)
+    print(*self.xNormOpt[0:self.nx], sep="\n     ", flush=False)
     print()
 
     # add function to normalize and denormlaize constraints, change here.
@@ -101,26 +113,42 @@ def printResults(self):
     for i in range(self.nf):
         print(self.f[i] + " = " + str((self.fOpt[i])))
     print()
-    print("constrained response at optimum (limit):")
-    #for i in range(self.ng):
-    for i, gi in enumerate(self.gOpt):
-        if self.gNorm[i]:
-            if self.gType[i] == "upper":
-                r = (gi+1)*self.gLimit[i]
-            elif self.gType[i] == "lower":
-                r = -(gi-1)*self.gLimit[i]
-        else:
-            if self.gType[i] == "upper":
-                r = gi+self.gLimit[i]
-            elif self.gType[i] == "lower":
-                r = self.gLimit[i]-gi
-        print(self.g[i] + " = " + str(r) + " (" + str(self.gLimit[i]) + ", " +
-              self.gType[i] + ")")
-    print()
+    if self.g is not None:
+        print("constrained response at optimum (limit):")
+        #for i in range(self.ng):
+        for i, gi in enumerate(self.gOpt):
+            if self.gNorm[i]:
+                if self.gType[i] == "upper":
+                    r = (gi+1)*self.gLimit[i]
+                elif self.gType[i] == "lower":
+                    r = -(gi-1)*self.gLimit[i]
+            else:
+                if self.gType[i] == "upper":
+                    r = gi+self.gLimit[i]
+                elif self.gType[i] == "lower":
+                    r = self.gLimit[i]-gi
+            if np.size(self.g) == 1 and np.size(r) == 1:
+                print(self.g[0] + " = " + str(r) + " (" + str(self.gLimit[i]) +
+                      ", " + self.gType[i] + ")")
+            elif np.size(self.g) == 1 and self.ng >1:
+                print(self.g[i] + " = " + str(r[0]) + " (" + str(self.gLimit[i]) +
+                      ", " + self.gType[i] + ")")
+                for j in range(1,np.size(self.gi)):
+                    print(*np.array(self.r[j]), sep="\n     ", flush=True)
+            else:
+                print(self.g[i] + " = " + str(r) + " (" + str(self.gLimit[i]) +
+                      ", " + self.gType[i] + ")")
+        print()
     print("design at optimum (lower bound, upper bound):")
-    for i in range(self.nx):
-        print(self.x[i] + " = " + str((self.xOpt[i])) + " (" +
-              str(self.xL[i]) + ", " + str(self.xU[i]) + ")")
+    if self.xVector:
+        print(self.x + " = " + str(self.xOpt[0]) + " (" +
+              str(self.xL[0]) + ", " + str(self.xU[0]) + ")")
+        for j in range(1, np.size(self.xOpt)):
+            print("    " + str(self.xOpt[j]) + " (" + str(self.xL[j]) + ", " + str(self.xU[j]) + ")")
+    else:
+        for i in range(self.nx):
+            print(self.x[i] + " = " + str((self.xOpt[i])) + " (" +
+                  str(self.xL[i]) + ", " + str(self.xU[i]) + ")")
     print()
     print("t = " + str(self.tOpt) +
           " [h:mm:ss]")

@@ -8,7 +8,7 @@ try:
 except:
     pass
 from DesOptPy.scaling import normalize, denormalize
-from DesOptPy.tools import printResults
+from DesOptPy.tools import printResults, checkProblem
 #from DesOptPy import plotting
 
 
@@ -20,6 +20,11 @@ def OptimizationProblem(Model):
         x = None
         f = None
         g = None
+        xL = None
+        xU = None
+
+        Primal = None
+        Sensitivity = None
 
         ng = None
         nf = None
@@ -32,23 +37,25 @@ def OptimizationProblem(Model):
         fNabla = None
         gNabla = None
 
-        xNorm = None
-        fNorm = None
-        gNorm = None
+        fNorm = True
+        xNorm = True
+        gNorm = True
+
         gType = None
 
         f0 = None
         g0 = None
+
         xLast = None
+
+        gLimit = [None]
 
         nGen = None
         nSensEval = None
 
-        fNormMultiplier = 1000
-        Primal = "calc"
-        Sensitivity = None
-        xDelta = 1e-3
-        Alg = "PSQ"
+        fNormMultiplier = 1e3
+        xDelta = 1e-4
+        Alg = "SLSQP"
 
         pyOptAlg = None
         SciPyAlg = None
@@ -57,7 +64,7 @@ def OptimizationProblem(Model):
 
 
         PrintOutput = True
-        Alarm = True
+        Alarm = False
         RunFolder = True
         RemoveRunFolder = True
         SaveEvaluations = False
@@ -158,9 +165,10 @@ def OptimizationProblem(Model):
             self.gAll = gAll
             self.gNablaIt = gNablaIt
             self.fNablaIt = fNablaIt
-            self.gOpt = self.gIt[-1]
-            self.gMax = np.max(self.gAll, 1)
-            self.g0 = self.gIt[0]
+            if self.g is not None:
+                self.gOpt = self.gIt[-1]
+                self.gMax = np.max(self.gAll, 1)
+                self.g0 = self.gIt[0]
 
         def optimize(self):
             self.Model = Model
@@ -170,11 +178,42 @@ def OptimizationProblem(Model):
             self.Name = self.ModelName+self.Alg+self.t0str
             self.nEval = 0
 
+            checkProblem(self)
+            if type(self.f) == str:
+                self.f = [self.f]
 
-            self.nx = len(self.x)
-            self.ng = max(len(self.g), len(self.gLimit))
-            self.nf = len(self.f)
+            # set general sizes of optimization problem
+            self.nx = max(np.size(self.x), np.size(self.x0), np.size(self.xL))
+            self.nf = np.size(self.f)
+            if self.g == None or self.g == []:
+                self.ng = 0
+            else:
+                self.ng = max(np.size(self.g), np.size(self.gLimit))
 
+            # check if one parameter for all design variables, i.e. vector
+            if np.size(self.x) == 1 and  self.nx>1:
+                self.xVector = True
+            else:
+                self.xVector = False
+
+            # # check if one parameter for all constraints, i.e. vector
+            # if np.size(self.g) == 1 and self.ng>1:
+            #     self.gVector = True
+            # else:
+            #     self.gVector = False
+
+            # Reformat x0, xL and xU to be np.arrays and of proper size
+            if type(self.x0) == list:
+                self.x0 = np.array(self.x0)
+            if type(self.xL) == list:
+                self.xL = np.array(self.xL)
+            if type(self.xU) == list:
+                self.xU = np.array(self.xU)
+            if np.size(self.xL) == 1 and  self.nx>1:
+                self.xL = np.array([self.xL]*self.nx)
+                self.xU = np.array([self.xU]*self.nx)
+
+            # Reformat and set normalization (scaling)
             if self.xNorm == None or self.xNorm == True or self.xNorm == [True]:
                 self.xNorm = [True]*self.nx
             elif self.xNorm == False or self.xNorm == [False]:
@@ -185,10 +224,13 @@ def OptimizationProblem(Model):
             elif self.fNorm == False or self.fNorm == [False]:
                 self.fNorm = [False]*self.nf
 
-            if self.gNorm == None or self.gNorm == True or self.gNorm == [True]:
+            if self.gNorm == None or self.gNorm == True or self.gNorm == [True] or self.gNorm == []:
                 self.gNorm = [True]*self.ng
             elif self.gNorm == False or self.gNorm == [False]:
                 self.gNorm = [False]*self.ng
+            for i, gLimiti in enumerate(self.gLimit):
+                if gLimiti == 0:
+                    self.gNorm[i] = False
 
             if self.gType == None  or self.gType == "upper" or self.gType == ["upper"]:
                 self.gType = ["upper"]*self.ng
@@ -210,8 +252,8 @@ def OptimizationProblem(Model):
             if (self.Alg).upper() in {"ALGENCAN", "ALHSO", "COBYLA", "CONMIN",
                                       "FILTERSD", "FSQP", "GCMMA", "IPOPT",
                                       "KSOPT", "MIDACO", "MMA", "MMFD",
-                                      "NLPQLP", "PSQP", "SDPEN", "SLSQP",
-                                      "SOLVOPT"}:
+                                      "NLPQLP", "NSGA2", "PSQP", "SDPEN",
+                                      "SLSQP", "SOLVOPT"}:
                 self.pyOptAlg = True
             elif ((self.Alg[:5]).upper() == "SCIPY" or
                   (self.Alg[-5:]).upper == "SCIPY"):
@@ -262,14 +304,19 @@ def OptimizationProblem(Model):
 
                 # Use only physical design variables (some algorithms
                 # supplement design vector with other values, e.g. CONMIN)
-                xVal = xVal[0:len(self.xL)]
+                xVal = xVal[0:self.nx]
 
                 # Denorm and assign of design variables
-                for i, xi in enumerate(xVal):
-                    if self.xNorm[i]:
-                        xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
-                    if self.x is not None:
-                        setattr(self.Model, self.x[i], xVal[i])
+                if self.xVector:
+                    if self.xNorm[0]:
+                        xVal = denormalize(xVal, self.xL, self.xU)
+                    setattr(self.Model, self.x, xVal)
+                else:
+                    for i, xi in enumerate(xVal):
+                        if self.xNorm[i]:
+                            xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
+                        if self.x is not None:
+                            setattr(self.Model, self.x[i], xVal[i])
 
                 # Call
                 if self.x is None:
@@ -282,7 +329,10 @@ def OptimizationProblem(Model):
                 if self.fNorm[0]:
                     if self.f0 is None:
                         self.f0 = fVal
-                    fVal = fVal/self.f0*self.fNormMultiplier
+                    if self.f0 == 0:
+                        fVal = fVal*self.fNormMultiplier
+                    else:
+                        fVal = fVal/abs(self.f0)*self.fNormMultiplier
                 #change the above to allow for multiobjective
                 #fVal = []
                 #for fi in self.f:
@@ -339,11 +389,16 @@ def OptimizationProblem(Model):
                     os.chdir(EvalDir)
 
                 # Denorm and assign of design variables
-                for i, xi in enumerate(xVal):
-                    if self.xNorm[i]:
-                        xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
-                    if self.x is not None:
-                        setattr(self, self.x[i], xVal[i])
+                if self.xVector:
+                    if self.xNorm[0]:
+                        xVal = denormalize(xVal, self.xL, self.xU)
+                    setattr(self.Model, self.x, xVal)
+                else:
+                    for i, xi in enumerate(xVal):
+                        if self.xNorm[i]:
+                            xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
+                        if self.x is not None:
+                            setattr(self, self.x[i], xVal[i])
 
                 # Call
                 if self.x is None:
@@ -354,7 +409,10 @@ def OptimizationProblem(Model):
                 # Senstivity of objective
                 fNablaVal = getattr(self.Model, self.fNabla[0])
                 if self.fNorm[0]:
-                    fNablaVal = fNablaVal/self.f0*self.fNormMultiplier
+                    if self.f0 == 0:
+                        fNablaVal = fNablaVal *self.fNormMultiplier
+                    else:
+                        fNablaVal = fNablaVal /abs(self.f0)*self.fNormMultiplier
                 for i in range(len(xVal)):
                     if self.xNorm[i]:
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
@@ -413,7 +471,10 @@ def OptimizationProblem(Model):
                 if self.g is not None:
                     fNablaVal, rNablaVal = fNablaVal[0], fNablaVal[1:]
                 if self.fNorm[0]:
-                    fNablaVal = fVal/self.f0*self.fNormMultiplier
+                    if self.f0 == 0:
+                        fNablaVal = fVal*self.fNormMultiplier
+                    else:
+                        fNablaVal = fVal/abs(self.f0)*self.fNormMultiplier
                 for i in range(len(xVal)):
                     if self.xNorm[i]:
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
@@ -514,7 +575,10 @@ def OptimizationProblem(Model):
                     else:
                         self.xOpt[i] = xOpt[i]
                 if self.fNorm[0]:
-                    self.fOpt = fOpt*self.f0/self.fNormMultiplier
+                    if self.f0 == 0:
+                        self.fOpt = fOpt/self.fNormMultiplier
+                    else:
+                        self.fOpt = fOpt*abs(self.f0)/self.fNormMultiplier
                 else:
                     self.fOpt = fOpt
 

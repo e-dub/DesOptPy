@@ -9,6 +9,11 @@
 - [ ] Release
 - [ ] Publish on Open Source Software?
 
+### Check
+- [ ] check fNorm, seems funky at times
+- [ ] check xNorm...
+- [ ] check when gNorm=True and gLimit=0
+
 ### Examples
 - [ ] set up example with SiMuLi
 - [ ] set up example with EasyBeam
@@ -31,6 +36,23 @@
 - [ ]  Postprocessing for shadow prices
 - [ ] echo or debug level? what is standard?
 - [ ]  Variable linking?
+- [x] Normalization for each design variables or global (currently for each)???
+- [x] Normalization for each contraint or global (currently for each)???
+- [ ] different normalizations for design variables
+- [x] default normlaization for xnorm
+- [x] default normlaization for fnorm
+- [x] default normlaization for gnorm
+- [ ] equality constraints?
+- [ ] add range constraints?
+- [x] default gtype: upper bound
+- [ ] rconval -> rConVal
+
+### Print
+- [ ] general beautification
+- [ ] e.g. "<1000" instead of "1000, upper"???
+
+### Algorithm specific
+- [ ] Cobyla pyopt nIt, now only neval
 
 ### File handling
 - [x]  File handling save all evaluation data
