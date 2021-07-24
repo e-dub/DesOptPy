@@ -17,7 +17,7 @@ class Bridge:
     bF = 150
     t = 10
 
-    def calc(self):
+    def calc(self, plot=False):
         E = 210000
         rho = 7.85e-9
         nu = 0.3
@@ -75,7 +75,13 @@ class Bridge:
         self.stressMax = np.max(Frame.sigmaMax)
         self.g2 = self.bC/self.h1
         self.g3 = self.bC/self.h2
+        if plot:
+            Frame.PlotMesh()
+            Frame.PlotStress(stress="all")
+            Frame.PlotDisplacement('mag')
 
+initialDesign = Bridge()
+initialDesign.calc(plot=True)
 
 sigmaLim = 235  # MPa
 OptBridge = OptimizationProblem(Bridge)
@@ -90,3 +96,11 @@ OptBridge.gLimit = [sigmaLim, 1, 1]
 OptBridge.Alg = "SLSQP"
 OptBridge.optimize()
 OptBridge.plotConvergence()
+
+optimumDesign = Bridge()
+optimumDesign.bC = OptBridge.xOpt[0]
+optimumDesign.h1 = OptBridge.xOpt[1]
+optimumDesign.h2 = OptBridge.xOpt[2]
+optimumDesign.bF = OptBridge.xOpt[3]
+optimumDesign.t = OptBridge.xOpt[4]
+optimumDesign.calc(plot=True)
