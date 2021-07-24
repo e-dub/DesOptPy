@@ -1,5 +1,14 @@
 """
 Bridge optimization with EasyBeam by V. Gufler
+
+Optimal design:
+m = 1.3717276936208906
+
+bC = 103.08191126643098 (50, 300)
+h1 = 128.01100364996728 (50, 300)
+h2 = 119.65089778984994 (50, 300)
+bF = 40.404135169494396 (20, 300)
+t = 10.00000000000018 (2, 10)
 """
 from EasyBeam import Beam2D
 import numpy as np
