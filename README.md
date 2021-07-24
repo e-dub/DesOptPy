@@ -1,24 +1,27 @@
-# DesOptPy2
+# DesOptPy
+DESign OPTimization in PYthon
 
 ## Checklist
 
 ### General
-- [x] Ask Veit and Johannes for what he would like as user
+- [x] Ask Veit and Johannes for what they would like as users
 - [x] new github repository
 - [ ] Update logo
 - [ ] Release
 - [ ] Publish on Open Source Software?
 
 ### Check
-- [ ] check fNorm, seems funky at times
-- [ ] check xNorm...
-- [ ] check when gNorm=True and gLimit=0
+- [x] check fNorm, seems funky at times
+- [x] check xNorm...
+- [] check when gNorm=True and gLimit=0
 
 ### Examples
 - [ ] set up example with SiMuLi
 - [ ] set up example with EasyBeam
+- [ ] example with ungewiss
 - [ ] set up example with Kratos
 - [ ] set up example with Ansys (pyAnsys)
+- [x] old DesOptPy examples
 
 ### Code general
 - [x] variable function for primal and sens
@@ -92,5 +95,48 @@ https://www.youtube.com/watch?v=WgyTSsVtc7o
 
 
 
+## Release history
+August ??, 2021
+-------------
+DesOptPy version 2021 released. Fully reworked version.
+
+July 27, 2019
+-------------
+DesOptPy version 2019 released.
+
+July 30, 2016
+-------------
+DesOptPy version 1.3 released.
+
+June 26, 2016
+-------------
+DesOptPy version 1.2 released.
+
+November 18, 2015
+-----------------
+DesOptPy version 1.1 released.
+
+November 16, 2015
+-----------------
+DesOptPy version 1.02 released.
+
+November 10, 2015
+-----------------
+DesOptPy version 1.01 released.
+
+November 8, 2015
+----------------
+The website is currently a work in progress and being built.  Check back for updates.
+
+October 18, 2015
+----------------
+Initial public release of DesOptPy on GitHub and PyPI - the Python Package Index.
+
+## Contact
+I would also appreciate feedback to any success (or unsuccess) stories with the use of this software.  If you should find errors in the code or documentation, have suggestions for improvements or wish a cooperation, please use the issue function in GitHub.
+
+
+## Acknowledgment
+The work involved with the 2021 release is supported by the project RTD 2020 – TN201Q LighOpt Lightweight engineering of multibody systems with design optimization funded by the Free University of Bozen-Bolzano.
 
 
