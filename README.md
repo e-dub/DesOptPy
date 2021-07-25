@@ -10,6 +10,18 @@ DESign OPTimization in PYthon
 [![GitHub stars](https://img.shields.io/github/stars/e-dub/desoptpy.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/e-dub/desoptpy)
 [![PyPi downloads](https://img.shields.io/pypi/dm/desoptpy.svg?style=flat-square)](https://pypistats.org/packages/desoptpy)
 
+
+[![Documentation Status](https://readthedocs.org/projects/desoptpy/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/desoptpy/?badge=latest)
+[![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg?style=flat-square)](https://github.com/e-dub/desoptpy)
+
+[![gh-actions](https://img.shields.io/github/workflow/status/e-dub/desoptpy/ci?style=flat-square)](https://github.com/e-dub/desoptpy/actions?query=workflow%3Aci)
+[![codecov](https://img.shields.io/codecov/c/github/e-dub/desoptpy.svg?style=flat-square)](https://codecov.io/gh/e-dub/desoptpy)
+[![LGTM](https://img.shields.io/lgtm/grade/python/github/e-dub/desoptpy.svg?style=flat-square)](https://lgtm.com/projects/g/e-dub/desoptpy)
+
+Choose code style!!!
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+
+
 ## Summary
 DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for design optimization, especially of lightweight structures and mechancial systems. This package integrates optimization algorithms from pyOpt and pyGMO, with expansion to others being possible. This allows for complex handling of large-scale optimization problems typical of structural design optimization. The goal of this project is to design a versatile and general optimization toolbox for design optimization in which the setup of an optimization problem is easily, quickly, efficiently and effectively, allowing colleagues and students to dive into optimization problems without difficulty.  It is also meant to be modular and easily expanded.  Though developed for design optimization of mechanical structures, DesOptPy has been written to be flexible and, therefore, optimization problems of other disciplines can be applied.
 
@@ -41,6 +53,7 @@ An example of the plots created:
 - [ ] Update pypi (pip)
 - [ ] use automatic code formatter, i.e. black: https://github.com/psf/black
 - [ ] merge into old DesOptPy repository. Is this possible?
+- [ ] finish project description here: https://pypi.org/project/DesOptPy/
 
 ### Check
 - [x] check fNorm, seems funky at times
