@@ -9,6 +9,7 @@ except:
     pass
 from DesOptPy.scaling import normalize, denormalize
 from DesOptPy.tools import printResults, checkProblem
+from DesOptPy import plotting
 #from DesOptPy import plotting
 
 
@@ -83,6 +84,11 @@ def OptimizationProblem(Model):
 
         #class KaruschKuhnTucker:
 
+        # THIs is ugly, cannot I not add plotting.Plotconvergence to this object and have only once here?
+        def plotConvergence(self, show=True, savePNG=False, saveTikZ=False,
+                            savePDF=False):
+             plotting.plotConvergence(self,  show, savePNG, saveTikZ, savePDF)
+
         def checkKKT(self):
             from numpy.linalg import norm, lstsq, pinv
             self.kkteps = 1e-3
@@ -143,6 +149,7 @@ def OptimizationProblem(Model):
             self.nIt = len(fNablaIt)
             self.fIt = [None]*self.nIt
             self.xIt = [None]*self.nIt
+            self.xNormIt = [None]*self.nIt
             self.gIt = [None]*self.nIt
             for ii in range(self.nIt):
                 Posdg = OptHist.cues["grad_con"][ii][0]
@@ -157,6 +164,7 @@ def OptimizationProblem(Model):
                 iii = iii - 1
                 self.fIt[ii] = fAll[iii]
                 self.xIt[ii] = xAll[iii]
+                self.xNormIt[ii] = xNormAll[iii]
                 self.gIt[ii] = gAll[iii]
 
             self.xAll = xAll
@@ -171,6 +179,7 @@ def OptimizationProblem(Model):
                 self.g0 = self.gIt[0]
 
         def optimize(self):
+
             self.Model = Model
             #self.ModelName = str(self.Model.__name__)
             self.t0 = datetime.datetime.now()
@@ -387,6 +396,8 @@ def OptimizationProblem(Model):
                                                                   "tmp*",
                                                                   "__*"))
                     os.chdir(EvalDir)
+
+                xVal = xVal[0:self.nx]
 
                 # Denorm and assign of design variables
                 if self.xVector:
@@ -613,6 +624,8 @@ def OptimizationProblem(Model):
 
 
             def optimizeMutiobjective(self):
+
+
 
 
 #----------------------------------------------
