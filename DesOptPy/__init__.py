@@ -1,5 +1,7 @@
 from DesOptPy.DesOptPy import *
 from DesOptPy.tools import *
+from DesOptPy.plotting import *
+
 
 __title__ = "DESign OPTimization in PYthon"
 __shorttitle__ = "DesOptPy"
