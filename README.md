@@ -1,5 +1,5 @@
 
-<p align=center><img height="50%" width="50%" src="figures/DesOptPy_20210718.svg"></p>
+<p align=center><img height="50%" width="50%" src="figures/DesOptPy_20210725.svg"></p>
 
 # DesOptPy
 DESign OPTimization in PYthon

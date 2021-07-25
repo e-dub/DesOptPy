@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="DesOptPy_20210725.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   version="1.1"
+   id="svg2995"
+   height="250"
+   width="728"
+   inkscape:export-filename="/home/wehrle/DesOpt/DesOptPyDocs/_figures/DesOptPy.png"
+   inkscape:export-xdpi="2000"
+   inkscape:export-ydpi="2000">
+  <defs
+     id="defs3" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.61458878"
+     inkscape:cx="-30.798327"
+     inkscape:cy="256.96515"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     units="px"
+     borderlayer="true"
+     inkscape:document-rotation="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3002"
+       units="mm"
+       empspacing="1"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata2999">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,72.83464)">
+    <path
+       style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:#0000ff;stroke-width:3.54330707;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path3796"
+       d=""
+       inkscape:connector-curvature="0" />
+    <text
+       inkscape:export-ydpi="2000"
+       inkscape:export-xdpi="2000"
+       id="text3004"
+       y="71.55024"
+       x="-1.7667595"
+       style="font-style:normal;font-weight:normal;font-size:36.4582px;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:3.03818"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:151.909px;line-height:1.25;font-family:'TeX Gyre Pagella';-inkscape-font-specification:'TeX Gyre Pagella';stroke-width:3.03818"
+         y="71.55024"
+         x="-1.7667595"
+         id="tspan3006"
+         sodipodi:role="line"><tspan
+           id="tspan3865"
+           style="fill:#0065bd;fill-opacity:1;stroke-width:3.03818">D</tspan><tspan
+           id="tspan3013"
+           style="font-size:106.336px;fill:#0065bd;fill-opacity:1;stroke-width:3.03818">ES</tspan><tspan
+           id="tspan3867"
+           style="fill:#0065bd;fill-opacity:1;stroke-width:3.03818">O</tspan><tspan
+           id="tspan3017"
+           style="font-size:106.336px;fill:#0065bd;fill-opacity:1;stroke-width:3.03818">PT</tspan><tspan
+           id="tspan3019"
+           style="fill:#000000;stroke-width:3.03818">Py</tspan></tspan></text>
+    <rect
+       ry="0"
+       transform="rotate(25.492687)"
+       y="-177.56743"
+       x="549.62073"
+       height="46.159515"
+       width="51.959156"
+       id="rect3829"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.03818" />
+    <path
+       sodipodi:nodetypes="czzzzc"
+       inkscape:connector-curvature="0"
+       id="path3034"
+       d="m 6.9828177,85.736107 c 0,0 41.3646363,0.506017 73.0171823,11.429253 31.65255,10.92324 144.31881,53.7788 215,55 70.68119,1.2212 125.96544,-41.74899 145,-50 19.03456,-8.251005 37.87541,-18.049437 73.98644,-18.577553 36.11103,-0.528116 81.45483,34.903043 95.95399,9.861945"
+       style="fill:none;stroke:#000000;stroke-width:5.3826;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  </g>
+</svg>
