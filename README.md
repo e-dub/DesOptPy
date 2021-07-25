@@ -15,10 +15,10 @@ OptProb.plotConvergence()
 This function has the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format.
 
 An example of the plots created:
-<p align=center><img height="50%" width="50%" src="figures/Truss3BarSLSQP20210725162007Design.svg"></p>
-<p align=center><img height="50%" width="50%" src="figures/Truss3BarSLSQP20210725162007NormalizedDesign.svg"></p>
-<p align=center><img height="50%" width="50%" src="figures/Truss3BarSLSQP20210725162007Objective.svg"></p>
-<p align=center><img height="50%" width="50%" src="figures/Truss3BarSLSQP20210725162007Constraint.svg"></p>
+<p align=center><img height="75%" width="50%" src="figures/Truss3BarSLSQP20210725162007Design.svg"></p>
+<p align=center><img height="75%" width="50%" src="figures/Truss3BarSLSQP20210725162007NormalizedDesign.svg"></p>
+<p align=center><img height="75%" width="50%" src="figures/Truss3BarSLSQP20210725162007Objective.svg"></p>
+<p align=center><img height="75%" width="50%" src="figures/Truss3BarSLSQP20210725162007Constraint.svg"></p>
 
 ## Checklist
 
