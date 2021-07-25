@@ -4,13 +4,22 @@
 # DesOptPy
 DESign OPTimization in PYthon
 
+[![PyPi Version](https://img.shields.io/pypi/v/desoptpy.svg?style=flat-square)](https://pypi.org/project/desoptpy)
+[![Packaging status](https://repology.org/badge/tiny-repos/python:desoptpy.svg)](https://repology.org/project/python:desoptpy/versions)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/desoptpy.svg?style=flat-square)](https://pypi.org/pypi/desoptpy/)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/desoptpy.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/desoptpy)
+[![PyPi downloads](https://img.shields.io/pypi/dm/desoptpy.svg?style=flat-square)](https://pypistats.org/packages/desoptpy)
+
+## Summary
+DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for design optimization, especially of lightweight structures and mechancial systems. This package integrates optimization algorithms from pyOpt and pyGMO, with expansion to others being possible. This allows for complex handling of large-scale optimization problems typical of structural design optimization. The goal of this project is to design a versatile and general optimization toolbox for design optimization in which the setup of an optimization problem is easily, quickly, efficiently and effectively, allowing colleagues and students to dive into optimization problems without difficulty.  It is also meant to be modular and easily expanded.  Though developed for design optimization of mechanical structures, DesOptPy has been written to be flexible and, therefore, optimization problems of other disciplines can be applied.
+
 ## Plotting
 
 Convergence plotting can be carried out after the optimization with the following command:
 
-'''
+```
 OptProb.plotConvergence()
-'''
+```
 
 This function has the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format.
 
@@ -28,6 +37,10 @@ An example of the plots created:
 - [ ] Update logo
 - [ ] Release
 - [ ] Publish on Open Source Software?
+- [ ] move checklist from README
+- [ ] Update pypi (pip)
+- [ ] use automatic code formatter, i.e. black: https://github.com/psf/black
+- [ ] merge into old DesOptPy repository. Is this possible?
 
 ### Check
 - [x] check fNorm, seems funky at times
@@ -125,31 +138,28 @@ https://www.youtube.com/watch?v=WgyTSsVtc7o
 
 ## Release history
 
-### August ??, 2021
-DesOptPy version 2021 released. Fully reworked version.
+#### August ??, 2021
+Release of version 2021 released. Fully reworked version.
 
-### July 27, 2019
-DesOptPy version 2019 released.
+#### July 27, 2019
+Release of version 2019.
 
-### July 30, 2016
-DesOptPy version 1.3 released.
+#### July 30, 2016
+Release of version 1.3..
 
-### June 26, 2016
-DesOptPy version 1.2 released.
+#### June 26, 2016
+Release of version 1.2.
 
-### November 18, 2015
-DesOptPy version 1.1 released.
+#### November 18, 2015
+Release of version 1.1.
 
-### November 16, 2015
-DesOptPy version 1.02 released.
+#### November 16, 2015
+Release of version 1.02.
 
-### November 10, 2015
-DesOptPy version 1.01 released.
+#### November 10, 2015
+Release of version 1.01.
 
-### November 8, 2015
-The website is currently a work in progress and being built.  Check back for updates.
-
-### October 18, 2015
+#### October 18, 2015
 Initial public release of DesOptPy on GitHub and PyPI - the Python Package Index.
 
 ## Contact
