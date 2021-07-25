@@ -16,8 +16,8 @@ maxDots = 20
 lineThick = 0.75
 
 
-def plotConvergence(self, show=True, savePNG=False, saveTikZ=False,
-                    savePDF=False):
+def plotConvergence(self, show=True, savePDF=False,savePNG=False,
+                    saveSVG=False, saveTikZ=False, ):
 
     def ConvergencePlot(r, legend, ylabel):
 
@@ -95,6 +95,8 @@ def plotConvergence(self, show=True, savePNG=False, saveTikZ=False,
                                  })
 
             plt.savefig(plotName + '2.pgf')
+        if saveSVG:
+            plt.savefig(plotName + ".svg")
         if savePDF:
             plt.savefig(plotName + '.pdf', backend='pgf')
         if show:

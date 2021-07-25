@@ -85,9 +85,10 @@ def OptimizationProblem(Model):
         #class KaruschKuhnTucker:
 
         # THIs is ugly, cannot I not add plotting.Plotconvergence to this object and have only once here?
-        def plotConvergence(self, show=True, savePNG=False, saveTikZ=False,
-                            savePDF=False):
-             plotting.plotConvergence(self,  show, savePNG, saveTikZ, savePDF)
+        def plotConvergence(self, show=True, savePDF=False,savePNG=False,
+                            saveSVG=False, saveTikZ=False):
+             plotting.plotConvergence(self,  show,  savePDF, savePNG, saveSVG,
+                                      saveTikZ,)
 
         def checkKKT(self):
             from numpy.linalg import norm, lstsq, pinv
