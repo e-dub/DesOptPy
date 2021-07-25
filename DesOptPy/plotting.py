@@ -17,7 +17,7 @@ lineThick = 0.75
 
 
 def plotConvergence(self, show=True, savePDF=False,savePNG=False,
-                    saveSVG=False, saveTikZ=False, ):
+                    saveSVG=False, saveTikZ=False):
 
     def ConvergencePlot(r, legend, ylabel):
 

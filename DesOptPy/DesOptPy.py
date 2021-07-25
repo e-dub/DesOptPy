@@ -88,7 +88,7 @@ def OptimizationProblem(Model):
         def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                             saveSVG=False, saveTikZ=False):
              plotting.plotConvergence(self,  show,  savePDF, savePNG, saveSVG,
-                                      saveTikZ,)
+                                      saveTikZ)
 
         def checkKKT(self):
             from numpy.linalg import norm, lstsq, pinv
