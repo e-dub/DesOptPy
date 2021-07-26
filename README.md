@@ -5,7 +5,6 @@
 DESign OPTimization in PYthon
 
 [![PyPi Version](https://img.shields.io/pypi/v/desoptpy.svg?style=flat-square)](https://pypi.org/project/desoptpy)
-[![Packaging status](https://repology.org/badge/tiny-repos/python:desoptpy.svg)](https://repology.org/project/python:desoptpy/versions)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/desoptpy.svg?style=flat-square)](https://pypi.org/project/DesOptPy/)
 [![GitHub stars](https://img.shields.io/github/stars/e-dub/desoptpy.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/e-dub/desoptpy)
 [![PyPi downloads](https://img.shields.io/pypi/dm/desoptpy.svg?style=flat-square)](https://pypistats.org/packages/desoptpy)
@@ -44,6 +43,7 @@ An example of the plots created:
 - [ ] merge into old DesOptPy repository. Is this possible?
 - [ ] finish project description here: https://pypi.org/project/DesOptPy/
 - [ ] include the following on README?
+[![Packaging status](https://repology.org/badge/tiny-repos/python:desoptpy.svg)](https://repology.org/project/python:desoptpy/versions)
 [![Documentation Status](https://readthedocs.org/projects/desoptpy/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/desoptpy/?badge=latest)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg?style=flat-square)](https://github.com/e-dub/desoptpy)
 
@@ -75,8 +75,7 @@ An example of the plots created:
 - [ ] return arrays!!! not lists, for gradients important!
 - [ ] remove parameter pyOptAlg = True
 - [ ] add option, fType min max
-- [ ] normalize and denormalize as vector operations? not index assignment?`
-- [ ] test gradients that they work well!!!
+- [ ] normalize and denormalize as vector operations? not index assignment?
 - [ ] nit for nongrad alg
 - [ ]  ResultReport
 - [ ] sensitivity analysis
@@ -93,16 +92,19 @@ An example of the plots created:
 - [ ] add range constraints?
 - [x] default gtype: upper bound
 - [ ] rconval -> rConVal
+- [ ] sensivity analysis for gVector
+- [ ] mix form of constraints for scalara and vectors
 
 ### Print
-- [ ] general beautification
+- [ ] general beautification, color?
 - [ ] e.g. "<1000" instead of "1000, upper"???
 
 ### Plotting
 - [x] convergence plots
 - [x] save as png, pdf, pgf
 - [ ] bar charts?
-- [ ] f,gMax together vs. i_it?
+- [ ] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
+- [ ] custom color scheme or atleast tab10?
 
 ### File handling
 - [x]  File handling save all evaluation data
@@ -113,10 +115,10 @@ An example of the plots created:
 - [x] read in history at end
 - [ ] renorm etc with history!!! Iteration values, Optimal values
 
-
 ### Algorithm specific
 - [ ] Cobyla pyopt nIt, now only neval
 - [ ] if cobyla, sens false
+- [ ] CONMIN returns too many design variables, this should be filtered after optimization
 
 ### Further algorithms
 - [ ] add pygmo
@@ -145,7 +147,35 @@ https://developers.google.com/optimization/introduction/pythonself.xL
 - [ ] bokeh stream
 https://www.youtube.com/watch?v=WgyTSsVtc7o
 
+## Application examples
 
+## Publications
+Gufler, V. (2019). Multibody dynamics and optimal design of a Tyrolean weir cleaning mechanism. Master’s thesis, Free University of Bozen-Bolzano.
+
+Gufler, V., E. Wehrle, and R. Vidoni. Multiphysical Design Optimization of Multibody Systems: Application to a Tyrolean Weir Cleaning Mechanism. In Mechanisms and Machine Science, pp. 459–467. Springer International Publishing.
+
+Gufler, V., E. Wehrle, and R. Vidoni (2020a). Mehrkörperdynamik und Entwurfsoptimierung unter Unsicherheit vom Rechenreinigungsmechanismus eines Tiroler Wehres. In IFToMM D-A-CH.
+
+Gufler, V., E. Wehrle, and R. Vidoni (2020b). Multiphysical design optimization of multibody systems: Application to a Tyrolean weir cleaning mechanism. In 3rd International Conference of IFToMM Italy.
+
+Gufler, V., E. Wehrle, and R. Vidoni (2021). Sensitivitätsanalyse flexibler Mehrkörpersysteme für die Unsicherheitsanalyse und Entwurfsoptimierung. In IFToMM D-A-CH 2021.
+
+Wehrle, E. and V. Gufler (2021). Lightweight engineering design of nonlinear dynamic systems with gradient-based structural design optimization. In Proceedings of the Munich Symposium on Lightweight Design 2020. Springer.
+
+Wehrle, E. J. (2015). Design optimization of lightweight space frame structures considering crashworthiness and parameter uncertainty. Dr.-Ing. diss., Lehrstuhl für Leichtbau, Technische Universität München.
+
+Wehrle, E. J., Q. Xu, and H. Baier (2014). Investigation, optimal design and uncertainty analysis of crash-absorbing extruded aluminium structures. Procedia CIRP 18, 27–32.
+
+...and a number of further master, bachelor and semester theses.
+
+[gears, etc]
+
+
+## Related software and developments
+
+pyUngewiss
+EasyBeam
+Simuli
 
 ## Release history
 
