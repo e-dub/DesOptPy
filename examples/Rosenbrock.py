@@ -28,3 +28,4 @@ ProbRosenbrockSens.Sensitivity = "calcSens"
 ProbRosenbrockSens.fNabla = ["objNabla"]
 ProbRosenbrockSens.TablesPlots = True
 ProbRosenbrockSens.optimize()
+ProbRosenbrockSens.plotConvergence()

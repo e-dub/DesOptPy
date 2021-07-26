@@ -106,7 +106,7 @@ constraints, algorithm, design variables, etc.
 OptTBT = OptimizationProblem(Truss3Bar)
 OptTBT.RunFolder = True
 OptTBT.RemoveRunFolder = True
-OptTBT.Alg = "PSQP"
+OptTBT.Alg = "SLSQP"
 OptTBT.x = ["A1", "A2"]
 OptTBT.x0 = [10, 10]
 OptTBT.xL = [0.1, 0.1]
@@ -133,4 +133,5 @@ OptTBT.gNabla = ["stress1Nabla", "stress2Nabla", "stress3Nabla",
 
 # run optimizations
 OptTBT.optimize()
-OptTBT.plotConvergence()
+OptTBT.plotConvergence(show=True, savePNG=False, saveTikZ=False,
+                       savePDF=False)
