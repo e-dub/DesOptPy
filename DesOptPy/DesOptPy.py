@@ -119,6 +119,7 @@ def OptimizationProblem(Model):
             self.xIt = [None]*self.nIt
             self.xNormIt = [None]*self.nIt
             self.gIt = [None]*self.nIt
+            self.gMaxIt = [None]*self.nIt
             for ii in range(self.nIt):
                 Posdg = OptHist.cues["grad_con"][ii][0]
                 Posf = OptHist.cues["obj"][ii][0]
@@ -134,6 +135,7 @@ def OptimizationProblem(Model):
                 self.xIt[ii] = xAll[iii]
                 self.xNormIt[ii] = xNormAll[iii]
                 self.gIt[ii] = gAll[iii]
+                self.gMaxIt[ii] = np.max(gAll[iii])
 
             self.xAll = xAll
             self.xNormAll = xNormAll
@@ -174,10 +176,10 @@ def OptimizationProblem(Model):
                 self.xVector = False
 
             # # check if one parameter for all constraints, i.e. vector
-            # if np.size(self.g) == 1 and self.ng>1:
-            #     self.gVector = True
-            # else:
-            #     self.gVector = False
+            if np.size(self.g) == 1 and self.ng>1:
+                 self.gVector = True
+            else:
+                 self.gVector = False
 
             # Reformat x0, xL and xU to be np.arrays and of proper size
             if type(self.x0) == list:
@@ -397,9 +399,17 @@ def OptimizationProblem(Model):
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
 
                 # Senstivity of constraints
+                # Not working for gVector type of constraint definition
+                # TODO redesign for gVector = True
                 if self.g:
-                    gNablaVal = [None]*len(self.gNabla)
+                    gNablaVal = [None]*self.ng
+                    if self.gVector:
+                        rNablaValAll = getattr(self.Model, self.gNabla[0])
                     for i, gNablai in enumerate(self.gNabla):
+                        # if self.gVector:
+                        #     rNablaVal = rNablaValAll[i]
+                        # else:
+                        #     rNablaVal = getattr(self.Model, gNablai)
                         rNablaVal = getattr(self.Model, gNablai)
                         if self.gNorm[i]:
                             if self.gType[i] == "upper":
