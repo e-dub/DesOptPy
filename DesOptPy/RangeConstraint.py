@@ -12,6 +12,13 @@ resonance frequency bands.
 Future work:
 TODO Add sensitivities of ballistic constraint function
 TODO Add plotting capability of constraint functions
+
+Warnings:
+RangeConstraint.py:94: RuntimeWarning: overflow encountered in exp
+  np.exp(c*(omega[jj]+d-omegaBands[ii][0])))
+
+RangeConstraint.py:116: RuntimeWarning: overflow encountered in exp
+  dgdx[ig, :] = c/a*domegadx[jj]*(1-np.exp(c*(omega[jj]+d -
 -------------------------------------------------------------------------------
 """
 import numpy as np
@@ -122,5 +129,3 @@ def BandConBallisticSensFn(omega, domegadx, omegaBands, a=1e-8, b=0,
     if infFilter:
         dgdx = np.clip(dgdx, -infFilter, infFilter)
     return dgdx
-
-

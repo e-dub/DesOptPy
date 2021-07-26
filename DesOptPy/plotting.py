@@ -96,7 +96,7 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
 
                     else:
                         spine.set_color('none')  # don't draw spine
-            fig = plt.figure()
+            fig = plt.figure(figsize=[6.2*1.666, 4.8])
             x = np.linspace(0, 6)
             y = 2 * np.sin(x)
             ax = fig.add_subplot()
@@ -119,12 +119,23 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
             adjust_spines(ax2, ['right'], "tab:red")
             ax.set_xlim([0, self.nIt-1])
             ax2.set_xlim([0, self.nIt-1])
-
+            if self.nIt < 21:
+                x_ticks = list(range(0, self.nIt, 1))
+                ax.xaxis.set_ticks(x_ticks)
+                ax2.xaxis.set_ticks(x_ticks)
+            elif self.nIt < 41:
+                x_ticks = list(range(0, self.nIt, 2))
+                ax.xaxis.set_ticks(x_ticks)
+                ax2.xaxis.set_ticks(x_ticks)
             ax.set_ylim([min(r[0])[0], max(r[0])[0]])
             ax2.set_ylim([min(r[1]), max(r[1])])
             #ax2.set_ylim([np.min(np.array(r)[:,1]), np.max(np.array(r)[:,1])])
-            ax.set_ylabel("objective value $f$", rotation='horizontal', position=(0, 1.05))
-            ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', position=(0, 1.1))
+            #ax.set_ylabel("objective value $f$", rotation='horizontal', position=(0, 1.05))
+            #ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', position=(0, 1.09))
+            ax.set_ylabel("objective function value $f$", rotation='horizontal')
+            ax.yaxis.set_label_coords(-0.3, 1.05)
+            ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal')
+            ax2.yaxis.set_label_coords(1.3, 1.09)
             ax.set_xlabel("iteration $i_{it}$")
             ax.tick_params(axis='y', colors="tab:blue")
             ax2.tick_params(axis='y', colors="tab:red")
@@ -135,6 +146,9 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
             # ticks inward
             ax.tick_params(direction='in')
             ax2.tick_params(direction='in')
+
+            # make space
+            fig.tight_layout()
 
             plotName = (str.split(self.RunDir, "/")[-1][6:] +
                         "ObjectiveMaxConstraint")
