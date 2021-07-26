@@ -32,3 +32,4 @@ OptAckley.xU = 5
 OptAckley.f = "f"
 OptAckley.Primal = "SysEq"
 OptAckley.optimize()
+OptAckley.plotConvergence()

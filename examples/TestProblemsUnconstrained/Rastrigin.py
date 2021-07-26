@@ -25,3 +25,4 @@ OptRastrigin.xL = np.ones(2,)*-5
 OptRastrigin.xU = np.ones(2,)*+5
 OptRastrigin.f = "f"
 OptRastrigin.optimize()
+OptRastrigin.plotConvergence()

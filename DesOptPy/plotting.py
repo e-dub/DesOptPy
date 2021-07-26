@@ -128,7 +128,7 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                 ax.xaxis.set_ticks(x_ticks)
                 ax2.xaxis.set_ticks(x_ticks)
             ax.set_ylim([min(r[0])[0], max(r[0])[0]])
-            ax2.set_ylim([min(r[1]), max(r[1])])
+            ax2.set_ylim([min(np.min(r[1]), 0), max(np.max(r[1]), 0)])
             #ax2.set_ylim([np.min(np.array(r)[:,1]), np.max(np.array(r)[:,1])])
             #ax.set_ylabel("objective value $f$", rotation='horizontal', position=(0, 1.05))
             #ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', position=(0, 1.09))

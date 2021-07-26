@@ -28,3 +28,4 @@ OptHimmelblau.xU = np.ones(2,)*+5
 OptHimmelblau.f = "f"
 OptHimmelblau.Alg = "PSQP"
 OptHimmelblau.optimize()
+OptHimmelblau.plotConvergence()

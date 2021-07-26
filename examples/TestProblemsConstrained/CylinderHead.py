@@ -40,3 +40,4 @@ OptCylinderHead.f = "f"
 OptCylinderHead.g = ["g1", "g2", "g3"]
 OptCylinderHead.gLimit = [0]*3
 OptCylinderHead.optimize()
+OptCylinderHead.plotConvergence()

@@ -29,3 +29,4 @@ OptLevy.xL = np.ones(2,)*-5
 OptLevy.xU = np.ones(2,)*+5
 OptLevy.f = "f"
 OptLevy.optimize()
+OptLevy.plotConvergence()

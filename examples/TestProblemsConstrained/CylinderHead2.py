@@ -39,3 +39,4 @@ OptCylinderHead.g = ["maxStress", "warranty", "cycleTime"]
 OptCylinderHead.gType = ["upper", "lower", "upper"]
 OptCylinderHead.gLimit = [1500, 100000, 60]
 OptCylinderHead.optimize()
+OptCylinderHead.plotConvergence()

@@ -29,3 +29,4 @@ OptEggholder.fNorm = False
 OptEggholder.Alg = "SLSQP"
 OptEggholder.Primal = "SysEq"
 OptEggholder.optimize()
+OptEggholder.plotConvergence()

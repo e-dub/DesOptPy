@@ -24,3 +24,4 @@ OptStyblinski.xU = np.ones(2,)*+5
 OptStyblinski.f = "f"
 OptStyblinski.Alg = "ALHSO"
 OptStyblinski.optimize()
+OptStyblinski.plotConvergence()

@@ -28,3 +28,4 @@ OptMichalewicz.xU = np.ones(2,)*+5
 OptMichalewicz.f = "f"
 OptMichalewicz.Alg = "PSQP"
 OptMichalewicz.optimize()
+OptMichalewicz.plotConvergence()

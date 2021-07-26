@@ -29,3 +29,4 @@ OptDixenPrice.f = "f"
 OptDixenPrice.Alg = "SLSQP"
 OptDixenPrice.Primal = "SysEq"
 OptDixenPrice.optimize()
+OptDixenPrice.plotConvergence()

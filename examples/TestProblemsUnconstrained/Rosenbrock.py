@@ -27,3 +27,4 @@ ProbRosenbrockSens.f = ["obj"]
 ProbRosenbrockSens.fNabla = ["objNabla"]
 ProbRosenbrockSens.Alg = "PSQP"
 ProbRosenbrockSens.optimize()
+ProbRosenbrockSens.plotConvergence()

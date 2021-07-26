@@ -74,3 +74,4 @@ OptPortfolio.g = ["g1", "g2"]
 OptPortfolio.gLimit = [0, 0]
 OptPortfolio.Alg = "NLPQLP"
 OptPortfolio.optimize()
+OptPortfolio.plotConvergence()

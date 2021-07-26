@@ -32,6 +32,7 @@ OptTextbook.xU = [5.8, 2.9]
 OptTextbook.x0 = OptTextbook.xU
 OptTextbook.f = "f"
 OptTextbook.optimize()
+OptTextbook.plotConvergence()
 
 OptTextbook = OptimizationProblem(Textbook)
 OptTextbook.Primal = "SysEq"
@@ -43,3 +44,4 @@ OptTextbook.f = "f"
 OptTextbook.g = ["g1", "g2"]
 OptTextbook.gLimit = [0, 0]
 OptTextbook.optimize()
+OptTextbook.plotConvergence()

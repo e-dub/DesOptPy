@@ -29,3 +29,4 @@ OptGriewank.xU = 5
 OptGriewank.f = "f"
 OptGriewank.Primal = "SysEq"
 OptGriewank.optimize()
+OptGriewank.plotConvergence()

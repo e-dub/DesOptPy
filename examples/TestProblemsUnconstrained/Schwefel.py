@@ -25,3 +25,4 @@ OptSchwefel.xU = np.ones(nx,)*+500
 OptSchwefel.Alg = "ALHSO"
 OptSchwefel.f = "f"
 OptSchwefel.optimize()
+OptSchwefel.plotConvergence()
