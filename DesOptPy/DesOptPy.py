@@ -84,7 +84,7 @@ def OptimizationProblem(Model):
 
         #class KaruschKuhnTucker:
         from DesOptPy.plotting import plotConvergence
-        from DesOptPy.PostprocessingNumerical import checkKKT, calcShadowPrices
+        from DesOptPy.postprocessingNumerical import checkKKT, calcShadowPrices
 
         def readHistory(self):
             # make function of new file
