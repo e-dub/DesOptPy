@@ -31,7 +31,7 @@ class Bridge:
         rho = 7.85e-9
         nu = 0.3
         L = 24000    # mm
-        l = 23000
+        el = 23000
         H = 3500
         h = H-4000
         B = 1500
@@ -52,8 +52,8 @@ class Bridge:
             Frame.Nodes[i] = [x[i], z[i]]
         for i in range(n-2):
             Frame.Nodes[n+i] = [x[i+1], y[i+1]]
-        Frame.Nodes[0] = [(L-l)/2, 0]
-        Frame.Nodes[n-1] = [L-(L-l)/2, 0]
+        Frame.Nodes[0] = [(L-el)/2, 0]
+        Frame.Nodes[n-1] = [L-(L-el)/2, 0]
         Frame.El = []
         Frame.PropID = []
         for i in range(n-1):
@@ -81,6 +81,7 @@ class Bridge:
         Frame.StaticAnalysis()
         Frame.ComputeStress()
         self.m = Frame.mass
+        # TODO Change to KS!
         self.stressMax = np.max(Frame.sigmaMax)
         self.g2 = self.bC/self.h1
         self.g3 = self.bC/self.h2
@@ -88,6 +89,9 @@ class Bridge:
             Frame.PlotMesh()
             Frame.PlotStress(stress="all")
             Frame.PlotDisplacement('mag')
+
+    # TODO implement analytical sensitivities
+
 
 initialDesign = Bridge()
 initialDesign.calc(plot=True)
@@ -102,7 +106,7 @@ OptBridge.xU = [300, 300, 300, 300, 10]
 OptBridge.f = ["m"]
 OptBridge.g = ["stressMax", "g2", "g3"]
 OptBridge.gLimit = [sigmaLim, 1, 1]
-OptBridge.Alg = "SLSQP"
+OptBridge.Alg = "NLPQLP"
 OptBridge.optimize()
 OptBridge.plotConvergence()
 
