@@ -21,6 +21,8 @@ Prob1.gNabla = ["sigmaNabla"]
 Prob1.Primal = "calc"
 Prob1.Sens = "calcSens"
 Prob1.optimize()
+Prob1.plotConvergence()
+
 print()
 print(Prob1.xNormAll)
 print(Prob1.xAll)
