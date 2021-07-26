@@ -28,13 +28,16 @@ An example of the plots created:
 <p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210725162007NormalizedDesign.svg"></p>
 <p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210725162007Objective.svg"></p>
 <p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210725162007Constraint.svg"></p>
+<p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210726173933ObjectiveMaxConstraint.svg"></p>
+
 
 ## Checklist
 
 ### General
 - [x] Ask Veit and Johannes for what they would like as users
 - [x] new github repository
-- [ ] Update logo
+- [ ] Result file name? DesOpt$ModelName$Alg$TimeStamp
+- [x] Update logo
 - [ ] Release
 - [ ] Publish on Open Source Software?
 - [ ] move checklist from README
