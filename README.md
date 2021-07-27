@@ -24,11 +24,25 @@ OptProb.plotConvergence(show=True, savePDF=False,savePNG=False, saveSVG=False, s
 This function has the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format.
 
 An example of the plots created:
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQPDesign.svg"></p>
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQPNormalizedDesign.svg"></p>
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQPObjective.svg"></p>
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQPConstraint.svg"></p>
-<p align=left><img  width="90%" src="figures/Truss3BarSLSQPObjectiveMaxConstraint.svg"></p>
+<p align=left><img  width="75%" src="figures/DesignConvergence.svg"></p>
+<p align=left><img  width="75%" src="figures/NormalizedDesignConvergence.svg"></p>
+<p align=left><img  width="75%" src="figures/ObjectiveConvergence.svg"></p>
+<p align=left><img  width="75%" src="figures/ConstraintConvergence.svg"></p>
+<p align=left><img  width="90%" src="figures/MaxConstraintConvergence.svg"></p>
+
+
+Before and after bar plotting can be carried out after the optimization with the following command (defaults shown):
+
+```python
+OptProb.plotBeforeAfter(show=True, savePDF=False,savePNG=False, saveSVG=False, saveTikZ=False)
+```
+
+As above, this function has also the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format (TikZ untested).
+
+An example of the plots created:
+<p align=left><img  width="75%" src="figures/DesignBar.svg"></p>
+<p align=left><img  width="75%" src="figures/NormalizedDesignBar.svg"></p>
+<p align=left><img  width="90%" src="figures/MaxConstraintBar.svg"></p>
 
 
 ## Checklist
