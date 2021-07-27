@@ -18,17 +18,17 @@ def checkActiveConstraints(self, activeTol=1e-3):
 def LagrangianFunction(self):
 
     self.ConNabla = np.block([
-        self.gNablaOpt,
-        np.diag([-1]*self.nx),
-        np.diag([1]*self.nx)
+        self.gNablaOpt.T,
+        np.diag([-1]*self.nx).T,
+        np.diag([1]*self.nx).T
     ])
     self.ConActiveNabla = np.block([
-        self.gNablaOpt[:, self.igActive],
-        np.diag([-1]*self.nx)[:, self.ixLActive],
-        np.diag([1]*self.nx)[:, self.ixUActive]
+        self.gNablaOpt[self.igActive, :].T,
+        np.diag([-1]*self.nx)[self.ixLActive, :].T,
+        np.diag([1]*self.nx)[self.ixUActive, :].T
     ])
-    #self.LambdaAll = npla.pinv(self.ConNabla)@-self.fNablaOpt
-    #self.LambdaActiveCheck = self.Lambda[self.iActive]
+    self.LambdaAll = npla.pinv(self.ConNabla)@-self.fNablaOpt
+    self.LambdaActiveCheck = self.LambdaAll[self.iActive]
     self.Lambda = np.zeros((self.ng+2*self.nx,))
     self.LambdaActive = npla.pinv(self.ConActiveNabla)@-self.fNablaOpt
     self.Lambda[self.iActive] = self.LambdaActive
@@ -54,12 +54,30 @@ def checkKKT(self, kkteps=1e-3):
         print("Karush-Kuhn-Tucker optimality criteria fulfilled")
     elif self.kktOpt==0:
         print("Karush-Kuhn-Tucker optimality criteria NOT fulfilled")
-    if self.Opt1Order:
-        print("First-order residual of Lagrangian function = " + str(self.Opt1Order))
+    #if self.Opt1Order:
+    print("First-order residual of Lagrangian function = " + str(self.Opt1Order))
 
 
 def calcShadowPrices(self):
-    self.ShadowPrices = []
+    self.ShadowPrice = np.zeros_like(self.Lambda)
+    for i in range(self.ng):
+        if self.gType[i] == "upper":
+            if self.gNorm[i]:
+                self.ShadowPrice[i] = -self.Lambda[i]/self.gLimit[i]
+            else:
+                self.ShadowPrice[i] = -self.Lambda[i]
+        else:
+            if self.gNorm[i]:
+                self.ShadowPrice[i] = self.Lambda[i]/self.gLimit[i]
+            else:
+                self.ShadowPrice[i] = self.Lambda[i]
+    for i in range(self.ng, self.ng+self.nx):
+        self.ShadowPrice[i] = self.Lambda[i]
+    for i in range(self.ng+self.nx, self.ng+self.nx+self.nx):
+        self.ShadowPrice[i] = -self.Lambda[i]
+    self.gShadowPrice = self.ShadowPrice[0:self.ng]
+    self.xLShadowPrice = self.ShadowPrice[self.ng:self.ng+self.nx]
+    self.xUShadowPrice = self.ShadowPrice[self.ng+self.nx:self.ng+self.nx+self.nx]
 
 
 if __name__ == "__main__":
