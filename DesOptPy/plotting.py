@@ -82,7 +82,7 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
             fig.tight_layout()
 
             plotName = (str.split(self.RunDir, "/")[-1][6:] +
-                        str.split(ylabel, " ")[0].title()).replace("\n", "")
+                        str.split(ylabel, " ")[0].title()+"Convergence").replace("\n", "")
 
         else:
             def adjust_spines(ax, spines, color):
@@ -157,7 +157,7 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
             fig.tight_layout()
 
             plotName = (str.split(self.RunDir, "/")[-1][6:] +
-                        "ObjectiveMaxConstraint")
+                        "ObjectiveMaxConstraintConvergence")
 
         if savePNG:
             plt.savefig(plotName + '.png', dpi=400, transparent=True,
@@ -200,16 +200,80 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
     # plt.show()
 
 
-def plotBeforeAfter(self):
-    """
-    I will add bar plots here for initial and optimal values
-    x
-    xNorm
-    f
-    g
+def plotBeforeAfter(self, show=True, savePDF=False,savePNG=False,
+                    saveSVG=False, saveTikZ=False):
 
-    """
-    pass
+    def BarPlot(r0, rOpt, legend, ylabel=[], xlabelextra="", color="blue"):
+        nx = len(r0)
+        labels = ['$' + legend + '_{' + str(i) + " }$" for i in range(1, nx+1)]
+        labels = labels[::-1]
+
+        index = list(range(1, nx+1))
+        index1 = np.array(index)+0.1
+        index2 = np.array(index)-0.1
+        if nx == 1:
+            ysize = 0.1
+        else:
+            ysize = 0.3+nx*0.5
+        fig, ax = plt.subplots(figsize=(6.2, ysize))
+
+        plt.hlines(y=index1, xmin=0, xmax=r0[::-1], color='tab:'+color, alpha=0.25,
+                   linewidth=10, clip_on=False)
+        plt.hlines(y=index2, xmin=0, xmax=rOpt[::-1], color='tab:'+color,
+                   linewidth=10, clip_on=False)
+
+        ax.set_xlabel(xlabelextra+'value')
+        ax.set_ylabel(ylabel, rotation='horizontal',
+                      verticalalignment='baseline', loc="top")
+
+        ax.tick_params(axis='both', which='major')
+        plt.yticks(index, labels)
+
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        ax.spines['left'].set_bounds((1, len(index)))
+        ax.set_xlim(np.min([0, np.min(r0), np.min(rOpt)]),
+                    np.max([0, np.max(r0), np.max(rOpt)]))
+
+        ax.spines['left'].set_position(('outward', 24))
+        ax.spines['bottom'].set_position(('outward', 14))
+
+        # ticks inward
+        ax.tick_params(direction='in')
+
+        # make space
+        fig.tight_layout()
+
+        plotName = (str.split(self.RunDir, "/")[-1][6:] + xlabelextra.replace(" ", "").title() +
+                    str.split(ylabel, " ")[0].title() + "Bar").replace("\n", "")
+
+
+        if savePNG:
+            plt.savefig(plotName + '.png', dpi=400, transparent=True,
+                        bbox_inches='tight', pad_inches=0)
+        if saveTikZ:
+            import tikzplotlib
+            tikzplotlib.save(plotName + ".pgf", show_info=False, strict=False,
+                             extra_axis_parameters={
+                                 "ylabel style={rotate=90.0}",
+                                 })
+            #plt.savefig(plotName + '.pgf', transparent=True)
+        if saveSVG:
+            plt.savefig(plotName + ".svg", transparent=True,
+                        bbox_inches='tight', pad_inches=0)
+        if savePDF:
+            plt.savefig(plotName + '.pdf', backend='pgf', transparent=True,
+                        bbox_inches='tight', pad_inches=0)
+        if show:
+            plt.show()
+
+    BarPlot(self.x0, self.xOpt, "x", "design variable")
+    BarPlot(np.array(self.xNormIt[0]), self.xNormOpt, "\hat{x}", "design variable",
+            "normalized ")
+    #BarPlot(self.fIt, "f", "objective function value")
+    if self.g is not None:
+        BarPlot(self.g0, self.gOpt, "g", "constraint", color="red")
 
 
 def PrintTikZInfo():

@@ -9,7 +9,7 @@ except:
     pass
 from DesOptPy.scaling import normalize, denormalize
 from DesOptPy.tools import printResults, checkProblem
-from DesOptPy import plotting
+#from DesOptPy import plotting
 #from DesOptPy import plotting
 
 
@@ -83,7 +83,7 @@ def OptimizationProblem(Model):
             cpu = None
 
         #class KaruschKuhnTucker:
-        from DesOptPy.plotting import plotConvergence
+        from DesOptPy.plotting import plotConvergence, plotBeforeAfter
         from DesOptPy.postprocessingNumerical import (
             checkKKT,
             calcShadowPrices,
@@ -577,14 +577,17 @@ def OptimizationProblem(Model):
                 # Todo change to array?
                 # Denormalization
                 self.xOpt = [None]*self.nx
-                self.xNormOpt = xOpt
+                self.xNormOpt = [None]*self.nx
+                #self.xNormOpt = copy.deepcopy(xOpt)
                 self.fNormOpt = fOpt
-                for i in range(len(self.x0)):
+                for i in range(self.nx):
                     if self.xNorm[i]:
                         self.xOpt[i] = denormalize(xOpt[i], self.xL[i],
                                                    self.xU[i])
                     else:
                         self.xOpt[i] = xOpt[i]
+                    self.xNormOpt[i] = xOpt[i]
+                self.xOpt = np.array(self.xOpt)
                 if self.fNorm[0]:
                     if self.f0 == 0:
                         self.fOpt = fOpt/self.fNormMultiplier

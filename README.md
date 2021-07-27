@@ -126,7 +126,7 @@ An example of the plots created:
 ### Plotting
 - [x] convergence plots
 - [x] save as png, pdf, pgf
-- [ ] bar charts?
+- [x] bar charts?
 - [x] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
 - [x] custom color scheme or atleast tab10?
 - [x] f or fnorm???

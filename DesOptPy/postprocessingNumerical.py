@@ -34,7 +34,7 @@ def LagrangianFunction(self):
     self.Lambda[self.iActive] = self.LambdaActive
     self.OptResidual = self.fNablaOpt + self.ConNabla@self.Lambda
 
-def checkKKT(self, kkteps=1e-3):
+def checkKKT(self, KKTTol=1e-3):
     if not hasattr(self, 'Lambda'):
         checkActiveConstraints(self)
         LagrangianFunction(self)
@@ -45,15 +45,15 @@ def checkKKT(self, kkteps=1e-3):
     #    lam= np.divide(np.array(self.fNablaIt[-1]),
     #                   np.array(self.gNablaIt[-1]).reshape(5,2)[iActive,:])
     #    Lambda = np.average(lam)
-    self.PrimalFeas = (max(self.gOpt) < kkteps)
-    self.ComplSlack = (max(self.gOpt*self.Lambda[0:self.ng]) < kkteps)
-    self.DualFeas = (min(self.Lambda) > -kkteps)
-    self.kktOpt = bool(self.PrimalFeas*self.DualFeas*self.ComplSlack)
+    self.PrimalFeas = (max(self.gOpt) < KKTTol)
+    self.ComplSlack = (max(self.gOpt*self.Lambda[0:self.ng]) < KKTTol)
+    self.DualFeas = (min(self.Lambda) > -KKTTol)
+    self.KKTOpt = bool(self.PrimalFeas*self.DualFeas*self.ComplSlack)
     self.Opt1Order = np.linalg.norm(self.OptResidual)
-    self.kktMax = max(abs(self.OptResidual))
-    if self.kktOpt:
+    self.KKTMax = max(abs(self.OptResidual))
+    if self.KKTOpt:
         print("Karush-Kuhn-Tucker optimality criteria fulfilled")
-    elif self.kktOpt==0:
+    elif self.KKTOpt==0:
         print("Karush-Kuhn-Tucker optimality criteria NOT fulfilled")
     #if self.Opt1Order:
     print("First-order residual of Lagrangian function = " + str(self.Opt1Order))
