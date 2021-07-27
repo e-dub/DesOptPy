@@ -28,7 +28,7 @@ An example of the plots created:
 <p align=left><img  width="75%" src="figures/Truss3BarSLSQPNormalizedDesign.svg"></p>
 <p align=left><img  width="75%" src="figures/Truss3BarSLSQPObjective.svg"></p>
 <p align=left><img  width="75%" src="figures/Truss3BarSLSQPConstraint.svg"></p>
-<p align=left><img  width="100%" src="figures/Truss3BarSLSQPObjectiveMaxConstraint.svg"></p>
+<p align=left><img  width="90%" src="figures/Truss3BarSLSQPObjectiveMaxConstraint.svg"></p>
 
 
 ## Checklist
