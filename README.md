@@ -17,7 +17,7 @@ DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for de
 
 Convergence plotting can be carried out after the optimization with the following command (defaults shown):
 
-```
+```python
 OptProb.plotConvergence(show=True, savePDF=False,savePNG=False, saveSVG=False, saveTikZ=False)
 ```
 
