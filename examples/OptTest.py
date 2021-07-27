@@ -23,12 +23,16 @@ Prob1.Sens = "calcSens"
 Prob1.optimize()
 Prob1.plotConvergence()
 
-print()
-print(Prob1.xNormAll)
-print(Prob1.xAll)
 
-#Prob2 = OptimizationSetup(Model2)
-#Prob2.x = ["a", "ell"]
-#Prob2.f = ["m"]
-#Prob2.g = ["sigma"]
-#Prob2.optimize()
+Prob2 = OptimizationProblem(Model2)
+Prob2.Primal = "calc"
+Prob2.x = ["a", "ell"]
+Prob2.x0 = [10, 10]
+Prob2.xL = [0.1, 0.1]
+Prob2.xU = [1000.0, 1000.0]
+Prob2.f = ["m"]
+Prob2.g = ["sigma"]
+Prob2.gLimit = [100]
+Prob2.Alg = "NLPQLP"
+Prob2.optimize()
+Prob2.plotConvergence()
