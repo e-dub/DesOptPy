@@ -244,7 +244,8 @@ def OptimizationProblem(Model):
             elif ((self.Alg[:5]).upper() == "NLOPT" or
                   (self.Alg[-5:]).upper == "NLOPT"):
                 self.nloptAlg = True
-
+            else:
+                raise Exception("Not a valid optimization algorithm")
             # File handling
             if self.RunFolder:
                 self.MainDir = os.getcwd()
