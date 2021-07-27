@@ -28,7 +28,7 @@ An example of the plots created:
 <p align=left><img  width="75%" src="figures/NormalizedDesignConvergence.svg"></p>
 <p align=left><img  width="75%" src="figures/ObjectiveConvergence.svg"></p>
 <p align=left><img  width="75%" src="figures/ConstraintConvergence.svg"></p>
-<p align=left><img  width="90%" src="figures/MaxConstraintConvergence.svg"></p>
+<p align=left><img  width="90%" src="figures/ObjectiveMaxConstraintConvergence.svg"></p>
 
 
 Before and after bar plotting can be carried out after the optimization with the following command (defaults shown):
@@ -42,7 +42,7 @@ As above, this function has also the possibility of showing or saving in PDF, PN
 An example of the plots created:
 <p align=left><img  width="75%" src="figures/DesignBar.svg"></p>
 <p align=left><img  width="75%" src="figures/NormalizedDesignBar.svg"></p>
-<p align=left><img  width="90%" src="figures/MaxConstraintBar.svg"></p>
+<p align=left><img  width="90%" src="figures/ConstraintBar.svg"></p>
 
 
 ## Checklist
