@@ -42,7 +42,7 @@ As above, this function has also the possibility of showing or saving in PDF, PN
 An example of the plots created:
 <p align=left><img  width="75%" src="figures/DesignBar.svg"></p>
 <p align=left><img  width="75%" src="figures/NormalizedDesignBar.svg"></p>
-<p align=left><img  width="90%" src="figures/ConstraintBar.svg"></p>
+<p align=left><img  width="75%" src="figures/ConstraintBar.svg"></p>
 
 
 ## Checklist
