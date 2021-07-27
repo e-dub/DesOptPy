@@ -151,13 +151,18 @@ def OptSciPy(self, x0, xL, xU, SysEq):
                              minimizer_kwargs=None,
                              options=None,
                              sampling_method='simplicial')
+    else:
+        raise Exception("Not a valid SciPy algorithm for constrained nonlinear optimization")
     xOpt = np.array(Results.x)
     fOpt = np.array([Results.fun])
 
     self.fNablaOpt = Results.jac
     self.nIt = Results.nit
     self.nEval = Results.nfev
-    self.nSensEval = Results.njev
+    try:
+        self.nSensEval = Results.njev
+    except:
+        self.nSensEval = None
     self.inform = Results.success
 
     # Denormalization
