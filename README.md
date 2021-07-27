@@ -24,11 +24,11 @@ OptProb.plotConvergence()
 This function has the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format.
 
 An example of the plots created:
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210725162007Design.svg"></p>
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210725162007NormalizedDesign.svg"></p>
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210725162007Objective.svg"></p>
-<p align=left><img  width="75%" src="figures/Truss3BarSLSQP20210725162007Constraint.svg"></p>
-<p align=left><img  width="110%" src="figures/Truss3BarSLSQP20210726173933ObjectiveMaxConstraint.svg"></p>
+<p align=left><img  width="75%" src="figures/Truss3BarSLSQPDesign.svg"></p>
+<p align=left><img  width="75%" src="figures/Truss3BarSLSQPNormalizedDesign.svg"></p>
+<p align=left><img  width="75%" src="figures/Truss3BarSLSQPObjective.svg"></p>
+<p align=left><img  width="75%" src="figures/Truss3BarSLSQPConstraint.svg"></p>
+<p align=left><img  width="100%" src="figures/Truss3BarSLSQPObjectiveMaxConstraint.svg"></p>
 
 
 ## Checklist
@@ -106,9 +106,9 @@ An example of the plots created:
 - [x] convergence plots
 - [x] save as png, pdf, pgf
 - [ ] bar charts?
-- [ ] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
-- [ ] custom color scheme or atleast tab10?
-
+- [x] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
+- [x] custom color scheme or atleast tab10?
+- [ ] f or fnorm???
 ### File handling
 - [x]  File handling save all evaluation data
 - [x]  File handling and run results folder (no run only modelname with time stamp)
