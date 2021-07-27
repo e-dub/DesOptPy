@@ -27,16 +27,17 @@ def LagrangianFunction(self):
         np.diag([-1]*self.nx)[self.ixLActive, :].T,
         np.diag([1]*self.nx)[self.ixUActive, :].T
     ])
-    self.LambdaAll = npla.pinv(self.ConNabla)@-self.fNablaOpt
-    self.LambdaActiveCheck = self.LambdaAll[self.iActive]
+    #self.LambdaAll = npla.pinv(self.ConNabla)@-self.fNablaOpt
+    #self.LambdaActiveCheck = self.LambdaAll[self.iActive]
     self.Lambda = np.zeros((self.ng+2*self.nx,))
     self.LambdaActive = npla.pinv(self.ConActiveNabla)@-self.fNablaOpt
     self.Lambda[self.iActive] = self.LambdaActive
     self.OptResidual = self.fNablaOpt + self.ConNabla@self.Lambda
 
 def checkKKT(self, kkteps=1e-3):
-    checkActiveConstraints(self)
-    LagrangianFunction(self)
+    if not hasattr(self, 'Lambda'):
+        checkActiveConstraints(self)
+        LagrangianFunction(self)
     # from numpy.linalg import norm, lstsq, pinv
     # self.kkteps = 1e-3
     # iActive = list(np.array(self.gOpt) > -self.kkteps).index(True)
@@ -59,6 +60,9 @@ def checkKKT(self, kkteps=1e-3):
 
 
 def calcShadowPrices(self):
+    if not hasattr(self, 'Lambda'):
+        checkActiveConstraints(self)
+        LagrangianFunction(self)
     self.ShadowPrice = np.zeros_like(self.Lambda)
     for i in range(self.ng):
         if self.gType[i] == "upper":

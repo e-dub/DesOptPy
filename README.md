@@ -73,6 +73,8 @@ An example of the plots created:
 - [ ] set up example with Ansys (pyAnsys)
 - [x] old DesOptPy examples
 - [ ] topology optimization example (Hofer)
+- [ ] max example (to correct fType)
+
 
 ### Code general
 - [x] variable function for primal and sens
@@ -86,7 +88,7 @@ An example of the plots created:
 - [ ] nit for nongrad alg
 - [ ] ResultReport
 - [ ] sensitivity analysis
-- [ ] Postprocessing for shadow prices
+- [x] Postprocessing for shadow prices
 - [ ] echo or debug level? what is standard?
 - [ ] Variable linking?
 - [x] Normalization for each design variables or global (currently for each)???
@@ -100,7 +102,7 @@ An example of the plots created:
 - [x] default gtype: upper bound
 - [ ] rconval -> rConVal
 - [ ] sensivity analysis for gVector
-- [ ] mix form of constraints for scalara and vectors
+- [ ] mix form of constraints for scalara and vectors, e.g. stressVec and dispScalar
 - [ ] add all normalization techniques from DesOptPy1
 
 ### Print
@@ -113,7 +115,7 @@ An example of the plots created:
 - [ ] bar charts?
 - [x] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
 - [x] custom color scheme or atleast tab10?
-- [ ] f or fnorm???
+- [x] f or fnorm???
 
 ### File handling
 - [x]  File handling save all evaluation data

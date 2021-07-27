@@ -121,6 +121,7 @@ def OptimizationProblem(Model):
 
             self.nIt = len(fNablaIt)
             self.fIt = [None]*self.nIt
+            self.fNormIt = [None]*self.nIt
             self.xIt = [None]*self.nIt
             self.xNormIt = [None]*self.nIt
             self.gIt = [None]*self.nIt
@@ -136,7 +137,15 @@ def OptimizationProblem(Model):
                     except:
                         Posf = Posdg + 1
                 iii = iii - 1
-                self.fIt[ii] = fAll[iii]
+                if self.fNorm[0]:
+                    if self.f0 == 0:
+                        self.fIt[ii] = np.array(fAll[iii])/self.fNormMultiplier
+                    else:
+                        self.fIt[ii] = np.array(fAll[iii])*abs(self.f0)/self.fNormMultiplier
+                else:
+                    self.fIt[ii] = fAll[iii]
+                self.fNormIt[ii] = fAll[iii]
+
                 self.xIt[ii] = xAll[iii][0:self.nx]
                 self.xNormIt[ii] = xNormAll[iii][0:self.nx]
                 if self.g is not None:
