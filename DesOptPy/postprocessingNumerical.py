@@ -1,42 +1,61 @@
 import numpy as np
+import numpy.linalg as npla
+
 
 def checkActiveConstraints(self, activeTol=1e-3):
-    self.igActive = np.where(self.gOpt > -activeTol)[0]
-    self.ixLActive = np.where((self.xL-self.xOpt) > -activeTol)[0]
-    self.ixUActive = np.where((self.xOpt-self.xU) > -activeTol)[0]
-    if len(self.igActive) == 0:
-        igActive = None
-    if len(self.ixLActive) == 0:
-        ixLActive = None
-    if len(self.ixUActive) == 0:
-        ixUActive = None
+    self.igActive = np.where(self.gOpt > -activeTol)[0].tolist()
+    self.ixLActive = np.where((self.xL-self.xOpt) > -activeTol)[0].tolist()
+    self.ixUActive = np.where((self.xOpt-self.xU) > -activeTol)[0].tolist()
+    # if len(self.igActive) == 0:
+    #     self.igActive = None
+    # if len(self.ixLActive) == 0:
+    #     self.ixLActive = None
+    # if len(self.ixUActive) == 0:
+    #     self.ixUActive = None
+    #self.iActive = np.block([self.igActive, self.ixLActive, self.ixUActive])
+    self.iActive = self.igActive + self.ixLActive + self.ixUActive
 
+def LagrangianFunction(self):
 
-def checkKKT(self):
-    from numpy.linalg import norm, lstsq, pinv
-    self.kkteps = 1e-3
-    iActive = list(np.array(self.gOpt) > -self.kkteps).index(True)
-    if len(iActive) == 1:
-       lam= np.divide(np.array(self.fNablaIt[-1]),
-                      np.array(self.gNablaIt[-1]).reshape(5,2)[iActive,:])
-       Lambda = np.average(lam)
-    self.PrimalFeas = (max(self.gOpt) < self.kkteps)
-    self.ComplSlack = (max(self.gOpt@self.Lambda) < self.kkteps)
-    self.DualFeas = (min(self.Lambda) > -self.kkteps)
+    self.ConNabla = np.block([
+        self.gNablaOpt,
+        np.diag([-1]*self.nx),
+        np.diag([1]*self.nx)
+    ])
+    self.ConActiveNabla = np.block([
+        self.gNablaOpt[:, self.igActive],
+        np.diag([-1]*self.nx)[:, self.ixLActive],
+        np.diag([1]*self.nx)[:, self.ixUActive]
+    ])
+    #self.LambdaAll = npla.pinv(self.ConNabla)@-self.fNablaOpt
+    #self.LambdaActiveCheck = self.Lambda[self.iActive]
+    self.Lambda = np.zeros((self.ng+2*self.nx,))
+    self.LambdaActive = npla.pinv(self.ConActiveNabla)@-self.fNablaOpt
+    self.Lambda[self.iActive] = self.LambdaActive
+    self.OptResidual = self.fNablaOpt + self.ConNabla@self.Lambda
+
+def checkKKT(self, kkteps=1e-3):
+    checkActiveConstraints(self)
+    LagrangianFunction(self)
+    # from numpy.linalg import norm, lstsq, pinv
+    # self.kkteps = 1e-3
+    # iActive = list(np.array(self.gOpt) > -self.kkteps).index(True)
+    # if len(iActive) == 1:
+    #    lam= np.divide(np.array(self.fNablaIt[-1]),
+    #                   np.array(self.gNablaIt[-1]).reshape(5,2)[iActive,:])
+    #    Lambda = np.average(lam)
+    self.PrimalFeas = (max(self.gOpt) < kkteps)
+    self.ComplSlack = (max(self.gOpt*self.Lambda[0:self.ng]) < kkteps)
+    self.DualFeas = (min(self.Lambda) > -kkteps)
     self.kktOpt = bool(self.PrimalFeas*self.DualFeas*self.ComplSlack)
     self.Opt1Order = np.linalg.norm(self.OptResidual)
     self.kktMax = max(abs(self.OptResidual))
-    if np.size(lambda_c) > 0:
-        print("Lagrangian multipliers = " +
-        str(lambda_c.reshape(np.size(lambda_c,))))
-        print("Type of active constraints = " + str(gAllActiveType))
-        print("Shadow prices = " + str(SPg))
-    if kktOpt:
+    if self.kktOpt:
         print("Karush-Kuhn-Tucker optimality criteria fulfilled")
-    elif kktOpt==0:
+    elif self.kktOpt==0:
         print("Karush-Kuhn-Tucker optimality criteria NOT fulfilled")
-    if Opt1Order:
-        print("First-order residual of Lagrangian function = " + str(Opt1Order))
+    if self.Opt1Order:
+        print("First-order residual of Lagrangian function = " + str(self.Opt1Order))
 
 
 def calcShadowPrices(self):

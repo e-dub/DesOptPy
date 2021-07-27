@@ -132,10 +132,16 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
             #ax2.set_ylim([np.min(np.array(r)[:,1]), np.max(np.array(r)[:,1])])
             #ax.set_ylabel("objective value $f$", rotation='horizontal', position=(0, 1.05))
             #ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', position=(0, 1.09))
-            ax.set_ylabel("objective function value $f$", rotation='horizontal')
+
+            ax.set_ylabel("objective function value $f$", rotation='horizontal', verticalalignment='baseline')
             ax.yaxis.set_label_coords(-0.3, 1.05)
-            ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal')
-            ax2.yaxis.set_label_coords(1.3, 1.09)
+            ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', verticalalignment='baseline')
+            ax2.yaxis.set_label_coords(1.3, 1.05)
+
+            #ax.set_ylabel("objective function value $f$", rotation='horizontal', verticalalignment='baseline', loc="top")
+            #ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', verticalalignment='baseline', loc="top")
+
+
             ax.set_xlabel("iteration $i_{it}$")
             ax.tick_params(axis='y', colors="tab:blue")
             ax2.tick_params(axis='y', colors="tab:red")
@@ -154,7 +160,8 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                         "ObjectiveMaxConstraint")
 
         if savePNG:
-            plt.savefig(plotName + '.png', dpi=400)
+            plt.savefig(plotName + '.png', dpi=400, transparent=True,
+                        bbox_inches='tight', pad_inches=0)
         if saveTikZ:
             import tikzplotlib
             tikzplotlib.save(plotName + ".pgf", show_info=False, strict=False,
@@ -164,12 +171,13 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                                  "ymin="+str(np.min(r)),
                                  "ymax="+str(np.max(r))
                                  })
-
-            plt.savefig(plotName + '2.pgf')
+            #plt.savefig(plotName + '.pgf', transparent=True)
         if saveSVG:
-            plt.savefig(plotName + ".svg")
+            plt.savefig(plotName + ".svg", transparent=True,
+                        bbox_inches='tight', pad_inches=0)
         if savePDF:
-            plt.savefig(plotName + '.pdf', backend='pgf')
+            plt.savefig(plotName + '.pdf', backend='pgf', transparent=True,
+                        bbox_inches='tight', pad_inches=0)
         if show:
             plt.show()
 

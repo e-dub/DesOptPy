@@ -42,7 +42,11 @@ An example of the plots created:
 - [ ] Publish on Open Source Software?
 - [ ] move checklist from README
 - [ ] Update pypi (pip)
-- [ ] choose code style and use automatic code formatter, i.e. black: https://github.com/psf/black
+- [ ] choose code style and use automatic code formatter,
+-black: https://github.com/psf/black
+-yapf
+-autopep8
+-all do weird things, especially to numpy arrays...
 - [ ] merge into old DesOptPy repository. Is this possible?
 - [ ] finish project description here: https://pypi.org/project/DesOptPy/
 - [ ] include the following on README?
@@ -62,9 +66,9 @@ An example of the plots created:
 - [ ] check when gNorm=True and gLimit=0
 
 ### Examples
-- [ ] set up example with SiMuLi
+- [x] set up example with SiMuLi
 - [x] set up example with EasyBeam
-- [ ] example with ungewiss
+- [ ] example with pyUngewiss
 - [ ] set up example with Kratos
 - [ ] set up example with Ansys (pyAnsys)
 - [x] old DesOptPy examples
@@ -80,11 +84,11 @@ An example of the plots created:
 - [ ] add option, fType min max
 - [ ] normalize and denormalize as vector operations? not index assignment?
 - [ ] nit for nongrad alg
-- [ ]  ResultReport
+- [ ] ResultReport
 - [ ] sensitivity analysis
-- [ ]  Postprocessing for shadow prices
+- [ ] Postprocessing for shadow prices
 - [ ] echo or debug level? what is standard?
-- [ ]  Variable linking?
+- [ ] Variable linking?
 - [x] Normalization for each design variables or global (currently for each)???
 - [x] Normalization for each contraint or global (currently for each)???
 - [ ] different normalizations for design variables
@@ -97,6 +101,7 @@ An example of the plots created:
 - [ ] rconval -> rConVal
 - [ ] sensivity analysis for gVector
 - [ ] mix form of constraints for scalara and vectors
+- [ ] add all normalization techniques from DesOptPy1
 
 ### Print
 - [ ] general beautification, color?
@@ -109,6 +114,7 @@ An example of the plots created:
 - [x] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
 - [x] custom color scheme or atleast tab10?
 - [ ] f or fnorm???
+
 ### File handling
 - [x]  File handling save all evaluation data
 - [x]  File handling and run results folder (no run only modelname with time stamp)
@@ -119,9 +125,14 @@ An example of the plots created:
 - [ ] renorm etc with history!!! Iteration values, Optimal values
 
 ### Algorithm specific
+- [ ] get IPOPT to work!
+- [ ] xIt etc only for pyOpt algorithms. Others possible?
 - [ ] Cobyla pyopt nIt, now only neval
 - [ ] if cobyla, sens false
-- [ ] CONMIN returns too many design variables, this should be filtered after optimization
+- [x] CONMIN returns too many design variables, this should be filtered after optimization
+- [ ] Why does pyOpt.NSGA2 crash so often?
+- [ ] readHistory 148 self.gOpt takes last design as opt, not true with non-grad based. Check this. (ALHSO, ALPSO, COBYLA, NSGA2, SDPEN)
+- [ ] pyopt.solveopt giving error
 
 ### Further algorithms
 - [ ] add pygmo
@@ -131,19 +142,19 @@ https://deap.readthedocs.io/en/master/tutorials/advanced/constraints.html
 http://cvxopt.org/userguide/index.html
 - [ ] add nlopt
 https://nlopt.readthedocs.io/en/latest/
-- [x]  add scipy optimization
-- [ ]  add or-tools?
-- [ ]  add Hybrid Cellular Automata
+- [x] add scipy optimization
+- [ ] add or-tools?
+- [ ] add Hybrid Cellular Automata
 https://developers.google.com/optimization/introduction/pythonself.xL
 - [x] add algorithm list?
-- [ ]  Algorithm options
+- [ ] Algorithm options
 - [x] add avail optimization algorithms, updated by setup? possible?
 - [ ] scipy also without gradients
 - [ ] pyopt interface different file
 
 ### Surrogating
-- [ ]  surrogating?
-- [ ]  sampling and ploting of design space
+- [x] surrogating? with supy! Example done
+- [ ] sampling and ploting of design space. Here or SuPy?
 
 ### Monitoring
 - [ ] Optimization live monitoring!

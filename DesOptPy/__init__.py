@@ -1,6 +1,7 @@
 from DesOptPy.DesOptPy import *
 from DesOptPy.tools import *
 from DesOptPy.plotting import *
+#from DesOptPy.FunctionAggregation import *
 
 
 __title__ = "DESign OPTimization in PYthon"

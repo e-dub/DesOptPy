@@ -84,7 +84,12 @@ def OptimizationProblem(Model):
 
         #class KaruschKuhnTucker:
         from DesOptPy.plotting import plotConvergence
-        from DesOptPy.postprocessingNumerical import checkKKT, calcShadowPrices
+        from DesOptPy.postprocessingNumerical import (
+            checkKKT,
+            calcShadowPrices,
+            checkActiveConstraints,
+            LagrangianFunction
+            )
 
         def readHistory(self):
             # make function of new file
@@ -145,7 +150,7 @@ def OptimizationProblem(Model):
             self.gNablaIt = gNablaIt
             self.fNablaIt = fNablaIt
             if self.g is not None:
-                self.gOpt = self.gIt[-1]
+                self.gOpt = np.array(self.gIt[-1])
                 self.gMax = np.max(self.gAll, 1)
                 self.g0 = self.gIt[0]
 
@@ -194,17 +199,20 @@ def OptimizationProblem(Model):
                 self.xU = np.array([self.xU]*self.nx)
 
             # Reformat and set normalization (scaling)
-            if self.xNorm == None or self.xNorm == True or self.xNorm == [True]:
+            if(self.xNorm == None or self.xNorm == True or
+               self.xNorm == [True]):
                 self.xNorm = [True]*self.nx
             elif self.xNorm == False or self.xNorm == [False]:
                 self.xNorm = [False]*self.nx
 
-            if self.fNorm == None or self.fNorm == True or self.fNorm == [True]:
+            if(self.fNorm == None or self.fNorm == True or
+               self.fNorm == [True]):
                 self.fNorm = [True]*self.nf
             elif self.fNorm == False or self.fNorm == [False]:
                 self.fNorm = [False]*self.nf
 
-            if self.gNorm == None or self.gNorm == True or self.gNorm == [True] or self.gNorm == []:
+            if(self.gNorm == None or self.gNorm == True or
+               self.gNorm == [True] or self.gNorm == []):
                 self.gNorm = [True]*self.ng
             elif self.gNorm == False or self.gNorm == [False]:
                 self.gNorm = [False]*self.ng
@@ -212,7 +220,8 @@ def OptimizationProblem(Model):
                 if gLimiti == 0:
                     self.gNorm[i] = False
 
-            if self.gType == None  or self.gType == "upper" or self.gType == ["upper"]:
+            if(self.gType == None  or self.gType == "upper" or
+               self.gType == ["upper"]):
                 self.gType = ["upper"]*self.ng
             elif self.gType == "lower" or self.gType == ["lower"]:
                 self.xNorm = ["lower"]*self.nx
@@ -229,11 +238,11 @@ def OptimizationProblem(Model):
             self.pyOptAlg = False
             self.pyGmoAlg = False
             self.nloptAlg = False
-            if (self.Alg).upper() in {"ALGENCAN", "ALHSO", "ALPSO", "COBYLA", "CONMIN",
-                                      "FILTERSD", "FSQP", "GCMMA", "IPOPT",
-                                      "KSOPT", "MIDACO", "MMA", "MMFD",
-                                      "NLPQLP", "NSGA2", "PSQP", "SDPEN",
-                                      "SLSQP", "SOLVOPT"}:
+            if (self.Alg).upper() in {"ALGENCAN", "ALHSO", "ALPSO", "COBYLA",
+                                      "CONMIN", "FILTERSD", "FSQP", "GCMMA",
+                                      "IPOPT", "KSOPT", "MIDACO", "MMA",
+                                      "MMFD", "NLPQLP", "NSGA2", "PSQP",
+                                      "SDPEN", "SLSQP", "SOLVOPT"}:
                 self.pyOptAlg = True
             elif ((self.Alg[:5]).upper() == "SCIPY" or
                   (self.Alg[-5:]).upper == "SCIPY"):
@@ -572,8 +581,6 @@ def OptimizationProblem(Model):
                         self.fOpt = fOpt*abs(self.f0)/self.fNormMultiplier
                 else:
                     self.fOpt = fOpt
-
-
                 # if self.PrintOutput:
                 #     pass
 
@@ -583,6 +590,9 @@ def OptimizationProblem(Model):
                     self.inform = inform
 
                 self.readHistory()
+
+                self.fNablaOpt = np.array(self.fNablaIt[-1])
+                self.gNablaOpt = np.array(self.gNablaIt[-1]).reshape(self.nx, self.ng)
 
 #----------------------------------------------
             elif self.pyGmoAlg:
