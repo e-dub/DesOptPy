@@ -109,6 +109,7 @@ OptBridge.gLimit = [sigmaLim, 1, 1]
 OptBridge.Alg = "NLPQLP"
 OptBridge.optimize()
 OptBridge.plotConvergence()
+OptBridge.plotBeforeAfter()
 
 optimumDesign = Bridge()
 optimumDesign.bC = OptBridge.xOpt[0]

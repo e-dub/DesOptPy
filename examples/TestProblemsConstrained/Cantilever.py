@@ -40,6 +40,7 @@ Prob1.gNorm = [True, False]
 Prob1.Alg = "NLPQLP"
 Prob1.optimize()
 Prob1.plotConvergence()
+Prob1.plotBeforeAfter()
 
 
 Prob2 = OptimizationProblem(Cantilever)
@@ -56,6 +57,7 @@ Prob2.gLimit = [40000, 1]
 Prob2.Alg = "NLPQLP"
 Prob2.optimize()
 Prob2.plotConvergence()
+Prob2.plotBeforeAfter()
 
 Prob3 = OptimizationProblem(Cantilever)
 Prob3.Primal = "calc"
@@ -73,3 +75,4 @@ Prob3.gLimit = [40000, 1]
 Prob3.Alg = "NLPQLP"
 Prob3.optimize()
 Prob3.plotConvergence()
+Prob3.plotBeforeAfter()

@@ -119,3 +119,4 @@ Prob1.Sensitivity = "sensitivity"
 Prob1.Alg = "MMA"
 Prob1.optimize()
 Prob1.plotConvergence()
+Prob1.plotBeforeAfter()

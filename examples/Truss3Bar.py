@@ -131,6 +131,7 @@ OptTBT.gNabla = ["stress1Nabla", "stress2Nabla", "stress3Nabla",
                  "dispxNabla", "dispyNabla"]
 
 
-# run optimizations
+# run optimization
 OptTBT.optimize()
 OptTBT.plotConvergence()
+OptTBT.plotBeforeAfter()

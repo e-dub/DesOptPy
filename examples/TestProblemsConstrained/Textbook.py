@@ -45,3 +45,4 @@ OptTextbook.g = ["g1", "g2"]
 OptTextbook.gLimit = [0, 0]
 OptTextbook.optimize()
 OptTextbook.plotConvergence()
+OptTextbook.plotBeforeAfter()

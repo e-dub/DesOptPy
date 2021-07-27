@@ -130,6 +130,8 @@ An example of the plots created:
 - [x] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
 - [x] custom color scheme or atleast tab10?
 - [x] f or fnorm???
+- [ ] convergence plotting does not make snese for more than 20 variables, either split into several plots or turn off!
+- [ ] bar>50? also
 
 ### File handling
 - [x]  File handling save all evaluation data

@@ -135,3 +135,5 @@ OptTBT.gNabla = ["stress1Nabla", "stress2Nabla", "stress3Nabla",
 OptTBT.optimize()
 OptTBT.plotConvergence(show=True, savePNG=False, saveTikZ=False,
                        savePDF=False)
+OptTBT.plotBeforeAfter(show=True, savePNG=False, saveTikZ=False,
+                       savePDF=False)

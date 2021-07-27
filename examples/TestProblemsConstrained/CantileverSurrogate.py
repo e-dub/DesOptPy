@@ -90,3 +90,4 @@ OptCantileverApprox.gLimit = [40000, 1]
 OptCantileverApprox.Alg = "NLPQLP"
 OptCantileverApprox.optimize()
 OptCantileverApprox.plotConvergence()
+OptCantileverApprox.plotBeforeAfter()

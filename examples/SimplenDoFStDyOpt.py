@@ -61,3 +61,4 @@ OptTBT.fNorm = [True]
 OptTBT.Primal = "primal"
 OptTBT.optimize()
 OptTBT.plotConvergence()
+OptTBT.plotBeforeAfter()

@@ -92,6 +92,7 @@ OptDyn.fNabla = ["qddMaxNabla"]
 OptDyn.Alg = "NLPQLP"
 OptDyn.optimize()
 OptDyn.plotConvergence()
+OptDyn.plotBeforeAfter()
 
 optimumDesign = DynModelOpt()
 optimumDesign.m = OptDyn.xOpt[0]

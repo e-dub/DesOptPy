@@ -22,6 +22,7 @@ Prob1.Primal = "calc"
 Prob1.Sens = "calcSens"
 Prob1.optimize()
 Prob1.plotConvergence()
+Prob1.plotBeforeAfter()
 
 
 Prob2 = OptimizationProblem(Model2)
@@ -36,3 +37,4 @@ Prob2.gLimit = [100]
 Prob2.Alg = "NLPQLP"
 Prob2.optimize()
 Prob2.plotConvergence()
+Prob2.plotBeforeAfter()

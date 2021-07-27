@@ -233,8 +233,14 @@ def plotBeforeAfter(self, show=True, savePDF=False,savePNG=False,
         ax.spines['right'].set_visible(False)
 
         ax.spines['left'].set_bounds((1, len(index)))
+
+        if xlabelextra=="":
+            val = 0
+        else:
+            val = 1
+
         ax.set_xlim(np.min([0, np.min(r0), np.min(rOpt)]),
-                    np.max([0, np.max(r0), np.max(rOpt)]))
+                    np.max([0, np.max(r0), np.max(rOpt), val]))
 
         ax.spines['left'].set_position(('outward', 24))
         ax.spines['bottom'].set_position(('outward', 14))

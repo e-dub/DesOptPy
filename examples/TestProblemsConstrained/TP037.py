@@ -31,3 +31,4 @@ OptTP037.g = ["g"]
 OptTP037.gLimit = [0]*2
 OptTP037.optimize()
 OptTP037.plotConvergence()
+OptTP037.plotBeforeAfter()
