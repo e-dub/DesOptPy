@@ -208,8 +208,10 @@ def OptimizationProblem(Model):
             if(self.fNorm == None or self.fNorm == True or
                self.fNorm == [True]):
                 self.fNorm = [True]*self.nf
+                #self.fNorm =
             elif self.fNorm == False or self.fNorm == [False]:
                 self.fNorm = [False]*self.nf
+                #self.fNorm = False
 
             if(self.gNorm == None or self.gNorm == True or
                self.gNorm == [True] or self.gNorm == []):
@@ -323,7 +325,7 @@ def OptimizationProblem(Model):
                         fVal = fVal*self.fNormMultiplier
                     else:
                         fVal = fVal/abs(self.f0)*self.fNormMultiplier
-                #change the above to allow for multiobjective
+                #change the amass = 0.005056928723802732bove to allow for multiobjective
                 #fVal = []
                 #for fi in self.f:
                 #    print(getattr(self, fi))
@@ -590,9 +592,18 @@ def OptimizationProblem(Model):
                     self.inform = inform
 
                 self.readHistory()
-
-                self.fNablaOpt = np.array(self.fNablaIt[-1])
-                self.gNablaOpt = np.array(self.gNablaIt[-1]).reshape(self.nx, self.ng)
+                self.fNablaIt = np.array(self.fNablaIt)
+                self.fNormNablaIt = copy.deepcopy(self.fNablaIt)
+                self.fNablaOpt =  copy.deepcopy(self.fNablaIt[-1])
+                self.fNormNablaOpt =  copy.deepcopy(self.fNablaIt[-1])
+                if self.fNorm[0]:
+                    if self.f0 == 0:
+                         self.fNablaIt  = self.fNablaIt/self.fNormMultiplier
+                         self.fNablaOpt = self.fNablaOpt/self.fNormMultiplier
+                    else:
+                         self.fNablaIt  = self.fNablaIt/self.fNormMultiplier*abs(self.f0)
+                         self.fNablaOpt = self.fNablaOpt/self.fNormMultiplier*abs(self.f0)
+                self.gNablaOpt = np.array(self.gNablaIt[-1]).reshape(self.ng, self.nx)
 
 #----------------------------------------------
             elif self.pyGmoAlg:
