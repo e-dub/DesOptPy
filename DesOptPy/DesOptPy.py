@@ -132,10 +132,11 @@ def OptimizationProblem(Model):
                         Posf = Posdg + 1
                 iii = iii - 1
                 self.fIt[ii] = fAll[iii]
-                self.xIt[ii] = xAll[iii]
-                self.xNormIt[ii] = xNormAll[iii]
-                self.gIt[ii] = gAll[iii]
-                self.gMaxIt[ii] = np.max(gAll[iii])
+                self.xIt[ii] = xAll[iii][0:self.nx]
+                self.xNormIt[ii] = xNormAll[iii][0:self.nx]
+                if self.g is not None:
+                    self.gIt[ii] = gAll[iii]
+                    self.gMaxIt[ii] = np.max(gAll[iii])
 
             self.xAll = xAll
             self.xNormAll = xNormAll
