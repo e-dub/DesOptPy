@@ -229,7 +229,7 @@ def OptimizationProblem(Model):
             self.pyOptAlg = False
             self.pyGmoAlg = False
             self.nloptAlg = False
-            if (self.Alg).upper() in {"ALGENCAN", "ALHSO", "COBYLA", "CONMIN",
+            if (self.Alg).upper() in {"ALGENCAN", "ALHSO", "ALPSO", "COBYLA", "CONMIN",
                                       "FILTERSD", "FSQP", "GCMMA", "IPOPT",
                                       "KSOPT", "MIDACO", "MMA", "MMFD",
                                       "NLPQLP", "NSGA2", "PSQP", "SDPEN",
