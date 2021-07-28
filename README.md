@@ -13,6 +13,10 @@ DESign OPTimization in PYthon
 ## Summary
 DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for design optimization, especially of lightweight structures and mechancial systems. This package integrates optimization algorithms from pyOpt and pyGMO, with expansion to others being possible. This allows for complex handling of large-scale optimization problems typical of structural design optimization. The goal of this project is to design a versatile and general optimization toolbox for design optimization in which the setup of an optimization problem is easily, quickly, efficiently and effectively, allowing colleagues and students to dive into optimization problems without difficulty.  It is also meant to be modular and easily expanded.  Though developed for design optimization of mechanical structures, DesOptPy has been written to be flexible and, therefore, optimization problems of other disciplines can be applied.
 
+## Installation
+
+
+
 ## Plotting
 
 Convergence plotting can be carried out after the optimization with the following command (defaults shown):
@@ -73,6 +77,21 @@ An example of the plots created:
 [![LGTM](https://img.shields.io/lgtm/grade/python/github/e-dub/desoptpy.svg?style=flat-square)](https://lgtm.com/projects/g/e-dub/desoptpy)
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+
+[![GitHub Actions Test Badge][17]][18]
+[![Coveralls Badge][13]][14]
+[![PyPI version][10]][11]
+[![PyPI Monthly Downloads][12]][11]
+
+[![Conda](https://img.shields.io/conda/vn/conda-forge/DesOptPy)](https://anaconda.org/conda-forge/DesOptPy)
+[![Build Status](https://dev.azure.com/e-dub/Public/_apis/build/status/e-dub.DesOptPy?branchName=master)](https://dev.azure.com/e-dub/Public/_build/latest?definitionId=29&branchName=master)
+[![Documentation Status](https://readthedocs.com/projects/e-dub-DesOptPy/badge/?version=latest)](https://e-dub-DesOptPy.readthedocs-hosted.com/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/e-dub/DesOptPy/branch/master/graph/badge.svg?token=thwlcuWxdG)](https://codecov.io/gh/e-dub/DesOptPy)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![DOI](https://joss.theoj.org/papers/10.?????/joss.??????/status.svg)](https://doi.org/10.?????/joss.?????)
+
+|JOSS| |DOI|
+|conda| |PyPI|
 
 ### Check
 - [x] check fNorm, seems funky at times
@@ -237,6 +256,36 @@ Initial public release of DesOptPy on GitHub and PyPI - the Python Package Index
 
 ## Contact
 I would also appreciate feedback to any success (or unsuccess) stories with the use of this software.  If you should find errors in the code or documentation, have suggestions for improvements or wish a cooperation, please use the issue function in GitHub.
+
+## Attribution
+
+If you make use of this code, please cite the `JOSS <http://joss.theoj.org>`_
+paper::
+
+    @article{gala,
+      doi = {},
+      url = {},
+      year = {},
+      publisher = {},
+      volume = {},
+      number = {},
+      author = {},
+      title = {'DesOptPy: DESign OPTimization in PYthon'},
+      journal = {The Journal of Open Source Software}
+    }
+
+Please also cite the Zenodo DOI |DOI| as a software citation - see the
+`documentation
+<http://gala.adrian.pw/en/latest/index.html#citation-and-attribution>`_ for up
+to date citation information.
+
+## Contributors
+
+The file AUTHORS.rst has a complete list of contributors to the project.
+
+## License
+
+DesOptPy is a free and open software released under the ??? license. See file LICENSE.
 
 
 ## Acknowledgment

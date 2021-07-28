@@ -279,7 +279,7 @@ def plotBeforeAfter(self, show=True, savePDF=False,savePNG=False,
             "normalized ")
     #BarPlot(self.fIt, "f", "objective function value")
     if self.g is not None:
-        BarPlot(self.g0, self.gOpt, "g", "constraint", color="red")
+        BarPlot(self.g0, self.gOpt, "g", "constraint function", color="red")
 
 
 def PrintTikZInfo():
