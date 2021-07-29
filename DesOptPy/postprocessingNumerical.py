@@ -16,7 +16,8 @@ def checkActiveConstraints(self, activeTol=1e-3):
     self.iActive = self.igActive + self.ixLActive + self.ixUActive
 
 def LagrangianFunction(self):
-
+    if not hasattr(self, "iActive"):
+        checkActiveConstraints(self)
     self.ConNabla = np.block([
         self.gNablaOpt.T,
         np.diag([-1]*self.nx).T,
@@ -35,8 +36,9 @@ def LagrangianFunction(self):
     self.OptResidual = self.fNablaOpt + self.ConNabla@self.Lambda
 
 def checkKKT(self, KKTTol=1e-3):
-    if not hasattr(self, 'Lambda'):
+    if not hasattr(self, "iActive"):
         checkActiveConstraints(self)
+    if not hasattr(self, 'Lambda'):
         LagrangianFunction(self)
     # from numpy.linalg import norm, lstsq, pinv
     # self.kkteps = 1e-3
@@ -60,8 +62,9 @@ def checkKKT(self, KKTTol=1e-3):
 
 
 def calcShadowPrices(self):
-    if not hasattr(self, 'Lambda'):
+    if not hasattr(self, "iActive"):
         checkActiveConstraints(self)
+    if not hasattr(self, 'Lambda'):
         LagrangianFunction(self)
     self.ShadowPrice = np.zeros_like(self.Lambda)
     for i in range(self.ng):
