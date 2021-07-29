@@ -9,12 +9,18 @@ def OptSciPy(self, x0, xL, xU, SysEq):
         if np.array_equal(self.xLast, xVal) != True:
             self.fVal, self.gVal, flag = SysEq(xVal)
             self.xLast = xVal.copy()
+            self.fAll.append(self.fVal)
+            self.gAll.append(self.gVal)
+            self.xAll.append(xVal)
         return(self.fVal)
 
     def ConFnSciPy(xVal):
         if np.array_equal(self.xLast, xVal) != True:
             self.fVal, self.gVal, flag = SysEq(xVal)
             self.xLast = xVal.copy()
+            self.fAll.append(self.fVal)
+            self.gAll.append(self.gVal)
+            self.xAll.append(xVal)
         return(self.gVal)
 
     """
@@ -42,6 +48,9 @@ def OptSciPy(self, x0, xL, xU, SysEq):
 
     """
     from scipy import optimize as spopt
+    self.gAll = []
+    self.fAll = []
+    self.xAll = []
     if "SLSQP" in (self.Alg).upper():
         Results = spopt.minimize(ObjFnSciPy, x0, args=(),
                                  method="SLSQP",
@@ -156,14 +165,34 @@ def OptSciPy(self, x0, xL, xU, SysEq):
     xOpt = np.array(Results.x)
     fOpt = np.array([Results.fun])
 
+
+    self.xNorm0 = x0
+    self.x0 = self.xAll[0]
+    self.f0 = self.fAll[0]
+    self.g0 = self.gAll[0]
     self.fNablaOpt = Results.jac
     self.nIt = Results.nit
-    self.nEval = Results.nfev
+    self.xIt = None
+    self.fIt = None
+    self.gIt = None
+
+    # Todo this is ugly
+    self.nIt = Results.nfev
     try:
         self.nSensEval = Results.njev
     except:
         self.nSensEval = None
     self.inform = Results.success
+
+    if "SLSQP" in (self.Alg).upper():
+        self.fNablaOpt = Results.jac
+    elif 'trust-constr' in (self.Alg).lower():
+        self.fNablaOpt = Results.grad
+        self.gNablaOpt = Results.jac[0]
+
+    if self.g is not None:
+        self.gMax = np.max(self.gAll, 1)
+
 
     # Denormalization
     self.xOpt = [None]*self.nx
