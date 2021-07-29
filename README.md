@@ -137,6 +137,9 @@ An example of the plots created:
 - [ ] sensivity analysis for gVector
 - [ ] mix form of constraints for scalara and vectors, e.g. stressVec and dispScalar
 - [ ] add all normalization techniques from DesOptPy1
+- [ ] gMax and gMaxIt...
+- [ ] stop criteria
+- [ ] rename interface wrappers
 
 ### Print
 - [ ] general beautification, color?
@@ -149,8 +152,10 @@ An example of the plots created:
 - [x] f,gMax together vs. i_it? yes. No "tuft" labels and colored non-connected y axes, blue (objective) left, red (max constraint) right.
 - [x] custom color scheme or atleast tab10?
 - [x] f or fnorm???
-- [ ] convergence plotting does not make snese for more than 20 variables, either split into several plots or turn off!
+- [x] scipy plots
+- [x] convergence plotting does not make snese for more than 20 variables, either split into several plots or turn off! ans: Labels turned off after 25
 - [ ] bar>50? also
+- [ ] beforeafter nonnormalied plots
 
 ### File handling
 - [x]  File handling save all evaluation data
@@ -165,19 +170,24 @@ An example of the plots created:
 - [ ] get IPOPT to work!
 - [ ] xIt etc only for pyOpt algorithms. Others possible?
 - [ ] Cobyla pyopt nIt, now only neval
-- [ ] if cobyla, sens false
+- [x] if cobyla, sens false
 - [x] CONMIN returns too many design variables, this should be filtered after optimization
 - [ ] Why does pyOpt.NSGA2 crash so often?
 - [ ] readHistory 148 self.gOpt takes last design as opt, not true with non-grad based. Check this. (ALHSO, ALPSO, COBYLA, NSGA2, SDPEN)
 - [ ] pyopt.solveopt giving error
+- [x] check if last design is always opt. Could also csompare xOpt with History and take that which is closest! IT IS INDEED LAST DESIGN!
+- [ ] ALPSO does weird things with history. not working! Current cannot print.
+- [x] norm pymo x and f
+- [ ] pymo print
+- [ ] alg options
 
 ### Further algorithms
-- [ ] add pygmo
+- [x] add pygmo
 - [ ] add deap
 https://deap.readthedocs.io/en/master/tutorials/advanced/constraints.html
 - [ ] add cvxopt
 http://cvxopt.org/userguide/index.html
-- [ ] add nlopt
+- [ ] add nlopt, see pygmo
 https://nlopt.readthedocs.io/en/latest/
 - [x] add scipy optimization
 - [ ] add or-tools?
@@ -262,7 +272,7 @@ I would also appreciate feedback to any success (or unsuccess) stories with the 
 If you make use of this code, please cite the `JOSS <http://joss.theoj.org>`_
 paper::
 
-    @article{gala,
+    @article{DesOptPy2021,
       doi = {},
       url = {},
       year = {},
@@ -291,4 +301,10 @@ DesOptPy is a free and open software released under the ??? license. See file LI
 ## Acknowledgment
 The work involved with the 2021 release is supported by the project RTD 2020 – TN201Q LighOpt Lightweight engineering of multibody systems with design optimization funded by the Free University of Bozen-Bolzano.
 
+
+## Copyright
+
+Copyright (c) 2021
+Erich Wehrle
+All rights reserved.
 
