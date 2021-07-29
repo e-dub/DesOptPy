@@ -58,11 +58,6 @@ def OptimizationProblem(Model):
         xDelta = 1e-4
         Alg = "SLSQP"
 
-        pyOptAlg = None
-        SciPyAlg = None
-        pyGmoAlg = None
-        nloptAlg = None
-
         PrintOutput = True
         Alarm = False
         RunFolder = True
@@ -76,6 +71,7 @@ def OptimizationProblem(Model):
         Monitoring = True
         RunDir = None
         MainDir = None
+
         try:
             cpu = cpuinfo.get_cpu_info()['brand']
         except:
