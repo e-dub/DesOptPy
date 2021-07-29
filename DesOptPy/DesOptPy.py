@@ -8,10 +8,10 @@ try:
 except:
     pass
 from DesOptPy.scaling import normalize, denormalize
-from DesOptPy.tools import printResults, checkProblem
+from DesOptPy.tools import checkProblem
+from DesOptPy.pyOptTools import readHistory
+from DesOptPy.printing import printResults
 #from DesOptPy import plotting
-#from DesOptPy import plotting
-
 
 
 def OptimizationProblem(Model):
@@ -63,7 +63,6 @@ def OptimizationProblem(Model):
         pyGmoAlg = None
         nloptAlg = None
 
-
         PrintOutput = True
         Alarm = False
         RunFolder = True
@@ -82,7 +81,6 @@ def OptimizationProblem(Model):
         except:
             cpu = None
 
-        #class KaruschKuhnTucker:
         from DesOptPy.plotting import plotConvergence, plotBeforeAfter
         from DesOptPy.postprocessingNumerical import (
             checkKKT,
@@ -91,110 +89,42 @@ def OptimizationProblem(Model):
             LagrangianFunction
             )
 
-        def readHistory(self):
-            # make function of new file
-            import pyOpt
-            OptHist = pyOpt.History(self.Name, "r")
-            xAll = OptHist.read([0, -1], ["x"])[0]["x"]
-            xNormAll = copy.deepcopy(xAll)
-            #xNormAll = xAll.copy()
-            for ei in range(len(xAll)):
-                for xi, xNormi in enumerate(self.xNorm):
-                    if xNormi:
-                        xAll[ei][xi] = denormalize(xAll[ei][xi], self.xL[xi],
-                                                   self.xU[xi])
-            fAll = OptHist.read([0, -1], ["obj"])[0]["obj"]
-            gAll = OptHist.read([0, -1], ["con"])[0]["con"]
-            gNablaIt = OptHist.read([0, -1], ["grad_con"])[0]["grad_con"]
-            if self.Alg == "NLPQLP":
-                gAll = [g*-1 for g in gAll]
-            fNablaIt = OptHist.read([0, -1], ["grad_obj"])[0]["grad_obj"]
-            failIt = OptHist.read([0, -1], ["fail"])[0]["fail"]
-            OptHist.close()
-            xAll = [i.tolist() for i in xAll]
-            xNormAll = [i.tolist() for i in xNormAll]
-            fAll = [i.tolist() for i in fAll]
-            gAll = [i.tolist() for i in gAll]
-            fNablaIt = [i.tolist() for i in fNablaIt]
-            gNablaIt = [i.tolist() for i in gNablaIt]
-            failIt = [i.tolist() for i in failIt]
-
-            self.nIt = len(fNablaIt)
-            self.fIt = [None]*self.nIt
-            self.fNormIt = [None]*self.nIt
-            self.xIt = [None]*self.nIt
-            self.xNormIt = [None]*self.nIt
-            self.gIt = [None]*self.nIt
-            self.gMaxIt = [None]*self.nIt
-            for ii in range(self.nIt):
-                Posdg = OptHist.cues["grad_con"][ii][0]
-                Posf = OptHist.cues["obj"][ii][0]
-                iii = 0
-                while Posdg > Posf:
-                    iii = iii + 1
-                    try:
-                        Posf = OptHist.cues["obj"][iii][0]
-                    except:
-                        Posf = Posdg + 1
-                iii = iii - 1
-                if self.fNorm[0]:
-                    if self.f0 == 0:
-                        self.fIt[ii] = np.array(fAll[iii])/self.fNormMultiplier
-                    else:
-                        self.fIt[ii] = np.array(fAll[iii])*abs(self.f0)/self.fNormMultiplier
-                else:
-                    self.fIt[ii] = fAll[iii]
-                self.fNormIt[ii] = fAll[iii]
-
-                self.xIt[ii] = xAll[iii][0:self.nx]
-                self.xNormIt[ii] = xNormAll[iii][0:self.nx]
-                if self.g is not None:
-                    self.gIt[ii] = gAll[iii]
-                    self.gMaxIt[ii] = np.max(gAll[iii])
-
-            self.xAll = xAll
-            self.xNormAll = xNormAll
-            self.fAll = fAll
-            self.gAll = gAll
-            self.gNablaIt = gNablaIt
-            self.fNablaIt = fNablaIt
-            if self.g is not None:
-                self.gOpt = np.array(self.gIt[-1])
-                self.gMax = np.max(self.gAll, 1)
-                self.g0 = self.gIt[0]
-
         def optimize(self):
+            # check model
+            checkProblem(self)
 
+            # set model name and time
             self.Model = Model
             #self.ModelName = str(self.Model.__name__)
             self.t0 = datetime.datetime.now()
             self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
             self.Name = self.ModelName+self.Alg+self.t0str
+
+            # initialize function evaluations
             self.nEval = 0
 
-            checkProblem(self)
             if type(self.f) == str:
                 self.f = [self.f]
 
             # set general sizes of optimization problem
             self.nx = max(np.size(self.x), np.size(self.x0), np.size(self.xL))
             self.nf = np.size(self.f)
-            if self.g == None or self.g == []:
+            if self.g is None or self.g == []:
                 self.ng = 0
             else:
                 self.ng = max(np.size(self.g), np.size(self.gLimit))
 
             # check if one parameter for all design variables, i.e. vector
-            if np.size(self.x) == 1 and  self.nx>1:
+            if np.size(self.x) == 1 and self.nx > 1:
                 self.xVector = True
             else:
                 self.xVector = False
 
             # # check if one parameter for all constraints, i.e. vector
-            if np.size(self.g) == 1 and self.ng>1:
-                 self.gVector = True
+            if np.size(self.g) == 1 and self.ng > 1:
+                self.gVector = True
             else:
-                 self.gVector = False
+                self.gVector = False
 
             # Reformat x0, xL and xU to be np.arrays and of proper size
             if type(self.x0) == list:
@@ -203,47 +133,54 @@ def OptimizationProblem(Model):
                 self.xL = np.array(self.xL)
             if type(self.xU) == list:
                 self.xU = np.array(self.xU)
-            if np.size(self.xL) == 1 and  self.nx>1:
+            if np.size(self.xL) == 1 and self.nx > 1:
                 self.xL = np.array([self.xL]*self.nx)
                 self.xU = np.array([self.xU]*self.nx)
 
             # Reformat and set normalization (scaling)
-            if(self.xNorm == None or self.xNorm == True or
-               self.xNorm == [True]):
+            if(self.xNorm is None or
+               self.xNorm is True or
+               self.xNorm == [True]
+               ):
                 self.xNorm = [True]*self.nx
-            elif self.xNorm == False or self.xNorm == [False]:
+            elif self.xNorm is False or self.xNorm == [False]:
                 self.xNorm = [False]*self.nx
 
-            if(self.fNorm == None or self.fNorm == True or
-               self.fNorm == [True]):
+            if(self.fNorm is None or
+               self.fNorm is True or
+               self.fNorm == [True]
+               ):
                 self.fNorm = [True]*self.nf
                 #self.fNorm =
-            elif self.fNorm == False or self.fNorm == [False]:
+            elif self.fNorm is False or self.fNorm == [False]:
                 self.fNorm = [False]*self.nf
                 #self.fNorm = False
 
-            if(self.gNorm == None or self.gNorm == True or
-               self.gNorm == [True] or self.gNorm == []):
+            if(self.gNorm is None or
+               self.gNorm is True or
+               self.gNorm == [True] or
+               self.gNorm == []
+               ):
                 self.gNorm = [True]*self.ng
-            elif self.gNorm == False or self.gNorm == [False]:
+            elif self.gNorm is False or self.gNorm == [False]:
                 self.gNorm = [False]*self.ng
             for i, gLimiti in enumerate(self.gLimit):
                 if gLimiti == 0:
                     self.gNorm[i] = False
 
-            if(self.gType == None  or self.gType == "upper" or
-               self.gType == ["upper"]):
+            if(self.gType is None or
+               self.gType == "upper" or
+               self.gType == ["upper"]
+               ):
                 self.gType = ["upper"]*self.ng
             elif self.gType == "lower" or self.gType == ["lower"]:
                 self.xNorm = ["lower"]*self.nx
             # TODO equality constraints?
 
-
             # TODO
             #if self.fType.upper()[0:3] == "MIN":
             #
             #
-
             # Optimization Algorithm
             self.SciPyAlg = False
             self.pyOptAlg = False
@@ -256,16 +193,20 @@ def OptimizationProblem(Model):
                                       "SDPEN", "SLSQP", "SOLVOPT"}:
                 self.pyOptAlg = True
             elif ((self.Alg[:5]).upper() == "SCIPY" or
-                  (self.Alg[-5:]).upper == "SCIPY"):
+                  (self.Alg[-5:]).upper == "SCIPY"
+                  ):
                 self.SciPyAlg = True
             elif ((self.Alg[:5]).upper() == "PYGMO" or
-                  (self.Alg[-5:]).upper == "PYGMO"):
+                  (self.Alg[-5:]).upper == "PYGMO"
+                  ):
                 self.pyGmoAlg = True
             elif ((self.Alg[:5]).upper() == "NLOPT" or
-                  (self.Alg[-5:]).upper == "NLOPT"):
+                  (self.Alg[-5:]).upper == "NLOPT"
+                  ):
                 self.nloptAlg = True
             else:
                 raise Exception("Not a valid optimization algorithm")
+
             # File handling
             if self.RunFolder:
                 self.MainDir = os.getcwd()
@@ -276,10 +217,13 @@ def OptimizationProblem(Model):
                     self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
                     self.Name = self.ModelName+self.Alg+self.t0str
                     self.RunDir = self.MainDir+os.sep+"DesOpt"+self.Name
-                shutil.copytree(self.MainDir, self.RunDir,
-                                ignore=shutil.ignore_patterns("DesOpt*", ".*",
+                shutil.copytree(self.MainDir,
+                                self.RunDir,
+                                ignore=shutil.ignore_patterns("DesOpt*",
+                                                              ".*",
                                                               ".git*",
-                                                              "*.pyc", "tmp*",
+                                                              "*.pyc",
+                                                              "tmp*",
                                                               "__*"))
                 os.chdir(self.RunDir)
 
@@ -291,10 +235,12 @@ def OptimizationProblem(Model):
                       "\n\n    " + self.RunDir + "\n\n")
 
             def SysEq(xVal):
+                # TODO tool for file handling and remove from here?
                 # create folder and change into it
                 if self.SaveEvaluations:
                     EvalDir = self.RunDir+os.sep+str(self.nEval+1).zfill(5)
-                    shutil.copytree(self.MainDir, EvalDir,
+                    shutil.copytree(self.MainDir,
+                                    EvalDir,
                                     ignore=shutil.ignore_patterns("DesOpt*",
                                                                   ".git*",
                                                                   ".*",
@@ -315,7 +261,9 @@ def OptimizationProblem(Model):
                 else:
                     for i, xi in enumerate(xVal):
                         if self.xNorm[i]:
-                            xVal[i] = denormalize(xi, self.xL[i], self.xU[i])
+                            xVal[i] = denormalize(xi,
+                                                  self.xL[i],
+                                                  self.xU[i])
                         if self.x is not None:
                             setattr(self.Model, self.x[i], xVal[i])
 
@@ -372,7 +320,6 @@ def OptimizationProblem(Model):
                     os.chdir("..")
 
                 self.nEval += 1
-
                 return(fVal, gVal, 0)
 
             def SensEq(xVal, fVal, gVal):
@@ -413,9 +360,11 @@ def OptimizationProblem(Model):
                 fNablaVal = getattr(self.Model, self.fNabla[0])
                 if self.fNorm[0]:
                     if self.f0 == 0:
-                        fNablaVal = fNablaVal *self.fNormMultiplier
+                        fNablaVal = fNablaVal * self.fNormMultiplier
                     else:
-                        fNablaVal = fNablaVal /abs(self.f0)*self.fNormMultiplier
+                        fNablaVal = (fNablaVal /
+                                     abs(self.f0)*self.fNormMultiplier
+                                     )
                 for i in range(len(xVal)):
                     if self.xNorm[i]:
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
@@ -513,7 +462,6 @@ def OptimizationProblem(Model):
                         xVal[i] = normalize(xVal[i], self.xL[i], self.xU[i])
                 self.nSensEval += 1
 
-
             # Normalization
             x0 = [None]*self.nx
             xL = [None]*self.nx
@@ -528,7 +476,6 @@ def OptimizationProblem(Model):
                     xL[i] = self.xL[i]
                     xU[i] = self.xU[i]
 
-#----------------------------------------------
             # Seperate file an dchild class??...
             if self.pyOptAlg:
                 """
@@ -558,6 +505,7 @@ def OptimizationProblem(Model):
                                                  store_hst=self.Name)
                     else:
                         fOpt, xOpt, inform = Alg(Problem, store_hst=self.Name)
+                        #fOpt, xOpt, inform = Alg(Problem)
 
                 elif self.Sensitivity == "autograd":
                     fOpt, xOpt, inform = Alg(Problem, sens_type=AutoSensEq,
@@ -603,33 +551,16 @@ def OptimizationProblem(Model):
                 except:
                     self.inform = inform
 
-                self.readHistory()
-                self.fNablaIt = np.array(self.fNablaIt)
-                self.fNormNablaIt = copy.deepcopy(self.fNablaIt)
-                self.fNablaOpt =  copy.deepcopy(self.fNablaIt[-1])
-                self.fNormNablaOpt =  copy.deepcopy(self.fNablaIt[-1])
-                if self.fNorm[0]:
-                    if self.f0 == 0:
-                         self.fNablaIt  = self.fNablaIt/self.fNormMultiplier
-                         self.fNablaOpt = self.fNablaOpt/self.fNormMultiplier
-                    else:
-                         self.fNablaIt  = self.fNablaIt/self.fNormMultiplier*abs(self.f0)
-                         self.fNablaOpt = self.fNablaOpt/self.fNormMultiplier*abs(self.f0)
-                self.gNablaOpt = np.array(self.gNablaIt[-1]).reshape(self.ng, self.nx)
+                readHistory(self)
 
-#----------------------------------------------
             elif self.pyGmoAlg:
                 from DesOptPy.interfaces import PyGmo
                 PyGmo.OptPyGmo(self, x0, xL, xU, SysEq)
 
-#----------------------------------------------
-            # Seperate file and child class??
             elif self.SciPyAlg:
                 from DesOptPy.interfaces import SciPy
                 SciPy.OptSciPy(self, x0, xL, xU, SysEq)
 
-#----------------------------------------------
-            # Seperate file and child class??
             elif self.nloptAlg:
                 from DesOptPy.interfaces import NlOpt
                 NlOpt.OptNlOpt(self, x0, xL, xU, SysEq)
@@ -638,9 +569,13 @@ def OptimizationProblem(Model):
                 pass
 
 
-# Optimization over...now postprocessing and such
+            # Optimization over...now postprocessing and such
             self.t1 = datetime.datetime.now()
             self.tOpt = (self.t1-self.t0)
+
+            if self.Alarm and self.OS == "Linux":
+                os.system("play --no-show-progress --null --channels 1 " +
+                          "-t alsa synth 2 sine 329.63 fade q 0.05 0.9 0.05")
 
             if self.PrintOutput:
                 printResults(self)

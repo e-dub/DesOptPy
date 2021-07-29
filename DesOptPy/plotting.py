@@ -13,53 +13,71 @@ plt.rcParams.update({
 })
 
 maxDots = 20
+maxLineLables = 25
 lineThick = 0.75
 
 
 def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                     saveSVG=False, saveTikZ=False):
 
-    def ConvergencePlot(r, legend, ylabel=[], plotType=1):
+    # TDO: if nEval then only dots!
+    # TODO change x label!
+    def ConvergencePlot(r, legend, ylabel=[], plotType=1, xAxis="it"):
+        if self.xIt == None:
+            xAxisVal = self.nEval
+            xLabel = "evaluation $i_{\mathrm{eval}}$"
+        else:
+            xAxisVal = self.nIt
+            xLabel = "iteration $i_{it}$"
         if plotType==1:
             fig, ax = plt.subplots()
             if legend == "g" and (np.max(r)-np.min(r))>1e3:
                 log = True
-            if np.size(r) > self.nIt:
-                for i in range(np.size(r)//self.nIt):
-                    ax.plot(np.array(r)[:, i], clip_on=False, linestyle="-",
-                            linewidth=lineThick, zorder=1,
+            if np.size(r) > xAxisVal:
+                for i in range(np.size(r)//xAxisVal):
+                    ax.plot(np.array(r)[:, i],
+                           linestyle="-",
+                            clip_on=False,
+                            linewidth=lineThick,
+                            zorder=1,
                             label="$" + legend + "_{"+str(i+1)+"}$")
-                    if self.nIt < maxDots:
-                        ax.scatter(list(range(0, self.nIt, 1)), np.array(r)[:, i],
+                    if xAxisVal < maxDots:
+                        ax.scatter(list(range(0, xAxisVal, 1)), np.array(r)[:, i],
                                    color='white', s=50, zorder=2)
-                        ax.scatter(list(range(0, self.nIt, 1)),
+                        ax.scatter(list(range(0, xAxisVal, 1)),
                                    np.array(r)[:, i], clip_on=False, s=5, zorder=3)
             else:
-                ax.plot(r, clip_on=False, linestyle="-", linewidth=lineThick,
-                        zorder=1, label="$" + legend + "$")
-                if self.nIt < maxDots:
-                    ax.scatter(list(range(0, self.nIt, 1)), r,
+                ax.plot(r,
+                        #".",
+                        linestyle="-",
+                        clip_on=False,
+                        linewidth=lineThick,
+                        zorder=1,
+                        label="$" + legend + "$")
+                if xAxisVal < maxDots:
+                    ax.scatter(list(range(0, xAxisVal, 1)), r,
                                color='white', s=50, zorder=2)
-                    ax.scatter(list(range(0, self.nIt, 1)), r, s=5, zorder=3,
+                    ax.scatter(list(range(0, xAxisVal, 1)), r, s=5, zorder=3,
                                clip_on=False)
-            plt.xlabel("iteration $i_{it}$")
+            plt.xlabel(xLabel)
             dufte.ylabel(ylabel)
-            dufte.legend()
+            if np.size(r)/xAxisVal < maxLineLables+1:
+                dufte.legend()
             sns.despine()
 
             # axes shift
             buffer = 0.1
-            xDelta = self.nIt-1
+            xDelta = xAxisVal-1
             yDelta = np.max(r)-np.min(r)
 
-            ax.spines['bottom'].set_bounds(0, self.nIt-1)
+            ax.spines['bottom'].set_bounds(0, xAxisVal-1)
             ax.spines['left'].set_bounds(np.min(r),
                                          np.max(r))
-            if self.nIt < 21:
-                x_ticks = list(range(0, self.nIt, 1))
+            if xAxisVal < 21:
+                x_ticks = list(range(0, xAxisVal, 1))
                 ax.xaxis.set_ticks(x_ticks)
-            elif self.nIt < 41:
-                x_ticks = list(range(0, self.nIt, 2))
+            elif xAxisVal < 41:
+                x_ticks = list(range(0, xAxisVal, 2))
                 ax.xaxis.set_ticks(x_ticks)
             #yStep = yDelta//3
             #y_ticks = list(np.arange(np.min(r), np.max(r), int(yStep)))
@@ -70,7 +88,7 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
             #    x_ticks = list(range(0, self.nIt))
             #ax.yaxis.set_major_locator(ticker.MultipleLocator(base=25))
             #ax.tick_params(direction='in')
-            ax.set_xlim([-buffer*xDelta, self.nIt-1])
+            ax.set_xlim([-buffer*xDelta, xAxisVal-1])
             #ax.set_ylim([ax.get_ylim()[0], ax.get_ylim()[1]])
             ax.set_ylim([np.min(r)-buffer*yDelta,
                          np.max(r)])
@@ -106,43 +124,61 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                      color="tab:blue", zorder=1)
             ax2.plot(r[1], clip_on=False, linestyle="-", linewidth=lineThick,
                      color="tab:red", zorder=1)
-            if self.nIt < maxDots:
-                ax.scatter(list(range(0, self.nIt, 1)), r[0],
-                           color='white', s=50, zorder=2)
-                ax.scatter(list(range(0, self.nIt, 1)), r[0], s=5, zorder=3,
-                           clip_on=False, color="tab:blue")
-                ax2.scatter(list(range(0, self.nIt, 1)), r[1],
-                           color='white', s=50, zorder=2)
-                ax2.scatter(list(range(0, self.nIt, 1)), r[1], s=5, zorder=3,
-                           clip_on=False, color="tab:red")
+            if xAxisVal < maxDots:
+                ax.scatter(list(range(0, xAxisVal, 1)),
+                           r[0],
+                           color='white',
+                           s=50,
+                           zorder=2)
+                ax.scatter(list(range(0, xAxisVal, 1)),
+                           r[0],
+                           s=5,
+                           zorder=3,
+                           clip_on=False,
+                           color="tab:blue")
+                ax2.scatter(list(range(0, xAxisVal, 1)),
+                            r[1],
+                            color='white',
+                            s=50,
+                            zorder=2)
+                ax2.scatter(list(range(0, xAxisVal, 1)),
+                            r[1],
+                            s=5,
+                            zorder=3,
+                            clip_on=False,
+                            color="tab:red")
             adjust_spines(ax, ['bottom', 'left'], "tab:blue")
             adjust_spines(ax2, ['right'], "tab:red")
-            ax.set_xlim([0, self.nIt-1])
-            ax2.set_xlim([0, self.nIt-1])
-            if self.nIt < 21:
-                x_ticks = list(range(0, self.nIt, 1))
+            ax.set_xlim([0, xAxisVal-1])
+            ax2.set_xlim([0, xAxisVal-1])
+            if xAxisVal < 21:
+                x_ticks = list(range(0, xAxisVal, 1))
                 ax.xaxis.set_ticks(x_ticks)
                 ax2.xaxis.set_ticks(x_ticks)
-            elif self.nIt < 41:
-                x_ticks = list(range(0, self.nIt, 2))
+            elif xAxisVal < 41:
+                x_ticks = list(range(0, xAxisVal, 2))
                 ax.xaxis.set_ticks(x_ticks)
                 ax2.xaxis.set_ticks(x_ticks)
-            ax.set_ylim([min(r[0])[0], max(r[0])[0]])
+            ax.set_ylim([min(r[0]), max(r[0])])
             ax2.set_ylim([min(np.min(r[1]), 0), max(np.max(r[1]), 0)])
             #ax2.set_ylim([np.min(np.array(r)[:,1]), np.max(np.array(r)[:,1])])
             #ax.set_ylabel("objective value $f$", rotation='horizontal', position=(0, 1.05))
             #ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', position=(0, 1.09))
 
-            ax.set_ylabel("objective function value $f$", rotation='horizontal', verticalalignment='baseline')
+            ax.set_ylabel("objective function value $f$",
+                          rotation='horizontal',
+                          verticalalignment='baseline')
             ax.yaxis.set_label_coords(-0.3, 1.05)
-            ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', verticalalignment='baseline')
+            ax2.set_ylabel("max constraint value $g_{\max}$",
+                           rotation='horizontal',
+                           verticalalignment='baseline')
             ax2.yaxis.set_label_coords(1.3, 1.05)
 
             #ax.set_ylabel("objective function value $f$", rotation='horizontal', verticalalignment='baseline', loc="top")
             #ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', verticalalignment='baseline', loc="top")
 
 
-            ax.set_xlabel("iteration $i_{it}$")
+            ax.set_xlabel(xLabel)
             ax.tick_params(axis='y', colors="tab:blue")
             ax2.tick_params(axis='y', colors="tab:red")
             ax.yaxis.label.set_color("tab:blue")
@@ -160,11 +196,16 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                         "ObjectiveMaxConstraintConvergence")
 
         if savePNG:
-            plt.savefig(plotName + '.png', dpi=400, transparent=True,
-                        bbox_inches='tight', pad_inches=0)
+            plt.savefig(plotName + '.png',
+                        dpi=400,
+                        transparent=True,
+                        bbox_inches='tight',
+                        pad_inches=0)
         if saveTikZ:
             import tikzplotlib
-            tikzplotlib.save(plotName + ".pgf", show_info=False, strict=False,
+            tikzplotlib.save(plotName + ".pgf",
+                             show_info=False,
+                             strict=False,
                              extra_axis_parameters={
                                  "ylabel style={rotate=90.0}",
                                  "xmin=0",
@@ -173,20 +214,49 @@ def plotConvergence(self, show=True, savePDF=False,savePNG=False,
                                  })
             #plt.savefig(plotName + '.pgf', transparent=True)
         if saveSVG:
-            plt.savefig(plotName + ".svg", transparent=True,
-                        bbox_inches='tight', pad_inches=0)
+            plt.savefig(plotName + ".svg",
+                        transparent=True,
+                        bbox_inches='tight',
+                        pad_inches=0)
         if savePDF:
-            plt.savefig(plotName + '.pdf', backend='pgf', transparent=True,
-                        bbox_inches='tight', pad_inches=0)
+            plt.savefig(plotName + '.pdf',
+                        backend='pgf',
+                        transparent=True,
+                        bbox_inches='tight',
+                        pad_inches=0)
         if show:
             plt.show()
 
-    ConvergencePlot(self.xIt, "x", "design variable value")
-    ConvergencePlot(self.xNormIt, "\hat{x}", "normalized\ndesign variable value")
-    ConvergencePlot(self.fIt, "f", "objective function value")
-    if self.g is not None:
-        ConvergencePlot(self.gIt, "g", "constraint function value")
-        ConvergencePlot([self.fIt, self.gMaxIt], ["f", "g"], plotType=2)
+    if self.xIt == None:
+        ConvergencePlot(self.xAll,
+                        "x",
+                        "design variable value",
+                        xAxis="eval")
+        #ConvergencePlot(self.xNormAll,
+        #                "\hat{x}",
+        #                "normalized\ndesign variable value",
+        #                xAxis="eval")
+        ConvergencePlot(self.fAll,
+                        "f",
+                        "objective function value",
+                        xAxis="eval")
+        if self.g is not None:
+            ConvergencePlot(self.gAll,
+                            "g",
+                            "constraint function value",
+                            xAxis=self.nEval)
+            ConvergencePlot([self.fAll, self.gMax],
+                            ["f", "g"],
+                            plotType=2,
+                            xAxis="eval")
+
+    else:
+        ConvergencePlot(self.xIt, "x", "design variable value")
+        ConvergencePlot(self.xNormIt, "\hat{x}", "normalized\ndesign variable value")
+        ConvergencePlot(self.fIt, "f", "objective function value")
+        if self.g is not None:
+            ConvergencePlot(self.gIt, "g", "constraint function value")
+            ConvergencePlot([self.fIt, self.gMaxIt], ["f", "g"], plotType=2)
 
     # # objective and max constraint convergence
     # fig, ax1 = plt.subplots()
@@ -275,7 +345,7 @@ def plotBeforeAfter(self, show=True, savePDF=False,savePNG=False,
             plt.show()
 
     BarPlot(self.x0, self.xOpt, "x", "design variable")
-    BarPlot(np.array(self.xNormIt[0]), self.xNormOpt, "\hat{x}", "design variable",
+    BarPlot(np.array(self.xNorm0), self.xNormOpt, "\hat{x}", "design variable",
             "normalized ")
     #BarPlot(self.fIt, "f", "objective function value")
     if self.g is not None:
