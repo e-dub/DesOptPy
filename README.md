@@ -115,7 +115,7 @@ An example of the plots created:
 - [x] add initial step to calc nx, ng and source of algorithm!
 - [ ] make all values numpy arrays
 - [ ] return arrays!!! not lists, for gradients important!
-- [ ] remove parameter pyOptAlg = True
+- [x] remove parameter pyOptAlg = True
 - [ ] add option, fType min max
 - [ ] normalize and denormalize as vector operations? not index assignment?
 - [ ] nit for nongrad alg
@@ -140,6 +140,7 @@ An example of the plots created:
 - [ ] gMax and gMaxIt...
 - [ ] stop criteria
 - [ ] rename interface wrappers
+- [ ] save iteration values as hdf5?
 
 ### Print
 - [ ] general beautification, color?
@@ -154,7 +155,7 @@ An example of the plots created:
 - [x] f or fnorm???
 - [x] scipy plots
 - [x] convergence plotting does not make snese for more than 20 variables, either split into several plots or turn off! ans: Labels turned off after 25
-- [ ] bar>50? also
+- [x] bar>50? also. ans:leaving it
 - [ ] beforeafter nonnormalied plots
 
 ### File handling
@@ -178,8 +179,10 @@ An example of the plots created:
 - [x] check if last design is always opt. Could also csompare xOpt with History and take that which is closest! IT IS INDEED LAST DESIGN!
 - [ ] ALPSO does weird things with history. not working! Current cannot print.
 - [x] norm pymo x and f
-- [ ] pymo print
+- [x] pygmo print
 - [ ] alg options
+- [ ] alg selection, pyopt as defautl, allow for pyopt_...
+- [ ] move pyopttools to interfaces
 
 ### Further algorithms
 - [x] add pygmo
