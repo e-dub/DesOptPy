@@ -1,7 +1,7 @@
 
 <p align=center><img height="50%" width="50%" src="figures/DesOptPy_20210725.svg"></p>
 
-# DesOptPy
+# [DesOptPy][0]
 DESign OPTimization in PYthon
 
 [![PyPi Version](https://img.shields.io/pypi/v/desoptpy.svg?style=flat-square)](https://pypi.org/project/desoptpy)
@@ -56,6 +56,7 @@ An example of the plots created:
 - [x] new github repository
 - [ ] Result file name? DesOpt$ModelName$Alg$TimeStamp
 - [x] Update logo
+- [ ] extend to symbolic
 - [ ] Release
 - [ ] Publish on Open Source Software?
 - [ ] move checklist from README
@@ -97,7 +98,6 @@ An example of the plots created:
 - [x] check fNorm, seems funky at times
 - [x] check xNorm...
 - [ ] check when gNorm=True and gLimit=0
-
 ### Examples
 - [x] set up example with SiMuLi
 - [x] set up example with EasyBeam
@@ -107,8 +107,8 @@ An example of the plots created:
 - [x] old DesOptPy examples
 - [ ] topology optimization example (Hofer)
 - [ ] max example (to correct fType)
-
-
+### VIP very important problems
+- [] Opt.g = ["gFreqBallistic"] and Opt.g = "gFreqBallistic"
 ### Code general
 - [x] variable function for primal and sens
 - [x] different way to define design variables with x vector
@@ -183,6 +183,7 @@ An example of the plots created:
 - [ ] alg options
 - [ ] alg selection, pyopt as defautl, allow for pyopt_...
 - [ ] move pyopttools to interfaces
+- [ ] pyopt nongradient, find popsize and then num of generations
 
 ### Further algorithms
 - [x] add pygmo
