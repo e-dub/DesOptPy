@@ -8,23 +8,25 @@ import numpy as np
 
 class Cantilever:
     e = 2.9e7
-    r = 40000.
-    fx = 500.
-    fy = 1000.
+    r = 40000.0
+    fx = 500.0
+    fy = 1000.0
     w = 1.8
     t = 1.0
-    L = 100.
+    L = 100.0
     D0 = 2.2535
     area = None
     stress = None
 
     def calc(self):
-        self.area = self.w*self.t
-        self.stress = 600*self.fy/self.w/self.t**2+600*self.fx/self.w**2/self.t
-        D1 = 4.*pow(self.L, 3)/self.e/self.area
-        D2 = pow(self.fy/self.t**2, 2)+pow(self.fx/self.w**2, 2)
-        D3 = D1/np.sqrt(D2)/self.D0
-        self.D4 = D1*np.sqrt(D2)/self.D0
+        self.area = self.w * self.t
+        self.stress = (
+            600 * self.fy / self.w / self.t ** 2 + 600 * self.fx / self.w ** 2 / self.t
+        )
+        D1 = 4.0 * pow(self.L, 3) / self.e / self.area
+        D2 = pow(self.fy / self.t ** 2, 2) + pow(self.fx / self.w ** 2, 2)
+        D3 = D1 / np.sqrt(D2) / self.D0
+        self.D4 = D1 * np.sqrt(D2) / self.D0
 
 
 Prob1 = OptimizationProblem(Cantilever)

@@ -144,6 +144,7 @@ An example of the plots created:
 - [ ] stop criteria
 - [ ] rename interface wrappers
 - [ ] save iteration values as hdf5?
+- [ ] force f, g, fNabla, gNabla to be list of strings
 
 ### Print
 - [ ] general beautification, color?

@@ -39,7 +39,6 @@ class Truss3Bar:
         self.dispx = 2**0.5*self.el*self.Fx/(self.A1*self.E)
         self.dispy = (2**0.5*self.el*self.Fy /
                       ((self.A1+2**0.5*self.A2)*self.E))
-        print(self.dispy)
 
     def sensitivity(self):
         """

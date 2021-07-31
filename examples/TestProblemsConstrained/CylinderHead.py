@@ -39,6 +39,7 @@ OptCylinderHead.xU = [2.164, 4.0]
 OptCylinderHead.f = "f"
 OptCylinderHead.g = ["g1", "g2", "g3"]
 OptCylinderHead.gLimit = [0]*3
+OptCylinderHead.Alg = "SOLVOPT"
 OptCylinderHead.optimize()
 OptCylinderHead.plotConvergence()
 OptCylinderHead.plotBeforeAfter()

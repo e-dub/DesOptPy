@@ -85,7 +85,7 @@ OptProb.f = "fLow"
 OptProb.fType = "max"
 OptProb.Alg = "NLPQLP"
 OptProb.Sensitivity = "calcEigSens"
-OptProb.fNabla = "fLowNabla"
+OptProb.fNabla = ["fLowNabla"]
 OptProb.optimize()
 OptProb.plotConvergence()
 OptProb.plotBeforeAfter()

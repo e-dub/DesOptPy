@@ -1,5 +1,5 @@
 import numpy as np
-from DesOptPy import OptimizationSetup
+from DesOptPy import OptimizationProblem as OptimizationSetup
 from TestModelsUnconstrained import Ackley, Michalewicz, Styblinski, Rosenbrock
 
 #
@@ -23,6 +23,7 @@ ProbStyblinski.optimize()
 ProbRosenbrock = OptimizationSetup(Rosenbrock)
 ProbRosenbrock.RemoveRunFolder = False
 nx = 10
+ProbRosenbrock.x = "x"
 ProbRosenbrock.x0 = [+0]*nx
 ProbRosenbrock.xL = [-5]*nx
 ProbRosenbrock.xU = [+5]*nx

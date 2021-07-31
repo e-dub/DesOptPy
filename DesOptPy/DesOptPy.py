@@ -362,7 +362,7 @@ def OptimizationProblem(Model):
                     eval("self.Model."+self.Sensitivity+"(self.Model)")
 
                 # Senstivity of objective
-                fNablaVal = getattr(self.Model, self.fNabla)
+                fNablaVal = getattr(self.Model, self.fNabla[0])
                 if self.fNorm[0]:
                     if self.f0 == 0:
                         fNablaVal = fNablaVal * self.fNormMultiplier
@@ -372,7 +372,6 @@ def OptimizationProblem(Model):
                                      )
                 for i in range(len(xVal)):
                     if self.xNorm[i]:
-                        print(i)
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
 
                 # Senstivity of constraints
