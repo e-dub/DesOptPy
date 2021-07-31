@@ -3,9 +3,7 @@ import numpy as np
 import dufte
 import seaborn as sns
 
-# plt.style.use(dufte.style)
-# plt.rcParams['font.family'] = 'serif'
-# plt.rcParams['font.serif'] = "Palatino"
+
 plt.rcParams.update(
     {
         "text.usetex": True,
@@ -271,6 +269,8 @@ def plotConvergence(
                 strict=False,
                 extra_axis_parameters={
                     "ylabel style={rotate=90.0}",
+                    'height=\\figureheight',
+                    'width=\\figurewidth',
                     "xmin=0",
                     "ymin=" + str(np.min(r)),
                     "ymax=" + str(np.max(r)),
@@ -429,6 +429,8 @@ def plotBeforeAfter(
                 strict=False,
                 extra_axis_parameters={
                     "ylabel style={rotate=90.0}",
+                    'height=\\figureheight',
+                    'width=\\figurewidth',
                 },
             )
             # plt.savefig(plotName + '.pgf', transparent=True)
