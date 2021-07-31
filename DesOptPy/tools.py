@@ -96,3 +96,11 @@ def checkAlgorithms():
             print("    pip install scipy -U")
     except:
         print("\033[31m" + "SciPy NOT INSTALLED" + "\033[0m")
+
+    try:
+        import pygmo
+
+        algAvail = "pyGMO algorithms available"
+        print("\033[32m" + algAvail + "\033[0m")
+    except:
+        print("\033[31m" + "pyGMO NOT INSTALLED" + "\033[0m")
