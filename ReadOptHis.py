@@ -1,6 +1,7 @@
 import pyOpt
 import numpy as np
 
+
 def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
 
     # Open, read and close history file
@@ -13,31 +14,32 @@ def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
     failIt = OptHist.read([0, -1], ["fail"])[0]["fail"]
     OptHist.close()
 
-
-
-
     nx = len(x0)
     ng = len(gc)
     if Alg == "NLPQLP":
         gAll = [x * -1 for x in gAll]
 
     nIt = len(fNablaIt)
-    if Alg in ["COBYLA", "NSGA2", "SDPEN", "ALPSO", "MIDACO", "ALGENCAN",
-               "ALHSO"] or Alg[:5] == "PyGMO":
+    if (
+        Alg in ["COBYLA", "NSGA2", "SDPEN", "ALPSO", "MIDACO", "ALGENCAN", "ALHSO"]
+        or Alg[:5] == "PyGMO"
+    ):
         nIt = len(fAll)
         fIt = fAll
         xIt = xAll
         gIt = gAll
     elif Alg == "NSGA-II" and np.size(gAll) > 0:
-        Iteration = 'Generation'
+        Iteration = "Generation"
         if inform == 0:
-            inform = 'Optimization terminated successfully'
-        PopSize = AlgOptions['PopSize'][1]
+            inform = "Optimization terminated successfully"
+        PopSize = AlgOptions["PopSize"][1]
         for i in range(0, fAll.__len__() / PopSize):  # Iteration trough the Populations
             best_fitness = 9999999
             max_violation_of_all_g = np.empty(PopSize)
             max_violation_of_all_g.fill(99999999)
-            for u in range(0, PopSize):  # Iteration trough the Individuals of the actual population
+            for u in range(
+                0, PopSize
+            ):  # Iteration trough the Individuals of the actual population
                 if np.max(gAll[i * PopSize + u]) < max_violation_of_all_g[u]:
                     max_violation_of_all_g[u] = np.max(gAll[i * PopSize + u])
             pos_smallest_violation = np.argmin(max_violation_of_all_g)
@@ -58,11 +60,11 @@ def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
                 gIt.append(gAll[pos_of_best_ind])
         nIt = len(fIt)
     elif Alg == "IPOPT":
-        inform = 'Optimization terminated successfully'
+        inform = "Optimization terminated successfully"
         nIt = len(fNablaIt)
-        fIt = [[]] * int(len(fNablaIt)-2)
-        xIt = [[]] * int(len(fNablaIt)-2)
-        gIt = [[]] * int(len(fNablaIt)-2)
+        fIt = [[]] * int(len(fNablaIt) - 2)
+        xIt = [[]] * int(len(fNablaIt) - 2)
+        gIt = [[]] * int(len(fNablaIt) - 2)
         for ii in range(len(fIt)):
             Posdg = OptHist.cues["grad_con"][ii][0]
             Posf = OptHist.cues["obj"][ii][0]
@@ -79,7 +81,7 @@ def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
             gIt[ii] = gAll[iii]
         nIt = len(fIt)
     else:
-        inform = 'Optimization terminated successfully'
+        inform = "Optimization terminated successfully"
         fIt = [[]] * len(fNablaIt)
         xIt = [[]] * len(fNablaIt)
         gIt = [[]] * len(fNablaIt)
@@ -99,16 +101,16 @@ def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
             gIt[ii] = gAll[iii]
         nIt = len(fIt)
 
-#    xIt = np.asarray(xIt).T
-#    fIt = np.asarray(fIt[:]).reshape((nIt,))
-#    gIt = np.asarray(gIt).T
-#    fNablaIt = np.asarray(fNablaIt).T
-#    gNablaItTemp = np.zeros((ng, nx, nIt))
-#    if ng>0:
-#        for i in range(nIt):
-#            gNablaIt[i].resize(ng, nx)
-#            gNablaItTemp[:, :, i] = gNablaIt[i]
-#        gNablaIt = gNablaItTemp
-#    else:
-#        gNablaIt = np.array([])
+    #    xIt = np.asarray(xIt).T
+    #    fIt = np.asarray(fIt[:]).reshape((nIt,))
+    #    gIt = np.asarray(gIt).T
+    #    fNablaIt = np.asarray(fNablaIt).T
+    #    gNablaItTemp = np.zeros((ng, nx, nIt))
+    #    if ng>0:
+    #        for i in range(nIt):
+    #            gNablaIt[i].resize(ng, nx)
+    #            gNablaItTemp[:, :, i] = gNablaIt[i]
+    #        gNablaIt = gNablaItTemp
+    #    else:
+    #        gNablaIt = np.array([])
     return fIt, xIt, gIt, gNablaIt, fNablaIt, inform
