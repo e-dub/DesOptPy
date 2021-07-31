@@ -29,7 +29,7 @@ def printResults(self):
         print(*np.array(self.gOpt), sep="\n     ", flush=True)
         print()
     print("x* = ", end="")
-    print(*self.xNormOpt[0: self.nx], sep="\n     ", flush=False)
+    print(*self.xNormOpt[0 : self.nx], sep="\n     ", flush=False)
     print()
 
     # add function to normalize and denormlaize constraints, change here.
