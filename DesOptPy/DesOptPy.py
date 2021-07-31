@@ -42,6 +42,7 @@ def OptimizationProblem(Model):
         xNorm = True
         gNorm = True
 
+        fType = "min"
         gType = None
 
         f0 = None
@@ -88,6 +89,14 @@ def OptimizationProblem(Model):
         def optimize(self):
             # check model
             checkProblem(self)
+
+            if self.fType[0:3].lower() == "max":
+                self.fMinMax = -1
+            elif self.fType[0:3].lower() == "min":
+                self.fMinMax = 1
+            else:
+                print("error")  #TODO raise real error here!
+
 
             # set model name and time
             self.Model = Model
@@ -316,7 +325,7 @@ def OptimizationProblem(Model):
                     os.chdir("..")
 
                 self.nEval += 1
-                return(fVal, gVal, 0)
+                return(fVal*self.fMinMax, gVal, 0)
 
             def SensEq(xVal, fVal, gVal):
                 # create folder and change into it
@@ -353,7 +362,7 @@ def OptimizationProblem(Model):
                     eval("self.Model."+self.Sensitivity+"(self.Model)")
 
                 # Senstivity of objective
-                fNablaVal = getattr(self.Model, self.fNabla[0])
+                fNablaVal = getattr(self.Model, self.fNabla)
                 if self.fNorm[0]:
                     if self.f0 == 0:
                         fNablaVal = fNablaVal * self.fNormMultiplier
@@ -363,6 +372,7 @@ def OptimizationProblem(Model):
                                      )
                 for i in range(len(xVal)):
                     if self.xNorm[i]:
+                        print(i)
                         fNablaVal[i] *= (self.xU[i]-self.xL[i])
 
                 # Senstivity of constraints
@@ -405,7 +415,7 @@ def OptimizationProblem(Model):
                     os.chdir("..")
 
                 self.nSensEval += 1
-                return(np.array([fNablaVal]), gNablaVal, 0)
+                return(np.array([fNablaVal])*self.fMinMax, gNablaVal, 0)
 
             # Maybe all too much, can i just put this as a function in opt call?
             # TODO move the next 40 lines to new file
@@ -515,7 +525,7 @@ def OptimizationProblem(Model):
                 xOpt = np.array(xOpt).reshape(len(xOpt),)
 
                 # proper size fOpt
-                fOpt = np.array(fOpt).reshape(1,)
+                fOpt = np.array(fOpt).reshape(1,)*self.fMinMax
 
                 # Todo: same for all algorithms?
                 # Todo change to array?

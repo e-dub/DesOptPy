@@ -1,7 +1,8 @@
 
 <p align=center><img height="50%" width="50%" src="figures/DesOptPy_20210725.svg"></p>
 
-# [DesOptPy][0]
+# DesOptPy
+
 DESign OPTimization in PYthon
 
 [![PyPi Version](https://img.shields.io/pypi/v/desoptpy.svg?style=flat-square)](https://pypi.org/project/desoptpy)
@@ -106,7 +107,9 @@ An example of the plots created:
 - [ ] set up example with Ansys (pyAnsys)
 - [x] old DesOptPy examples
 - [ ] topology optimization example (Hofer)
-- [ ] max example (to correct fType)
+- [x] max example (to correct fType)
+- [ ] matlab example (see paper Palomba)
+
 ### VIP very important problems
 - [] Opt.g = ["gFreqBallistic"] and Opt.g = "gFreqBallistic"
 ### Code general
@@ -116,7 +119,7 @@ An example of the plots created:
 - [ ] make all values numpy arrays
 - [ ] return arrays!!! not lists, for gradients important!
 - [x] remove parameter pyOptAlg = True
-- [ ] add option, fType min max
+- [x] add option, fType min max
 - [ ] normalize and denormalize as vector operations? not index assignment?
 - [ ] nit for nongrad alg
 - [ ] ResultReport
