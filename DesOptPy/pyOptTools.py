@@ -22,11 +22,10 @@ def readHistory(self):
     for ei in range(len(xAll)):
         for xi, xNormi in enumerate(self.xNorm):
             if xNormi:
-                xAll[ei][xi] = denormalize(xAll[ei][xi], self.xL[xi],
-                                           self.xU[xi])
+                xAll[ei][xi] = denormalize(xAll[ei][xi], self.xL[xi], self.xU[xi])
     # NLPQLP g>0
     if self.Alg == "NLPQLP":
-        gAll = [g*-1 for g in gAll]
+        gAll = [g * -1 for g in gAll]
 
     # convert to list
     # TODO should be np.arrays??!!
@@ -40,12 +39,12 @@ def readHistory(self):
 
     # initialize assignment to object
     self.nIt = len(fNablaIt)
-    self.fIt = [None]*self.nIt
-    self.fNormIt = [None]*self.nIt
-    self.xIt = [None]*self.nIt
-    self.xNormIt = [None]*self.nIt
-    self.gIt = [None]*self.nIt
-    self.gMaxIt = [None]*self.nIt
+    self.fIt = [None] * self.nIt
+    self.fNormIt = [None] * self.nIt
+    self.xIt = [None] * self.nIt
+    self.xNormIt = [None] * self.nIt
+    self.gIt = [None] * self.nIt
+    self.gMaxIt = [None] * self.nIt
 
     self.gNablaIt = gNablaIt
     self.fNablaIt = fNablaIt
@@ -58,7 +57,7 @@ def readHistory(self):
     #     raise Exception("something evil")
 
     # check if non-iteration-based algorithm
-    if self.nIt == 0 and self.nEval >0:
+    if self.nIt == 0 and self.nEval > 0:
         self.nIt = None
         self.xNorm0 = xNormAll[0]
         if self.g is not None:
@@ -79,39 +78,46 @@ def readHistory(self):
             iii = iii - 1
             if self.fNorm[0]:
                 if self.f0 == 0:
-                    self.fIt[ii] = np.array(fAll[iii])/self.fNormMultiplier*self.fMinMax
+                    self.fIt[ii] = (
+                        np.array(fAll[iii]) / self.fNormMultiplier * self.fMinMax
+                    )
                 else:
-                    self.fIt[ii] = np.array(fAll[iii])*abs(self.f0)/self.fNormMultiplier*self.fMinMax
+                    self.fIt[ii] = (
+                        np.array(fAll[iii])
+                        * abs(self.f0)
+                        / self.fNormMultiplier
+                        * self.fMinMax
+                    )
             else:
                 self.fIt[ii] = fAll[iii]
             self.fNormIt[ii] = fAll[iii]
 
-            self.xIt[ii] = xAll[iii][0:self.nx]
-            self.xNormIt[ii] = xNormAll[iii][0:self.nx]
+            self.xIt[ii] = xAll[iii][0 : self.nx]
+            self.xNormIt[ii] = xNormAll[iii][0 : self.nx]
             if self.g is not None:
                 self.gIt[ii] = gAll[iii]
                 self.gMaxIt[ii] = np.max(gAll[iii])
-        self.xNorm0 = xNormAll[0][0:self.nx]
+        self.xNorm0 = xNormAll[0][0 : self.nx]
         if self.g is not None:
             self.gOpt = np.array(self.gIt[-1])
             self.g0 = np.array(self.gIt[0])
 
-        self.fNablaIt = np.array(self.fNablaIt)*self.fMinMax
+        self.fNablaIt = np.array(self.fNablaIt) * self.fMinMax
         self.fNormNablaIt = copy.deepcopy(self.fNablaIt)
-        self.fNablaOpt =  copy.deepcopy(self.fNablaIt[-1])
-        self.fNormNablaOpt =  copy.deepcopy(self.fNablaIt[-1])
+        self.fNablaOpt = copy.deepcopy(self.fNablaIt[-1])
+        self.fNormNablaOpt = copy.deepcopy(self.fNablaIt[-1])
 
         if self.fNorm[0]:
             if self.f0 == 0:
-                 self.fNablaIt  = self.fNablaIt/self.fNormMultiplier
-                 self.fNablaOpt = self.fNablaOpt/self.fNormMultiplier
+                self.fNablaIt = self.fNablaIt / self.fNormMultiplier
+                self.fNablaOpt = self.fNablaOpt / self.fNormMultiplier
             else:
-                 self.fNablaIt  = self.fNablaIt/self.fNormMultiplier*abs(self.f0)
-                 self.fNablaOpt = self.fNablaOpt/self.fNormMultiplier*abs(self.f0)
+                self.fNablaIt = self.fNablaIt / self.fNormMultiplier * abs(self.f0)
+                self.fNablaOpt = self.fNablaOpt / self.fNormMultiplier * abs(self.f0)
         self.gNablaOpt = np.array(self.gNablaIt[-1]).reshape(self.ng, self.nx)
     self.xAll = xAll
-    self.xNormAll = xNormAll*self.fMinMax
-    self.fAll = fAll*self.fMinMax
+    self.xNormAll = xNormAll * self.fMinMax
+    self.fAll = fAll * self.fMinMax
     self.gAll = gAll
     if self.g is not None:
         self.gMax = np.max(self.gAll, 1)
