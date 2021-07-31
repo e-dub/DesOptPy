@@ -13,19 +13,40 @@ import numpy as np
 
 
 class Himmelblau:
-    x = np.zeros([2, ])
+    x = np.zeros(
+        [
+            2,
+        ]
+    )
 
     def SysEq(self):
-        self.f = (self.x[0]**2+self.x[1]-11)**2+(self.x[0]+self.x[1]**2-7)**2
+        self.f = (self.x[0] ** 2 + self.x[1] - 11) ** 2 + (
+            self.x[0] + self.x[1] ** 2 - 7
+        ) ** 2
 
 
 OptHimmelblau = OptimizationProblem(Himmelblau)
 OptHimmelblau.Primal = "SysEq"
 OptHimmelblau.x = "x"
-OptHimmelblau.x0 = np.ones(2,)*+0
-OptHimmelblau.xL = np.ones(2,)*-5
-OptHimmelblau.xU = np.ones(2,)*+5
+OptHimmelblau.x0 = (
+    np.ones(
+        2,
+    )
+    * +0
+)
+OptHimmelblau.xL = (
+    np.ones(
+        2,
+    )
+    * -5
+)
+OptHimmelblau.xU = (
+    np.ones(
+        2,
+    )
+    * +5
+)
 OptHimmelblau.f = "f"
-OptHimmelblau.Alg = "PSQP"
+OptHimmelblau.Alg = "SOLVOPT"
 OptHimmelblau.optimize()
 OptHimmelblau.plotConvergence()

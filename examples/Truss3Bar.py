@@ -11,6 +11,7 @@ class Truss3Bar:
     initialize parametric terms, atleast all those variables used for design
     optimization must be assigned, optimally here.
     """
+
     Fx = 1000
     Fy = 1000
     A1 = 5
@@ -30,15 +31,22 @@ class Truss3Bar:
 
         """
         self.gVal = 1
-        self.volume = 2*2**0.5*self.A1+self.A2
-        self.stress1 = 1/2**0.5*(self.Fx/self.A1 +
-                                 self.Fy/(self.A1 + 2**0.5*self.A2))
-        self.stress2 = 2**0.5*self.Fy/(self.A1 + 2**0.5*self.A2)
-        self.stress3 = 1/2**0.5*(-self.Fx/self.A1 +
-                                 self.Fy/(self.A1 + 2**0.5*self.A2))
-        self.dispx = 2**0.5*self.el*self.Fx/(self.A1*self.E)
-        self.dispy = (2**0.5*self.el*self.Fy /
-                      ((self.A1+2**0.5*self.A2)*self.E))
+        self.volume = 2 * 2 ** 0.5 * self.A1 + self.A2
+        self.stress1 = (
+            1
+            / 2 ** 0.5
+            * (self.Fx / self.A1 + self.Fy / (self.A1 + 2 ** 0.5 * self.A2))
+        )
+        self.stress2 = 2 ** 0.5 * self.Fy / (self.A1 + 2 ** 0.5 * self.A2)
+        self.stress3 = (
+            1
+            / 2 ** 0.5
+            * (-self.Fx / self.A1 + self.Fy / (self.A1 + 2 ** 0.5 * self.A2))
+        )
+        self.dispx = 2 ** 0.5 * self.el * self.Fx / (self.A1 * self.E)
+        self.dispy = (
+            2 ** 0.5 * self.el * self.Fy / ((self.A1 + 2 ** 0.5 * self.A2) * self.E)
+        )
 
     def sensitivity(self):
         """
@@ -52,28 +60,39 @@ class Truss3Bar:
         None.
 
         """
-        self.volumeNabla = np.array([2*2**0.5, 1])
-        self.stress1Nabla = np.array([-self.Fx/(2**0.5*self.A1**2) -
-                                      2**0.5*self.Fy/(2**0.5*self.A1 +
-                                                      2*self.A2)**2,
-                                      -2*self.Fy/(2**0.5*self.A1 +
-                                                  2*self.A2)**2])
-        self.stress2Nabla = np.array([-2**0.5*self.Fy/(self.A1 +
-                                                       2**0.5*self.A2)**2,
-                                      -2*self.Fy/(self.A1 +
-                                                  2**0.5*self.A2)**2])
-        self.stress3Nabla = np.array([+self.Fx/(2**0.5*self.A1**2) -
-                                      2**0.5*self.Fy/(2**0.5*self.A1 +
-                                                      2*self.A2)**2,
-                                      -2*self.Fy/(2**0.5*self.A1 +
-                                                  2*self.A2)**2])
-        self.dispxNabla = np.array([-2**0.5*self.el*self.Fx /
-                                    (self.A1**2*self.E),
-                                    0])
-        self.dispyNabla = np.array([-2**0.5*self.el*self.Fy /
-                                    ((self.A1+2**0.5*self.A2)**2*self.E),
-                                    -2*self.el*self.Fy /
-                                    ((self.A1+2**0.5*self.A2)**2*self.E)])
+        self.volumeNabla = np.array([2 * 2 ** 0.5, 1])
+        self.stress1Nabla = np.array(
+            [
+                -self.Fx / (2 ** 0.5 * self.A1 ** 2)
+                - 2 ** 0.5 * self.Fy / (2 ** 0.5 * self.A1 + 2 * self.A2) ** 2,
+                -2 * self.Fy / (2 ** 0.5 * self.A1 + 2 * self.A2) ** 2,
+            ]
+        )
+        self.stress2Nabla = np.array(
+            [
+                -(2 ** 0.5) * self.Fy / (self.A1 + 2 ** 0.5 * self.A2) ** 2,
+                -2 * self.Fy / (self.A1 + 2 ** 0.5 * self.A2) ** 2,
+            ]
+        )
+        self.stress3Nabla = np.array(
+            [
+                +self.Fx / (2 ** 0.5 * self.A1 ** 2)
+                - 2 ** 0.5 * self.Fy / (2 ** 0.5 * self.A1 + 2 * self.A2) ** 2,
+                -2 * self.Fy / (2 ** 0.5 * self.A1 + 2 * self.A2) ** 2,
+            ]
+        )
+        self.dispxNabla = np.array(
+            [-(2 ** 0.5) * self.el * self.Fx / (self.A1 ** 2 * self.E), 0]
+        )
+        self.dispyNabla = np.array(
+            [
+                -(2 ** 0.5)
+                * self.el
+                * self.Fy
+                / ((self.A1 + 2 ** 0.5 * self.A2) ** 2 * self.E),
+                -2 * self.el * self.Fy / ((self.A1 + 2 ** 0.5 * self.A2) ** 2 * self.E),
+            ]
+        )
 
 
 # optional - run analysis with default parameters
@@ -110,24 +129,29 @@ OptTBT.x = ["A1", "A2"]
 OptTBT.x0 = [10, 10]
 OptTBT.xL = [0.1, 0.1]
 OptTBT.xU = [100, 100]
-#OptTBT.xType = ["continuous"]*2
-#OptTBT.xNorm = [True]*2
-#OptTBT.fNorm = [True]
-#OptTBT.gNorm = [True]*5
-#OptTBT.gType = ["upper"]*5
+# OptTBT.xType = ["continuous"]*2
+# OptTBT.xNorm = [True]*2
+# OptTBT.fNorm = [True]
+# OptTBT.gNorm = [True]*5
+# OptTBT.gType = ["upper"]*5
 OptTBT.gLimit = np.array([100, 100, 100, 10, 10])
 
 # set primal analysis function and parameters
-#OptTBT.Model = Truss3Bar
-OptTBT.Primal = "primal" #Truss3Bar.primal
+# OptTBT.Model = Truss3Bar
+OptTBT.Primal = "primal"  # Truss3Bar.primal
 OptTBT.f = ["volume"]
 OptTBT.g = ["stress1", "stress2", "stress3", "dispx", "dispy"]
 
 # set sensitivtiy analysis fucntins and parameters
 OptTBT.Sensitivity = "sensitivity"
 OptTBT.fNabla = ["volumeNabla"]
-OptTBT.gNabla = ["stress1Nabla", "stress2Nabla", "stress3Nabla",
-                 "dispxNabla", "dispyNabla"]
+OptTBT.gNabla = [
+    "stress1Nabla",
+    "stress2Nabla",
+    "stress3Nabla",
+    "dispxNabla",
+    "dispyNabla",
+]
 
 
 # run optimization

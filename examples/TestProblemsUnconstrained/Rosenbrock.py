@@ -20,9 +20,24 @@ ProbRosenbrockSens.Primal = "calc"
 ProbRosenbrockSens.Sensitivity = "calcSens"
 nx = 10
 ProbRosenbrockSens.x = "x"
-ProbRosenbrockSens.x0 = np.ones(nx,)*3
-ProbRosenbrockSens.xL = np.ones(nx,)*-5
-ProbRosenbrockSens.xU = np.ones(nx,)*+5
+ProbRosenbrockSens.x0 = (
+    np.ones(
+        nx,
+    )
+    * 3
+)
+ProbRosenbrockSens.xL = (
+    np.ones(
+        nx,
+    )
+    * -5
+)
+ProbRosenbrockSens.xU = (
+    np.ones(
+        nx,
+    )
+    * +5
+)
 ProbRosenbrockSens.f = ["obj"]
 ProbRosenbrockSens.fNabla = ["objNabla"]
 ProbRosenbrockSens.Alg = "SLSQP"

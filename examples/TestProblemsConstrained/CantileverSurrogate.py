@@ -22,37 +22,41 @@ class Cantilever:
 
     def SysEq(self):
         e = 2.9e7
-        r = 40000.
-        fx = 500.
-        fy = 1000.
-        self.area = self.w*self.t
+        r = 40000.0
+        fx = 500.0
+        fy = 1000.0
+        self.area = self.w * self.t
         D0 = 2.2535
-        L = 100.
-        w_sq = self.w*self.w
-        t_sq = self.t*self.t
-        r_sq = r*r
-        x_sq = fx*fx
-        y_sq = fy*fy
-        self.stress = 600.*fy/self.w/t_sq + 600.*fx/w_sq/self.t
-        D1 = 4.*pow(L,3)/e/self.area
-        D2 = pow(fy/t_sq, 2)+pow(fx/w_sq, 2)
-        D3 = D1/np.sqrt(D2)/D0
-        self.D4 = D1*np.sqrt(D2)/D0
-        g1 = self.stress/r - 1.
-        g2 = self.D4 - 1.
+        L = 100.0
+        w_sq = self.w * self.w
+        t_sq = self.t * self.t
+        r_sq = r * r
+        x_sq = fx * fx
+        y_sq = fy * fy
+        self.stress = 600.0 * fy / self.w / t_sq + 600.0 * fx / w_sq / self.t
+        D1 = 4.0 * pow(L, 3) / e / self.area
+        D2 = pow(fy / t_sq, 2) + pow(fx / w_sq, 2)
+        D3 = D1 / np.sqrt(D2) / D0
+        self.D4 = D1 * np.sqrt(D2) / D0
+        g1 = self.stress / r - 1.0
+        g2 = self.D4 - 1.0
 
 
 xL = np.array([1.0, 1.0])
 xU = np.array([4.0, 4.0])
 doe_typ = doe.DOE_pyDOE()
 nDoE = 200
-xDoE = doe_typ.latin_hypercube(factors=2, n_samples=nDoE,
-                               criterion='centermaximin', iterations=10,
-                               s_range=[xL, xU])
+xDoE = doe_typ.latin_hypercube(
+    factors=2,
+    n_samples=nDoE,
+    criterion="centermaximin",
+    iterations=10,
+    s_range=[xL, xU],
+)
 
-area = [[]]*nDoE
-stress = [[]]*nDoE
-D4 = [[]]*nDoE
+area = [[]] * nDoE
+stress = [[]] * nDoE
+D4 = [[]] * nDoE
 for i in range(nDoE):
     CantileverAnalysis = Cantilever()
     CantileverAnalysis.w = xDoE[0, i]
@@ -71,12 +75,14 @@ areaApprox.fit(xDoE, area)
 stressApprox.fit(xDoE, stress)
 D4Approx.fit(xDoE, D4)
 
+
 class CantileverApprox:
     def SysEqApprox(self):
         x = np.array([self.w, self.t])
         self.area = areaApprox.predict(x)
         self.stress = stressApprox.predict(x)
         self.D4 = D4Approx.predict(x)
+
 
 OptCantileverApprox = OptimizationProblem(CantileverApprox)
 OptCantileverApprox.Primal = "SysEqApprox"

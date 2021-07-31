@@ -6,6 +6,6 @@ class Model:
     m = None
 
     def calc(self):
-        self.m = self.a*self.ell
-        self.sigma = self.F/self.a
-        print(self.m*2)
+        self.m = self.a * self.ell
+        self.sigma = self.F / self.a
+        print(self.m * 2)

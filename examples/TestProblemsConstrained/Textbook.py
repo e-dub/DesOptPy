@@ -19,9 +19,9 @@ class Textbook:
     x = [5, 0]
 
     def SysEq(self):
-        self.f = (self.x[0]-1.)**4 + (self.x[1]-1.)**4
-        self.g1 = self.x[0]**2 - self.x[1]/2.
-        self.g2 = self.x[1]**2 - self.x[0]/2.
+        self.f = (self.x[0] - 1.0) ** 4 + (self.x[1] - 1.0) ** 4
+        self.g1 = self.x[0] ** 2 - self.x[1] / 2.0
+        self.g2 = self.x[1] ** 2 - self.x[0] / 2.0
 
 
 OptTextbook = OptimizationProblem(Textbook)

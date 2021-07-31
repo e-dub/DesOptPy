@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Description: Simple multi-objective test function for design optimization with
-use of weighting factors resulting in a Pareto front
+Description: Simple multi-objective test function for design optimization with use of weighting factors resulting in a Pareto front
 """
 from DesOptPy import OptimizationProblem
 import numpy as np

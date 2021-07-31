@@ -16,17 +16,17 @@ class Ackley:
         print(self.x)
         a = 20
         b = 0.2
-        c = 2*np.pi
+        c = 2 * np.pi
         n = len(self.x)
-        s1 = sum(self.x**2)
-        s2 = sum(np.cos(c*self.x))
-        self.f = -a*np.exp(-b*np.sqrt(s1 / n)) - np.exp(s2 / n) + a + np.exp(1)
+        s1 = sum(self.x ** 2)
+        s2 = sum(np.cos(c * self.x))
+        self.f = -a * np.exp(-b * np.sqrt(s1 / n)) - np.exp(s2 / n) + a + np.exp(1)
 
 
 nx = 10
 OptAckley = OptimizationProblem(Ackley)
 OptAckley.x = "x"
-OptAckley.x0 = [1]*nx
+OptAckley.x0 = [1] * nx
 OptAckley.xL = -5
 OptAckley.xU = 5
 OptAckley.f = "f"

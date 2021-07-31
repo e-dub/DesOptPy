@@ -6,13 +6,13 @@ class Model:
     m = None
 
     def calc(self):
-        self.m = self.A*self.el
-        self.sigma = self.F/self.A
+        self.m = self.A * self.el
+        self.sigma = self.F / self.A
 
     def calcSens(self):
         mNablaA = self.el
         mNablael = self.A
         self.mNabla = [mNablaA, mNablael]
-        sigmaNablaA = -2*self.F*self.A**-2
+        sigmaNablaA = -2 * self.F * self.A ** -2
         sigmaNablael = 0
         self.sigmaNabla = [sigmaNablaA, sigmaNablael]

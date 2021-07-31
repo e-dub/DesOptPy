@@ -6,6 +6,7 @@ from SiMuLi.StDy import Model
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class DynModelOpt:
     m = 1
     k = 5
@@ -53,24 +54,33 @@ class DynModelOpt:
         simulation1.tDelta = 0.1
         simulation1.SensCalc = True
         simulation1.run()
-        self.qMaxNabla = KS2Sens(simulation1.q, simulation1.qNabla[:,0, :])
-        self.qdMaxNabla = KS2Sens(simulation1.qd, simulation1.qdNabla[:,0, :])
-        self.qddMaxNabla = KS2Sens(simulation1.qdd, simulation1.qddNabla[:,0, :])
+        self.qMaxNabla = KS2Sens(simulation1.q, simulation1.qNabla[:, 0, :])
+        self.qdMaxNabla = KS2Sens(simulation1.qd, simulation1.qdNabla[:, 0, :])
+        self.qddMaxNabla = KS2Sens(simulation1.qdd, simulation1.qddNabla[:, 0, :])
         if plot:
-            plt.plot(simulation1.tAll, simulation1.qNabla[:,0, :], label="$\\nabla q$")
+            plt.plot(simulation1.tAll, simulation1.qNabla[:, 0, :], label="$\\nabla q$")
             plt.xlabel("time $t$")
             plt.legend(frameon=False)
             plt.show()
 
-            plt.plot(simulation1.tAll, simulation1.qdNabla[:,0, :], label="$\\nabla \\dot{q}$")
+            plt.plot(
+                simulation1.tAll,
+                simulation1.qdNabla[:, 0, :],
+                label="$\\nabla \\dot{q}$",
+            )
             plt.xlabel("time $t$")
             plt.legend(frameon=False)
             plt.show()
 
-            plt.plot(simulation1.tAll, simulation1.qddNabla[:,0, :], label="$\\nabla \\ddot{q}$")
+            plt.plot(
+                simulation1.tAll,
+                simulation1.qddNabla[:, 0, :],
+                label="$\\nabla \\ddot{q}$",
+            )
             plt.xlabel("time $t$")
             plt.legend(frameon=False)
             plt.show()
+
 
 # initialDesign = DynModelOpt()
 # initialDesign.calc(plot=True)
@@ -78,12 +88,12 @@ class DynModelOpt:
 OptDyn = OptimizationProblem(DynModelOpt)
 OptDyn.Primal = "calc"
 OptDyn.x = ["m", "k", "d"]
-OptDyn.x0 = [ 1,  1, 1]
-OptDyn.xL = [ 1,  1, 1]
+OptDyn.x0 = [1, 1, 1]
+OptDyn.xL = [1, 1, 1]
 OptDyn.xU = [30, 30, 10]
 OptDyn.f = ["qddMax"]
-#OptDyn.g = [""]
-#OptDyn.gLimit = [75]
+# OptDyn.g = [""]
+# OptDyn.gLimit = [75]
 OptDyn.Sensitivity = "sens"
 OptDyn.fNabla = ["qddMaxNabla"]
 OptDyn.Alg = "NLPQLP"
