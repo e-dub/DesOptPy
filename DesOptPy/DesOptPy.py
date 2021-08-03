@@ -216,8 +216,9 @@ def OptimizationProblem(Model):
                 raise Exception("Not a valid optimization algorithm")
 
             # File handling
+            self.MainDir = os.getcwd()
+            self.DesOptPyDir = os.path.dirname(os.path.realpath(__file__))
             if self.RunFolder:
-                self.MainDir = os.getcwd()
                 self.RunDir = self.MainDir + os.sep + "DesOpt" + self.Name
                 if os.path.isdir(self.RunDir):
                     datetime.time.wait(1)
@@ -235,6 +236,11 @@ def OptimizationProblem(Model):
                 os.chdir(self.RunDir)
 
             if self.Monitoring and self.RunFolder:
+                shutil.copyfile(
+                    self.DesOptPyDir + os.sep + "Monitor.py",
+                    self.RunDir + os.sep + "Monitor.py",
+                )
+                # TODO copy monitor.py to run folder
                 print(
                     "\nTo start monitoring visualization,"
                     + " enter the following command in terminal:"
