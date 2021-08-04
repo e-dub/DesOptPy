@@ -1,9 +1,13 @@
-from bokeh.plotting import figure
+from bokeh import palettes
+from bokeh.plotting import figure, show
 from bokeh.models import LinearAxis, Range1d, Legend, ColumnDataSource
 from bokeh.models.tools import BoxZoomTool, PanTool, ResetTool, HoverTool
 import numpy as np
 import panel as pn
 import os
+
+
+# TODO write out details at beginning including xL, xU, nx etc. Or just entire model self
 
 """
 https://github.com/holoviz/panel/issues/1496
@@ -14,7 +18,7 @@ https://github.com/holoviz/panel/issues/1496
 
 
 Name = os.getcwd() + os.sep + os.getcwd().split(os.sep)[-1][6:]
-colors = [
+colors10 = [
     "#1f77b4",
     "#ff7f0e",
     "#2ca02c",
@@ -41,7 +45,7 @@ def readHistory():
     return (xAll, fAll, gAll, gMax)
 
 
-def plotStyleTwoAxis(p):
+def plotStyle(p, axes):
     # colors
     p.xgrid.visible = False
     p.ygrid.visible = False
@@ -78,14 +82,15 @@ def plotStyleTwoAxis(p):
     p.yaxis.major_label_text_font = font
     p.yaxis.major_label_text_font_style = "normal"
     p.yaxis.major_label_text_font_size = fontSize
-    p.yaxis[0].axis_label_text_color = colors[0]
-    p.yaxis[1].axis_label_text_color = colors[3]
-    p.yaxis[0].major_label_text_color = colors[0]
-    p.yaxis[1].major_label_text_color = colors[3]
-    p.yaxis[0].major_tick_line_color = colors[0]
-    p.yaxis[1].major_tick_line_color = colors[3]
-    p.yaxis[0].axis_line_color = colors[0]
-    p.yaxis[1].axis_line_color = colors[3]
+    if axes == 2:
+        p.yaxis[0].axis_label_text_color = colors10[0]
+        p.yaxis[1].axis_label_text_color = colors10[3]
+        p.yaxis[0].major_label_text_color = colors10[0]
+        p.yaxis[1].major_label_text_color = colors10[3]
+        p.yaxis[0].major_tick_line_color = colors10[0]
+        p.yaxis[1].major_tick_line_color = colors10[3]
+        p.yaxis[0].axis_line_color = colors10[0]
+        p.yaxis[1].axis_line_color = colors10[3]
     p.yaxis.major_tick_in = 5
     p.yaxis.major_tick_out = 0
     p.yaxis.minor_tick_in = 0  # 2
@@ -112,56 +117,185 @@ def update(event=None):
     it = np.array(range(len(fAll)))
     if i < len(it):
         i += 1
-        ds.stream({"x": [it[-1]], "fAll": [fAll[-1][0]], "gMax": [gMax[-1]]})
+        ds_fg.stream({"x": [it[-1]], "fAll": [fAll[-1][0]], "gMax": [gMax[-1]]})
+        # ds_x.stream({"x": [it[-1]], "xAll": [xAll[-1].tolist()]})
+
+    for i in range(nx):
+        ds_x[i].stream(
+            {
+                "x": [it[-1]],
+                # "xAll": np.array(xAll).reshape(nx, len(it)).tolist(),
+                "xAll": [xAll[-1][i]],
+            }
+        )
 
 
 # initial
 xAll, fAll, gAll, gMax = readHistory()
 i = len(fAll)
 it = np.array(range(len(fAll)))
+
+# data as data stream
 # ds = ColumnDataSource({"x": it, "y": fAll, "gMax":gMax})
-ds = ColumnDataSource(
+ds_fg = ColumnDataSource(
     {
         "x": it.tolist(),
         "fAll": np.array(fAll).reshape(len(it)).tolist(),
         "gMax": gMax.tolist(),
     }
 )
+nx = len(xAll[0])
 
-# initialize figure
-p = figure(sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False)
-p.xaxis.axis_label = "evaluation"
+# initialize objective and constraint convergence
+p_fg = figure(
+    sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False
+)
+p_fg.xaxis.axis_label = "evaluation"
 
 # second y axis
-p.extra_y_ranges = {"constraint": Range1d(start=min(gMax), end=max(gMax))}
-p.add_layout(LinearAxis(y_range_name="constraint"), "right")
+gDelta = (max(gMax) - min(gMax)) * 0.025
+p_fg.extra_y_ranges = {
+    "constraint": Range1d(
+        start=min(gMax) - gDelta,  # np.sign(max(gMax)) * gDelta,
+        end=max(gMax) + gDelta,  # np.sign(min(gMax)) * gDelta,
+    )
+}
+p_fg.add_layout(LinearAxis(y_range_name="constraint"), "right")
+fDelta = (max(fAll)[0] - min(fAll)[0]) * 0.025
+p_fg.y_range = Range1d(
+    start=min(fAll)[0] - fDelta,  # np.sign(max(fAll)[0]) * fDelta,
+    end=max(fAll)[0] + fDelta,  # np.sign(min(fAll)[0]) * fDelta,
+)
+# p_fg.y_range.range_padding = fDelta[0]*0.01
+# p_fg.y_range.range_padding = fDelta[0]*0.01
 
 # plot style
-p = plotStyleTwoAxis(p)
+p_fg = plotStyle(p_fg, 2)
+p_fg.yaxis[0].axis_label = "objective value"
+p_fg.yaxis[1].axis_label = "maximum constraint value"
+
 
 # plot
-p.line(x="x", y="fAll", line_color=colors[0], source=ds)
-p.circle(x="x", y="fAll", fill_color="white", line_color="white", source=ds, size=10)
-p.circle(x="x", y="fAll", fill_color=colors[0], line_color=colors[0], source=ds, size=5)
-p.line(x="x", y="gMax", line_color=colors[3], y_range_name="constraint", source=ds)
-p.circle(
+p_fg.line(x="x", y="fAll", line_color=colors10[0], source=ds_fg)
+p_fg.circle(
+    x="x", y="fAll", fill_color="white", line_color="white", source=ds_fg, size=15
+)
+p_fg.circle(
+    x="x",
+    y="fAll",
+    fill_color=colors10[0],
+    line_color=colors10[0],
+    source=ds_fg,
+    size=5,
+)
+p_fg.line(
+    x="x", y="gMax", line_color=colors10[3], y_range_name="constraint", source=ds_fg
+)
+p_fg.circle(
     x="x",
     y="gMax",
     fill_color="white",
     line_color="white",
     y_range_name="constraint",
-    source=ds,
-    size=10,
+    source=ds_fg,
+    size=15,
 )
-p.circle(
+p_fg.circle(
     x="x",
     y="gMax",
-    fill_color=colors[3],
-    line_color=colors[3],
+    fill_color=colors10[3],
+    line_color=colors10[3],
     y_range_name="constraint",
-    source=ds,
+    source=ds_fg,
 )
 
-# update
-pane = pn.panel(p).servable()
+
+# Design variable convergence
+"""
+https://medium.com/@andrewm4894/bokeh-battles-part-1-multi-line-plots-311109992fdc
+https://towardsdatascience.com/draw-beautiful-and-interactive-line-charts-using-bokeh-in-python-9f3e11e0a16e
+"""
+
+# Palettes: https://docs.bokeh.org/en/latest/docs/reference/palettes.html
+if nx > 21:
+    colorsx = palettes.d3["Category20"][20][::2] + palettes.d3["Category20"][20][1::2]
+else:
+    colorsx = (
+        palettes.d3["Category20c"][20][::4]
+        + palettes.d3["Category20b"][20][::4]
+        + palettes.d3["Category20c"][20][1::4]
+        + palettes.d3["Category20b"][20][1::4]
+        + palettes.d3["Category20c"][20][2::4]
+        + palettes.d3["Category20b"][20][2::4]
+        + palettes.d3["Category20c"][20][3::4]
+        + palettes.d3["Category20b"][20][3::4]
+    )
+if nx > 40:
+    colorsx *= nx // 40 + 1
+colorsx = colorsx[:nx]
+
+# initialize design variable convergence
+p_x = figure(sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False)
+p_x.xaxis.axis_label = "evaluation"
+p_x.yaxis.axis_label = "normalized design variable value"
+
+# plot style
+p_x = plotStyle(p_x, 1)
+
+# plot
+# p_x.multi_line(
+#     xs="x",
+#     ys="xAll",
+#     source=ds_x,
+#     color=["red", "blue"],
+# )
+ds_x = [[]] * nx
+for i in range(nx):
+    ds_x[i] = ColumnDataSource(
+        {
+            "x": it.tolist(),
+            # "xAll": np.array(xAll).reshape(nx, len(it)).tolist(),
+            "xAll": np.array(xAll)[:, i].tolist(),
+        }
+    )
+
+    p_x.line(
+        x="x",
+        y="xAll",
+        source=ds_x[i],
+        color=colorsx[i],
+        legend_label="design variable " + str(i + 1),
+    )  # legend_label=r"$\\hat{x}_"+str(i+1)+"$")
+    p_x.circle(
+        x="x",
+        y="xAll",
+        source=ds_x[i],
+        legend_label="design variable " + str(i + 1),
+        fill_color="white",
+        line_color="white",
+        size=15,
+    )
+    p_x.circle(
+        x="x",
+        y="xAll",
+        source=ds_x[i],
+        color=colorsx[i],
+        size=5,
+        legend_label="design variable " + str(i + 1),
+    )
+    # p_x.circle(
+    #     x="x", y="xAll", fill_color="white", line_color="white", source=ds_x, size=10
+    # )
+    # p_x.circle(x="x", y="xAll", source=ds_x, size=5)
+# legend = Legend(items=[(x, [p_dict[x]]) for x in p_dict])
+# p_x.add_layout(legend,'right')
+
+p_x.add_layout(p_x.legend[0], "right")
+p_x.legend.click_policy = "hide"
+p_x.legend.background_fill_alpha = 0.0
+p_x.legend.border_line_alpha = 0.0
+
+show(p_fg)
+show(p_x)
+pane = pn.panel(p_x).servable()
 pn.state.add_periodic_callback(update, 100)
