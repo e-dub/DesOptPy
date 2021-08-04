@@ -23,7 +23,11 @@ DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for de
 Convergence plotting can be carried out after the optimization with the following command (defaults shown):
 
 ```python
-OptProb.plotConvergence(show=True, savePDF=False,savePNG=False, saveSVG=False, saveTikZ=False)
+OptProb.plotConvergence(show=True,
+                        savePDF=False,
+                        savePNG=False,
+                        saveSVG=False,
+                        saveTikZ=False)
 ```
 
 This function has the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format.
@@ -39,7 +43,11 @@ An example of the plots created:
 Before and after bar plotting can be carried out after the optimization with the following command (defaults shown):
 
 ```python
-OptProb.plotBeforeAfter(show=True, savePDF=False,savePNG=False, saveSVG=False, saveTikZ=False)
+OptProb.plotBeforeAfter(show=True,
+                        savePDF=False,
+                        savePNG=False,
+                        saveSVG=False,
+                        saveTikZ=False)
 ```
 
 As above, this function has also the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format (TikZ untested).
