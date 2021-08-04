@@ -149,7 +149,6 @@ ds_fg = ColumnDataSource(
 nx = len(xAll[0])
 
 
-
 # initialize objective and constraint convergence
 p_fg = figure(
     sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False
@@ -241,8 +240,7 @@ if nx > 40:
 colorsx = colorsx[:nx]
 
 # initialize design variable convergence
-p_x = figure(
-    sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False)
+p_x = figure(sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False)
 p_x.xaxis.axis_label = "evaluation"
 p_x.yaxis.axis_label = "normalized design variable value"
 
@@ -302,11 +300,13 @@ p_x.legend.label_text_font_size = "12pt"
 """
 https://docs.bokeh.org/en/latest/docs/user_guide/layout.html
 """
-plotLayout = layout([
-    [p_fg],
-    [p_x],
+plotLayout = layout(
+    [
+        [p_fg],
+        [p_x],
     ],
-     sizing_mode='stretch_both')
+    sizing_mode="stretch_both",
+)
 
 pane = pn.panel(plotLayout).servable()
 pn.state.add_periodic_callback(update, 100)

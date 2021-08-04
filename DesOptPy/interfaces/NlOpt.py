@@ -55,6 +55,7 @@ import numpy as np
 from DesOptPy.scaling import normalize, denormalize
 import nlopt
 
+
 def OptNlOpt(self, x0, xL, xU, SysEq):
     def ObjFn(self, xVal, grad):
         if np.array_equal(self.xLast, xVal) != True:
@@ -64,7 +65,7 @@ def OptNlOpt(self, x0, xL, xU, SysEq):
             self.gAll.append(self.gVal)
             self.xAll.append(xVal)
             print(self.fVal)
-        return(float(self.fVal))
+        return float(self.fVal)
 
     def ConFn(self, xVal, grad):
         if np.array_equal(self.xLast, xVal) != True:
@@ -73,28 +74,25 @@ def OptNlOpt(self, x0, xL, xU, SysEq):
             self.fAll.append(self.fVal)
             self.gAll.append(self.gVal)
             self.xAll.append(xVal)
-        return(self.gVal)
-
-
+        return self.gVal
 
     self.gAll = []
     self.fAll = []
     self.xAll = []
 
-
     algorithm = nlopt.LD_MMA
     algorithm = nlopt.LN_COBYLA
-    #algorithm = nlopt.LN_COBYLA
-    #algorithm = nlopt.LN_BOBYQA
+    # algorithm = nlopt.LN_COBYLA
+    # algorithm = nlopt.LN_BOBYQA
 
     opt = nlopt.opt(algorithm, self.nx)
-    #opt = nlopt.opt(algorithm, self.nx)
+    # opt = nlopt.opt(algorithm, self.nx)
     opt.set_min_objective(ObjFn)
-    #opt.set_max_objective(f)
+    # opt.set_max_objective(f)
     opt.set_lower_bounds(self.xL)
     opt.set_upper_bounds(self.xU)
     opt.add_inequality_constraint(ConFn)
-    #opt.add_inequality_constraint(lambda x, grad: ConFn(x, grad))
+    # opt.add_inequality_constraint(lambda x, grad: ConFn(x, grad))
 
     # opt.set_stopval(stopval)
     # opt.set_ftol_rel(tol)
@@ -105,12 +103,8 @@ def OptNlOpt(self, x0, xL, xU, SysEq):
     # opt.set_maxtime(maxtime)
     xopt = opt.optimize(self.x0)
 
-
-
-
     xOpt = np.array(Results.x)
     fOpt = np.array([Results.fun])
-
 
     self.xNorm0 = x0
     self.x0 = self.xAll[0]
@@ -132,26 +126,24 @@ def OptNlOpt(self, x0, xL, xU, SysEq):
 
     if "SLSQP" in (self.Alg).upper():
         self.fNablaOpt = Results.jac
-    elif 'trust-constr' in (self.Alg).lower():
+    elif "trust-constr" in (self.Alg).lower():
         self.fNablaOpt = Results.grad
         self.gNablaOpt = Results.jac[0]
 
     if self.g is not None:
         self.gMax = np.max(self.gAll, 1)
 
-
     # Denormalization
-    self.xOpt = [None]*self.nx
+    self.xOpt = [None] * self.nx
     self.xNormOpt = xOpt
     self.fNormOpt = fOpt
     for i in range(self.nx):
         if self.xNorm[i]:
-            self.xOpt[i] = denormalize(xOpt[i], self.xL[i],
-                                       self.xU[i])
+            self.xOpt[i] = denormalize(xOpt[i], self.xL[i], self.xU[i])
         else:
             self.xOpt[i] = xOpt[i]
     if self.fNorm[0]:
-        self.fOpt = fOpt*self.f0/self.fNormMultiplier
+        self.fOpt = fOpt * self.f0 / self.fNormMultiplier
     else:
         self.fOpt = fOpt
     self.gOpt = self.gVal
