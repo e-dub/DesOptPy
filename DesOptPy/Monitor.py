@@ -1,5 +1,6 @@
 from bokeh import palettes
-from bokeh.plotting import figure, show
+from bokeh.plotting import figure, show, output_file, save
+from bokeh.layouts import column, layout
 from bokeh.models import LinearAxis, Range1d, Legend, ColumnDataSource
 from bokeh.models.tools import BoxZoomTool, PanTool, ResetTool, HoverTool
 import numpy as np
@@ -16,7 +17,8 @@ https://github.com/holoviz/panel/issues/1496
 
 # ds = ColumnDataSource({"x": [0], "fAll": [0], "gMax": [0]})
 
-
+showPlot = False
+savePlot = False
 Name = os.getcwd() + os.sep + os.getcwd().split(os.sep)[-1][6:]
 colors10 = [
     "#1f77b4",
@@ -31,7 +33,7 @@ colors10 = [
     "#17becf",
 ]
 font = "palantino"
-fontSize = "15pt"
+fontSize = "12pt"
 
 
 def readHistory():
@@ -146,6 +148,8 @@ ds_fg = ColumnDataSource(
 )
 nx = len(xAll[0])
 
+
+
 # initialize objective and constraint convergence
 p_fg = figure(
     sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False
@@ -178,7 +182,7 @@ p_fg.yaxis[1].axis_label = "maximum constraint value"
 # plot
 p_fg.line(x="x", y="fAll", line_color=colors10[0], source=ds_fg)
 p_fg.circle(
-    x="x", y="fAll", fill_color="white", line_color="white", source=ds_fg, size=15
+    x="x", y="fAll", fill_color="white", line_color="white", source=ds_fg, size=10
 )
 p_fg.circle(
     x="x",
@@ -198,7 +202,7 @@ p_fg.circle(
     line_color="white",
     y_range_name="constraint",
     source=ds_fg,
-    size=15,
+    size=10,
 )
 p_fg.circle(
     x="x",
@@ -217,7 +221,9 @@ https://towardsdatascience.com/draw-beautiful-and-interactive-line-charts-using-
 """
 
 # Palettes: https://docs.bokeh.org/en/latest/docs/reference/palettes.html
-if nx > 21:
+if nx > 11:
+    colorsx = palettes.d3["Category10"][10]
+elif nx > 21:
     colorsx = palettes.d3["Category20"][20][::2] + palettes.d3["Category20"][20][1::2]
 else:
     colorsx = (
@@ -235,7 +241,8 @@ if nx > 40:
 colorsx = colorsx[:nx]
 
 # initialize design variable convergence
-p_x = figure(sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False)
+p_x = figure(
+    sizing_mode="stretch_both", toolbar_location="above", toolbar_sticky=False)
 p_x.xaxis.axis_label = "evaluation"
 p_x.yaxis.axis_label = "normalized design variable value"
 
@@ -273,7 +280,7 @@ for i in range(nx):
         legend_label="design variable " + str(i + 1),
         fill_color="white",
         line_color="white",
-        size=15,
+        size=10,
     )
     p_x.circle(
         x="x",
@@ -283,19 +290,30 @@ for i in range(nx):
         size=5,
         legend_label="design variable " + str(i + 1),
     )
-    # p_x.circle(
-    #     x="x", y="xAll", fill_color="white", line_color="white", source=ds_x, size=10
-    # )
-    # p_x.circle(x="x", y="xAll", source=ds_x, size=5)
-# legend = Legend(items=[(x, [p_dict[x]]) for x in p_dict])
-# p_x.add_layout(legend,'right')
 
 p_x.add_layout(p_x.legend[0], "right")
 p_x.legend.click_policy = "hide"
 p_x.legend.background_fill_alpha = 0.0
 p_x.legend.border_line_alpha = 0.0
+p_x.legend.label_text_font = font
+p_x.legend.label_text_font_size = "12pt"
 
-show(p_fg)
-show(p_x)
-pane = pn.panel(p_x).servable()
+# layout
+"""
+https://docs.bokeh.org/en/latest/docs/user_guide/layout.html
+"""
+plotLayout = layout([
+    [p_fg],
+    [p_x],
+    ],
+     sizing_mode='stretch_both')
+
+pane = pn.panel(plotLayout).servable()
 pn.state.add_periodic_callback(update, 100)
+
+if savePlot:
+    show(plotLayout)
+
+if savePlot:
+    output_file(filename="Try.html", title="DesOptPy")
+    save(plotLayout)
