@@ -243,8 +243,8 @@ def OptimizationProblem(Model):
                 # TODO copy monitor.py to run folder
                 print(
                     "\nTo start monitoring visualization,"
-                    + " enter the following command in terminal:"
-                    + "\n\n    bokeh serve --show DesOptMonitor.py \n\n"
+                    + " enter the following command in terminal from run directory:"
+                    + "\n\n    bokeh serve --show Monitor.py \n\n"
                     + "from the following folder:"
                     "\n\n    " + self.RunDir + "\n\n"
                 )
