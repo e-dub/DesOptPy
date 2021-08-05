@@ -19,7 +19,8 @@ https://github.com/holoviz/panel/issues/1496
 
 showPlot = True
 savePlot = False
-Name = os.getcwd() + os.sep + os.getcwd().split(os.sep)[-1][6:]
+OptName = os.getcwd().split(os.sep)[-1][6:]
+Dir = os.getcwd() + os.sep + os.getcwd().split(os.sep)[-1][6:]
 
 font = "palantino"
 fontSize = "12pt"
@@ -51,7 +52,7 @@ def colorPalette(nColors):
 def readHistory():
     import pyOpt
 
-    OptHist = pyOpt.History(Name, "r")
+    OptHist = pyOpt.History(Dir, "r")
     xAll = OptHist.read([0, -1], ["x"])[0]["x"]
     fAll = OptHist.read([0, -1], ["obj"])[0]["obj"]
     gAll = OptHist.read([0, -1], ["con"])[0]["con"]
@@ -150,6 +151,11 @@ def update(event=None):
             "gAll": [gAll[-1][i]],
         }
     )
+
+# Read in model information
+import pickle
+with open(OptName+'.pkl', 'rb') as f:
+    ModelInfo = pickle.load(f)
 
 
 # initial

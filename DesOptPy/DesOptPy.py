@@ -14,7 +14,14 @@ from DesOptPy.pyOptTools import readHistory
 from DesOptPy.printing import printResults
 
 # from DesOptPy import plotting
-
+import pickle
+def saveModel(obj):
+    # f = open("test.pkl", 'wb')
+    # pickle.dump(self.__dict__, f)
+    # f.close()
+    objWrite = copy.deepcopy(obj.__dict__)
+    del objWrite["Model"]
+    pickle.dump(objWrite, file = open(obj.Name+".pkl", "wb"))
 
 def OptimizationProblem(Model):
     class Opt(Model):
@@ -248,6 +255,12 @@ def OptimizationProblem(Model):
                     + "from the following folder:"
                     "\n\n    " + self.RunDir + "\n\n"
                 )
+
+
+
+            saveModel(self)
+
+
 
             def SysEq(xVal):
                 # TODO tool for file handling and remove from here?
