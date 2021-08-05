@@ -17,17 +17,52 @@ DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for de
 ## Installation
 
 
+## Quick start
+Import OptimizationProblem from the library DesOpyPy
+
+```python
+from DesOptPy import OptimizationProblem
+```
+Define your model to be optimized as a class with a function where the design-variable-dependent system equations are evaluated. 
+
+```python
+class Model:
+    def analysis(self):
+    y = x**2
+    z = x*5
+
+```
+Then setup your optimization problem. First initialize the problem with the model.
+```python
+OptProb =  OptimizationProblem(Model)
+```
+Define the primal analysis for the optimiaztion.
+```python
+OptProb.Primal = "analysis"
+```
+Set the design variables, including initial values and bounds, and the optmization functions.
+```python
+OptProb.x = "x"
+OptProb.x0 = 2
+OptProb.xL = 1
+OptProb.xU = 10
+OptProb.f = "y"
+OptProb.g = ["z"]
+OptProb.gLimit = [17]
+```
+You are now ready to optimize. Commence optimization run with the following command:
+```python
+OptProb.optimize()
+```
 
 ## Plotting
 
 Convergence plotting can be carried out after the optimization with the following command (defaults shown):
 
 ```python
-OptProb.plotConvergence(show=True,
-                        savePDF=False,
-                        savePNG=False,
-                        saveSVG=False,
-                        saveTikZ=False)
+OptProb.plotConvergence(
+    show=True, savePDF=False, savePNG=False, saveSVG=False, saveTikZ=False
+)
 ```
 
 This function has the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format.
@@ -43,11 +78,9 @@ An example of the plots created:
 Before and after bar plotting can be carried out after the optimization with the following command (defaults shown):
 
 ```python
-OptProb.plotBeforeAfter(show=True,
-                        savePDF=False,
-                        savePNG=False,
-                        saveSVG=False,
-                        saveTikZ=False)
+OptProb.plotBeforeAfter(
+    show=True, savePDF=False, savePNG=False, saveSVG=False, saveTikZ=False
+)
 ```
 
 As above, this function has also the possibility of showing or saving in PDF, PNG, SVG and TikZ (PGF) format (TikZ untested).
