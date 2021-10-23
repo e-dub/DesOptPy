@@ -6,8 +6,8 @@ def denormalize(xNorm, xL, xU):
     return xNorm * (xU - xL) + xL
 
 
-if __name__ == "__main__":
-    print("testing")
+if __name__ == '__main__':
+    print('testing')
     import numpy as np
 
     x0 = np.array([9, 900])

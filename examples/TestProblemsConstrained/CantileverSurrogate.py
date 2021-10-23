@@ -49,7 +49,7 @@ nDoE = 200
 xDoE = doe_typ.latin_hypercube(
     factors=2,
     n_samples=nDoE,
-    criterion="centermaximin",
+    criterion='centermaximin',
     iterations=10,
     s_range=[xL, xU],
 )
@@ -66,7 +66,7 @@ for i in range(nDoE):
     stress[i] = CantileverAnalysis.stress
     D4[i] = CantileverAnalysis.D4
 
-opt = op.Options("RBF_KK")
+opt = op.Options('RBF_KK')
 rf = ap.ApproxFactory()
 areaApprox = rf.create(opt)
 stressApprox = rf.create(opt)
@@ -85,15 +85,15 @@ class CantileverApprox:
 
 
 OptCantileverApprox = OptimizationProblem(CantileverApprox)
-OptCantileverApprox.Primal = "SysEqApprox"
-OptCantileverApprox.x = ["w", "t"]
+OptCantileverApprox.Primal = 'SysEqApprox'
+OptCantileverApprox.x = ['w', 't']
 OptCantileverApprox.x0 = np.array([1.8, 1.0])
 OptCantileverApprox.xL = xL
 OptCantileverApprox.xU = xU
-OptCantileverApprox.f = ["area"]
-OptCantileverApprox.g = ["stress", "D4"]
+OptCantileverApprox.f = ['area']
+OptCantileverApprox.g = ['stress', 'D4']
 OptCantileverApprox.gLimit = [40000, 1]
-OptCantileverApprox.Alg = "NLPQLP"
+OptCantileverApprox.Alg = 'NLPQLP'
 OptCantileverApprox.optimize()
 OptCantileverApprox.plotConvergence()
 OptCantileverApprox.plotBeforeAfter()

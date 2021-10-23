@@ -27,8 +27,8 @@ class Styblinski:
 
 
 OptStyblinski = OptimizationProblem(Styblinski)
-OptStyblinski.Primal = "SysEq"
-OptStyblinski.x = ["x", "y"]
+OptStyblinski.Primal = 'SysEq'
+OptStyblinski.x = ['x', 'y']
 OptStyblinski.x0 = (
     np.ones(
         2,
@@ -47,7 +47,7 @@ OptStyblinski.xU = (
     )
     * +5
 )
-OptStyblinski.f = "f"
-OptStyblinski.Alg = "ALHSO"
+OptStyblinski.f = 'f'
+OptStyblinski.Alg = 'ALHSO'
 OptStyblinski.optimize()
 OptStyblinski.plotConvergence()

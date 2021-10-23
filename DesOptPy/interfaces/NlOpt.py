@@ -48,8 +48,6 @@ class opt_problem:
             self.res.x = x
             self.fobj, self.grad = self.func(x, *self.args)
         return self.grad
-
-
 """
 import numpy as np
 from DesOptPy.scaling import normalize, denormalize
@@ -124,9 +122,9 @@ def OptNlOpt(self, x0, xL, xU, SysEq):
         self.nSensEval = None
     self.inform = Results.success
 
-    if "SLSQP" in (self.Alg).upper():
+    if 'SLSQP' in (self.Alg).upper():
         self.fNablaOpt = Results.jac
-    elif "trust-constr" in (self.Alg).lower():
+    elif 'trust-constr' in (self.Alg).lower():
         self.fNablaOpt = Results.grad
         self.gNablaOpt = Results.jac[0]
 

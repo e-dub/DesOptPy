@@ -163,9 +163,9 @@ class Portfolio:
             )
         )
         # portfolio standard deviation == risk
-        self.totalVar = np.sqrt(np.mat(self.x) * cov * np.transpose(np.mat(self.x)))[
-            0, 0
-        ]
+        self.totalVar = np.sqrt(
+            np.mat(self.x) * cov * np.transpose(np.mat(self.x))
+        )[0, 0]
         # just to know the expected return of the minimum risk portfolio,
         # could be used as objective or as multiple objective
         expected_return = np.dot(self.x, mu)
@@ -176,15 +176,19 @@ class Portfolio:
 
 
 OptPortfolio = OptimizationProblem(Portfolio)
-OptPortfolio.Primal = "SysEq"
-OptPortfolio.x = "x"
-OptPortfolio.x0 = np.ones(10) * 0.1  # start with an equally distributed portfolio
-OptPortfolio.xL = np.zeros(10)  # minimum share of asset in portfolio is 0%, all zero
+OptPortfolio.Primal = 'SysEq'
+OptPortfolio.x = 'x'
+OptPortfolio.x0 = (
+    np.ones(10) * 0.1
+)  # start with an equally distributed portfolio
+OptPortfolio.xL = np.zeros(
+    10
+)  # minimum share of asset in portfolio is 0%, all zero
 OptPortfolio.xU = np.ones(10)  # max share of asset in portfolio is 100%
-OptPortfolio.f = "totalVar"
-OptPortfolio.g = ["g1", "g2"]
+OptPortfolio.f = 'totalVar'
+OptPortfolio.g = ['g1', 'g2']
 OptPortfolio.gLimit = [0, 0]
-OptPortfolio.Alg = "NLPQLP"
+OptPortfolio.Alg = 'NLPQLP'
 OptPortfolio.optimize()
 OptPortfolio.plotConvergence()
 OptPortfolio.plotBeforeAfter()

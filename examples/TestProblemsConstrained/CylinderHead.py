@@ -21,7 +21,9 @@ class CylinderHead:
         intakeOffset = 3.25
         warranty = 100000 + 15000 * (4 - self.x[1])
         cycleTime = 45 + 4.5 * pow(4 - self.x[1], 1.5)
-        wallThickness = intakeOffset - exhaustOffset - (self.x[0] + exhaustDia) / 2
+        wallThickness = (
+            intakeOffset - exhaustOffset - (self.x[0] + exhaustDia) / 2
+        )
         horsePower = 250.0 + 200.0 * (self.x[0] / 1.833 - 1.0)
         maxStress = 750 + pow(np.fabs(wallThickness), -2.5)
         self.f = -1 * (horsePower / 250 + warranty / 100000)
@@ -31,15 +33,15 @@ class CylinderHead:
 
 
 OptCylinderHead = OptimizationProblem(CylinderHead)
-OptCylinderHead.Primal = "SysEq"
-OptCylinderHead.x = "x"
+OptCylinderHead.Primal = 'SysEq'
+OptCylinderHead.x = 'x'
 OptCylinderHead.x0 = [1.8, 1.0]
 OptCylinderHead.xL = [1.5, 0.0]
 OptCylinderHead.xU = [2.164, 4.0]
-OptCylinderHead.f = "f"
-OptCylinderHead.g = ["g1", "g2", "g3"]
+OptCylinderHead.f = 'f'
+OptCylinderHead.g = ['g1', 'g2', 'g3']
 OptCylinderHead.gLimit = [0] * 3
-OptCylinderHead.Alg = "SOLVOPT"
+OptCylinderHead.Alg = 'SOLVOPT'
 OptCylinderHead.optimize()
 OptCylinderHead.plotConvergence()
 OptCylinderHead.plotBeforeAfter()

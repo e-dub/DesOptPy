@@ -45,7 +45,10 @@ class Truss3Bar:
         )
         self.dispx = 2 ** 0.5 * self.el * self.Fx / (self.A1 * self.E)
         self.dispy = (
-            2 ** 0.5 * self.el * self.Fy / ((self.A1 + 2 ** 0.5 * self.A2) * self.E)
+            2 ** 0.5
+            * self.el
+            * self.Fy
+            / ((self.A1 + 2 ** 0.5 * self.A2) * self.E)
         )
 
     def sensitivity(self):
@@ -90,13 +93,16 @@ class Truss3Bar:
                 * self.el
                 * self.Fy
                 / ((self.A1 + 2 ** 0.5 * self.A2) ** 2 * self.E),
-                -2 * self.el * self.Fy / ((self.A1 + 2 ** 0.5 * self.A2) ** 2 * self.E),
+                -2
+                * self.el
+                * self.Fy
+                / ((self.A1 + 2 ** 0.5 * self.A2) ** 2 * self.E),
             ]
         )
 
 
 # optional - run analysis with default parameters
-print("primal analysis:")
+print('primal analysis:')
 Analysis = Truss3Bar()
 Analysis.primal()
 print(Analysis.volume)
@@ -105,7 +111,7 @@ print(Analysis.stress2)
 print(Analysis.stress3)
 
 # optional - show parametrizatin by change value
-print("\nperturbed primal analysis:")
+print('\nperturbed primal analysis:')
 AnalysisPerturbation = Truss3Bar()
 AnalysisPerturbation.A1 = 10
 AnalysisPerturbation.A2 = 10
@@ -124,8 +130,8 @@ constraints, algorithm, design variables, etc.
 OptTBT = OptimizationProblem(Truss3Bar)
 OptTBT.RunFolder = True
 OptTBT.RemoveRunFolder = True
-OptTBT.Alg = "SLSQP"
-OptTBT.x = ["A1", "A2"]
+OptTBT.Alg = 'SLSQP'
+OptTBT.x = ['A1', 'A2']
 OptTBT.x0 = [10, 10]
 OptTBT.xL = [0.1, 0.1]
 OptTBT.xU = [100, 100]
@@ -138,19 +144,19 @@ OptTBT.gLimit = np.array([100, 100, 100, 10, 10])
 
 # set primal analysis function and parameters
 # OptTBT.Model = Truss3Bar
-OptTBT.Primal = "primal"  # Truss3Bar.primal
-OptTBT.f = ["volume"]
-OptTBT.g = ["stress1", "stress2", "stress3", "dispx", "dispy"]
+OptTBT.Primal = 'primal'  # Truss3Bar.primal
+OptTBT.f = ['volume']
+OptTBT.g = ['stress1', 'stress2', 'stress3', 'dispx', 'dispy']
 
 # set sensitivtiy analysis fucntins and parameters
-OptTBT.Sensitivity = "sensitivity"
-OptTBT.fNabla = ["volumeNabla"]
+OptTBT.Sensitivity = 'sensitivity'
+OptTBT.fNabla = ['volumeNabla']
 OptTBT.gNabla = [
-    "stress1Nabla",
-    "stress2Nabla",
-    "stress3Nabla",
-    "dispxNabla",
-    "dispyNabla",
+    'stress1Nabla',
+    'stress2Nabla',
+    'stress3Nabla',
+    'dispxNabla',
+    'dispyNabla',
 ]
 
 

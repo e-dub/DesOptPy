@@ -16,10 +16,10 @@ class Rosenbrock:
 
 
 ProbRosenbrockSens = OptimizationProblem(Rosenbrock)
-ProbRosenbrockSens.Primal = "calc"
-ProbRosenbrockSens.Sensitivity = "calcSens"
+ProbRosenbrockSens.Primal = 'calc'
+ProbRosenbrockSens.Sensitivity = 'calcSens'
 nx = 10
-ProbRosenbrockSens.x = "x"
+ProbRosenbrockSens.x = 'x'
 ProbRosenbrockSens.x0 = (
     np.ones(
         nx,
@@ -38,8 +38,8 @@ ProbRosenbrockSens.xU = (
     )
     * +5
 )
-ProbRosenbrockSens.f = ["obj"]
-ProbRosenbrockSens.fNabla = ["objNabla"]
-ProbRosenbrockSens.Alg = "SLSQP"
+ProbRosenbrockSens.f = ['obj']
+ProbRosenbrockSens.fNabla = ['objNabla']
+ProbRosenbrockSens.Alg = 'SLSQP'
 ProbRosenbrockSens.optimize()
 ProbRosenbrockSens.plotConvergence()

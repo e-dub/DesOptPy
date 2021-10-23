@@ -22,15 +22,16 @@ class Levy:
         self.f = (
             np.sin(np.pi * z[0]) ** 2
             + np.sum(
-                (z[:-1] - 1.0) ** 2 * (1.0 + 10.0 * np.sin(np.pi * z[:-1] + 1.0) ** 2)
+                (z[:-1] - 1.0) ** 2
+                * (1.0 + 10.0 * np.sin(np.pi * z[:-1] + 1.0) ** 2)
             )
             + (z[-1] - 1.0) ** 2 * (1.0 + np.sin(2.0 * np.pi * z[-1]) ** 2)
         )
 
 
 OptLevy = OptimizationProblem(Levy)
-OptLevy.Primal = "SysEq"
-OptLevy.x = "x"
+OptLevy.Primal = 'SysEq'
+OptLevy.x = 'x'
 OptLevy.x0 = (
     np.ones(
         2,
@@ -49,6 +50,6 @@ OptLevy.xU = (
     )
     * +5
 )
-OptLevy.f = "f"
+OptLevy.f = 'f'
 OptLevy.optimize()
 OptLevy.plotConvergence()

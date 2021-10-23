@@ -9,7 +9,7 @@ DESign OPTimization in PYthon
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/desoptpy.svg?style=flat-square)](https://pypi.org/project/DesOptPy/)
 [![GitHub stars](https://img.shields.io/github/stars/e-dub/desoptpy.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/e-dub/desoptpy)
 [![PyPi downloads](https://img.shields.io/pypi/dm/desoptpy.svg?style=flat-square)](https://pypistats.org/packages/desoptpy)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+[![Code style: blue](https://img.shields.io/badge/code%20style-blue-blue.svg)](https://blue.readthedocs.io/)
 
 ## Summary
 DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for design optimization, especially of lightweight structures and mechancial systems. This package integrates optimization algorithms from pyOpt and pyGMO, with expansion to others being possible. This allows for complex handling of large-scale optimization problems typical of structural design optimization. The goal of this project is to design a versatile and general optimization toolbox for design optimization in which the setup of an optimization problem is easily, quickly, efficiently and effectively, allowing colleagues and students to dive into optimization problems without difficulty.  It is also meant to be modular and easily expanded.  Though developed for design optimization of mechanical structures, DesOptPy has been written to be flexible and, therefore, optimization problems of other disciplines can be applied.

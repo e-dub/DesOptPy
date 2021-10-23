@@ -5,35 +5,38 @@ import numpy as np
 def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
 
     # Open, read and close history file
-    OptHist = pyOpt.History(OptName, "r")
-    fAll = OptHist.read([0, -1], ["obj"])[0]["obj"]
-    xAll = OptHist.read([0, -1], ["x"])[0]["x"]
-    gAll = OptHist.read([0, -1], ["con"])[0]["con"]
-    gNablaIt = OptHist.read([0, -1], ["grad_con"])[0]["grad_con"]
-    fNablaIt = OptHist.read([0, -1], ["grad_obj"])[0]["grad_obj"]
-    failIt = OptHist.read([0, -1], ["fail"])[0]["fail"]
+    OptHist = pyOpt.History(OptName, 'r')
+    fAll = OptHist.read([0, -1], ['obj'])[0]['obj']
+    xAll = OptHist.read([0, -1], ['x'])[0]['x']
+    gAll = OptHist.read([0, -1], ['con'])[0]['con']
+    gNablaIt = OptHist.read([0, -1], ['grad_con'])[0]['grad_con']
+    fNablaIt = OptHist.read([0, -1], ['grad_obj'])[0]['grad_obj']
+    failIt = OptHist.read([0, -1], ['fail'])[0]['fail']
     OptHist.close()
 
     nx = len(x0)
     ng = len(gc)
-    if Alg == "NLPQLP":
+    if Alg == 'NLPQLP':
         gAll = [x * -1 for x in gAll]
 
     nIt = len(fNablaIt)
     if (
-        Alg in ["COBYLA", "NSGA2", "SDPEN", "ALPSO", "MIDACO", "ALGENCAN", "ALHSO"]
-        or Alg[:5] == "PyGMO"
+        Alg
+        in ['COBYLA', 'NSGA2', 'SDPEN', 'ALPSO', 'MIDACO', 'ALGENCAN', 'ALHSO']
+        or Alg[:5] == 'PyGMO'
     ):
         nIt = len(fAll)
         fIt = fAll
         xIt = xAll
         gIt = gAll
-    elif Alg == "NSGA-II" and np.size(gAll) > 0:
-        Iteration = "Generation"
+    elif Alg == 'NSGA-II' and np.size(gAll) > 0:
+        Iteration = 'Generation'
         if inform == 0:
-            inform = "Optimization terminated successfully"
-        PopSize = AlgOptions["PopSize"][1]
-        for i in range(0, fAll.__len__() / PopSize):  # Iteration trough the Populations
+            inform = 'Optimization terminated successfully'
+        PopSize = AlgOptions['PopSize'][1]
+        for i in range(
+            0, fAll.__len__() / PopSize
+        ):  # Iteration trough the Populations
             best_fitness = 9999999
             max_violation_of_all_g = np.empty(PopSize)
             max_violation_of_all_g.fill(99999999)
@@ -59,20 +62,20 @@ def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
                 xIt.append(xAll[pos_of_best_ind])
                 gIt.append(gAll[pos_of_best_ind])
         nIt = len(fIt)
-    elif Alg == "IPOPT":
-        inform = "Optimization terminated successfully"
+    elif Alg == 'IPOPT':
+        inform = 'Optimization terminated successfully'
         nIt = len(fNablaIt)
         fIt = [[]] * int(len(fNablaIt) - 2)
         xIt = [[]] * int(len(fNablaIt) - 2)
         gIt = [[]] * int(len(fNablaIt) - 2)
         for ii in range(len(fIt)):
-            Posdg = OptHist.cues["grad_con"][ii][0]
-            Posf = OptHist.cues["obj"][ii][0]
+            Posdg = OptHist.cues['grad_con'][ii][0]
+            Posf = OptHist.cues['obj'][ii][0]
             iii = 0
             while Posdg > Posf:
                 iii = iii + 1
                 try:
-                    Posf = OptHist.cues["obj"][iii][0]
+                    Posf = OptHist.cues['obj'][iii][0]
                 except:
                     Posf = Posdg + 1
             iii = iii - 1
@@ -81,18 +84,18 @@ def ReadOptHis(OptName, Alg, AlgOptions, x0, xL, xU, gc, DesVarNorm):
             gIt[ii] = gAll[iii]
         nIt = len(fIt)
     else:
-        inform = "Optimization terminated successfully"
+        inform = 'Optimization terminated successfully'
         fIt = [[]] * len(fNablaIt)
         xIt = [[]] * len(fNablaIt)
         gIt = [[]] * len(fNablaIt)
         for ii in range(len(fIt)):
-            Posdg = OptHist.cues["grad_con"][ii][0]
-            Posf = OptHist.cues["obj"][ii][0]
+            Posdg = OptHist.cues['grad_con'][ii][0]
+            Posf = OptHist.cues['obj'][ii][0]
             iii = 0
             while Posdg > Posf:
                 iii = iii + 1
                 try:
-                    Posf = OptHist.cues["obj"][iii][0]
+                    Posf = OptHist.cues['obj'][iii][0]
                 except:
                     Posf = Posdg + 1
             iii = iii - 1

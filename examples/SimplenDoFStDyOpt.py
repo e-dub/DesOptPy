@@ -22,7 +22,7 @@ class DoFn(Model):
         simulation1.tDelta = 1e-3
         simulation1.UserStopCrit = False
         simulation1.PrimalNonlinearTol = 1e-6
-        simulation1.PrimalNonlinearSolver = "Newton"  # "Broyden"# "Newton"
+        simulation1.PrimalNonlinearSolver = 'Newton'  # "Broyden"# "Newton"
         simulation1.run()
 
     def sensitivity(self):
@@ -35,7 +35,7 @@ class DoFn(Model):
         simulation1.tDelta = 1e-3
         simulation1.UserStopCrit = False
         simulation1.PrimalNonlinearTol = 1e-6
-        simulation1.PrimalNonlinearSolver = "Newton"  # "Broyden"# "Newton"
+        simulation1.PrimalNonlinearSolver = 'Newton'  # "Broyden"# "Newton"
         simulation1.run()
 
 
@@ -46,24 +46,24 @@ OptTBT.pyOptAlg = True
 # OptTBT.SciPyAlg = True
 
 
-OptTBT.Alg = "ALGENCAN"
+OptTBT.Alg = 'ALGENCAN'
 # OptTBT.Alg = "CONMIN"
 # OptTBT.Alg = "SciPySLSQP"
-OptTBT.Alg = "PSQP"
-OptTBT.f = ["volume"]
-OptTBT.g = ["stress1", "stress2", "stress3", "displacementx", "displacementy"]
-OptTBT.gType = ["upper"] * 5
+OptTBT.Alg = 'PSQP'
+OptTBT.f = ['volume']
+OptTBT.g = ['stress1', 'stress2', 'stress3', 'displacementx', 'displacementy']
+OptTBT.gType = ['upper'] * 5
 OptTBT.gNorm = [True] * 5
 OptTBT.gLimit = [100, 100, 100, 10, 10]
-OptTBT.x = ["A1", "A2"]
+OptTBT.x = ['A1', 'A2']
 OptTBT.x0 = [10, 10]
 OptTBT.xL = [0.1, 0.1]
 OptTBT.xU = [100, 100]
 OptTBT.xDelta = 1e-3
 OptTBT.xNorm = [True] * 2
-OptTBT.xType = ["continuous"] * 2
+OptTBT.xType = ['continuous'] * 2
 OptTBT.fNorm = [True]
-OptTBT.Primal = "primal"
+OptTBT.Primal = 'primal'
 OptTBT.optimize()
 OptTBT.plotConvergence()
 OptTBT.plotBeforeAfter()

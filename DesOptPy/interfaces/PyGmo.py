@@ -32,7 +32,9 @@ def OptPyGmo(self, x0, xL, xU, SysEq):
             return 0
 
         def gradient(self1, xVal):
-            return pg.estimate_gradient_h(lambda xVal: self1.fitness(xVal), xVal)
+            return pg.estimate_gradient_h(
+                lambda xVal: self1.fitness(xVal), xVal
+            )
 
     """
     PyGMO
@@ -53,19 +55,25 @@ def OptPyGmo(self, x0, xL, xU, SysEq):
     # pop = pg.population(prob=prob, size=1)
 
     pop = pg.population(prob=prob, size=AlgOptions_nIndiv)
-    if self.Alg[6:] == "monte_carlo":
+    if self.Alg[6:] == 'monte_carlo':
         algo = pg.algorithm.monte_carlo(iters=AlgOptions_iter)
     elif self.ng > 0:
         algo = pg.algorithm(
             pg.cstrs_self_adaptive(
                 iters=AlgOptions_gen,
-                algo=eval("pg." + self.Alg[6:] + "(" + str(AlgOptions_nIndiv) + ")"),
+                algo=eval(
+                    'pg.' + self.Alg[6:] + '(' + str(AlgOptions_nIndiv) + ')'
+                ),
             )
         )
         pop.problem.c_tol = [1e-6] * self.ng
     else:
         algo = eval(
-            "pg.algorithm(pg." + self.Alg[6:] + "(" + str(AlgOptions_gen) + "))"
+            'pg.algorithm(pg.'
+            + self.Alg[6:]
+            + '('
+            + str(AlgOptions_gen)
+            + '))'
         )
     pop = algo.evolve(pop)
     xOpt = pop.champion_x

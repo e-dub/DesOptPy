@@ -14,7 +14,7 @@ class Rosenbrock:
 ProbRosenbrockSens = OptimizationProblem(Rosenbrock)
 ProbRosenbrockSens.RunFolder = True
 nx = 20
-ProbRosenbrockSens.x = "x"
+ProbRosenbrockSens.x = 'x'
 ProbRosenbrockSens.x0 = (
     np.ones(
         nx,
@@ -34,13 +34,13 @@ ProbRosenbrockSens.xU = (
     * +5
 )
 ProbRosenbrockSens.xNorm = [True] * nx
-ProbRosenbrockSens.xType = ["continuous"] * nx
-ProbRosenbrockSens.f = ["obj"]
+ProbRosenbrockSens.xType = ['continuous'] * nx
+ProbRosenbrockSens.f = ['obj']
 ProbRosenbrockSens.fNorm = [False]
-ProbRosenbrockSens.Alg = "NLPQLP"
-ProbRosenbrockSens.Primal = "calc"
-ProbRosenbrockSens.Sensitivity = "calcSens"
-ProbRosenbrockSens.fNabla = ["objNabla"]
+ProbRosenbrockSens.Alg = 'NLPQLP'
+ProbRosenbrockSens.Primal = 'calc'
+ProbRosenbrockSens.Sensitivity = 'calcSens'
+ProbRosenbrockSens.fNabla = ['objNabla']
 ProbRosenbrockSens.TablesPlots = True
 ProbRosenbrockSens.optimize()
 ProbRosenbrockSens.plotConvergence()

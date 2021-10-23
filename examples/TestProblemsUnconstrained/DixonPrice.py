@@ -21,12 +21,12 @@ class DixenPrice:
 
 nx = 2
 OptDixenPrice = OptimizationProblem(DixenPrice)
-OptDixenPrice.x = "x"
+OptDixenPrice.x = 'x'
 OptDixenPrice.x0 = [0] * nx
 OptDixenPrice.xL = -10
 OptDixenPrice.xU = +10
-OptDixenPrice.f = "f"
-OptDixenPrice.Alg = "SLSQP"
-OptDixenPrice.Primal = "SysEq"
+OptDixenPrice.f = 'f'
+OptDixenPrice.Alg = 'SLSQP'
+OptDixenPrice.Primal = 'SysEq'
 OptDixenPrice.optimize()
 OptDixenPrice.plotConvergence()

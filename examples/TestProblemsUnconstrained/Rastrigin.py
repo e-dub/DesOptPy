@@ -18,12 +18,14 @@ class Rastrigin:
 
     def SysEq(self):
         n = len(self.x)
-        self.f = 10 * n + np.sum(self.x ** 2 - 10 * np.cos(2.0 * np.pi * self.x))
+        self.f = 10 * n + np.sum(
+            self.x ** 2 - 10 * np.cos(2.0 * np.pi * self.x)
+        )
 
 
 OptRastrigin = OptimizationProblem(Rastrigin)
-OptRastrigin.Primal = "SysEq"
-OptRastrigin.x = "x"
+OptRastrigin.Primal = 'SysEq'
+OptRastrigin.x = 'x'
 OptRastrigin.x0 = (
     np.ones(
         2,
@@ -42,6 +44,6 @@ OptRastrigin.xU = (
     )
     * +5
 )
-OptRastrigin.f = "f"
+OptRastrigin.f = 'f'
 OptRastrigin.optimize()
 OptRastrigin.plotConvergence()

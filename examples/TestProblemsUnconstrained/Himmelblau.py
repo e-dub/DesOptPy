@@ -26,8 +26,8 @@ class Himmelblau:
 
 
 OptHimmelblau = OptimizationProblem(Himmelblau)
-OptHimmelblau.Primal = "SysEq"
-OptHimmelblau.x = "x"
+OptHimmelblau.Primal = 'SysEq'
+OptHimmelblau.x = 'x'
 OptHimmelblau.x0 = (
     np.ones(
         2,
@@ -46,7 +46,7 @@ OptHimmelblau.xU = (
     )
     * +5
 )
-OptHimmelblau.f = "f"
-OptHimmelblau.Alg = "SOLVOPT"
+OptHimmelblau.f = 'f'
+OptHimmelblau.Alg = 'SOLVOPT'
 OptHimmelblau.optimize()
 OptHimmelblau.plotConvergence()

@@ -20,16 +20,18 @@ class Ackley:
         n = len(self.x)
         s1 = sum(self.x ** 2)
         s2 = sum(np.cos(c * self.x))
-        self.f = -a * np.exp(-b * np.sqrt(s1 / n)) - np.exp(s2 / n) + a + np.exp(1)
+        self.f = (
+            -a * np.exp(-b * np.sqrt(s1 / n)) - np.exp(s2 / n) + a + np.exp(1)
+        )
 
 
 nx = 10
 OptAckley = OptimizationProblem(Ackley)
-OptAckley.x = "x"
+OptAckley.x = 'x'
 OptAckley.x0 = [1] * nx
 OptAckley.xL = -5
 OptAckley.xU = 5
-OptAckley.f = "f"
-OptAckley.Primal = "SysEq"
+OptAckley.f = 'f'
+OptAckley.Primal = 'SysEq'
 OptAckley.optimize()
 OptAckley.plotConvergence()

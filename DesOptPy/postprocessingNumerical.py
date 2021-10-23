@@ -17,7 +17,7 @@ def checkActiveConstraints(self, activeTol=1e-3):
 
 
 def LagrangianFunction(self):
-    if not hasattr(self, "iActive"):
+    if not hasattr(self, 'iActive'):
         checkActiveConstraints(self)
     self.ConNabla = np.block(
         [self.gNablaOpt.T, np.diag([-1] * self.nx).T, np.diag([1] * self.nx).T]
@@ -38,9 +38,9 @@ def LagrangianFunction(self):
 
 
 def checkKKT(self, KKTTol=1e-3):
-    if not hasattr(self, "iActive"):
+    if not hasattr(self, 'iActive'):
         checkActiveConstraints(self)
-    if not hasattr(self, "Lambda"):
+    if not hasattr(self, 'Lambda'):
         LagrangianFunction(self)
     # from numpy.linalg import norm, lstsq, pinv
     # self.kkteps = 1e-3
@@ -56,21 +56,23 @@ def checkKKT(self, KKTTol=1e-3):
     self.Opt1Order = np.linalg.norm(self.OptResidual)
     self.KKTMax = max(abs(self.OptResidual))
     if self.KKTOpt:
-        print("Karush-Kuhn-Tucker optimality criteria fulfilled")
+        print('Karush-Kuhn-Tucker optimality criteria fulfilled')
     elif self.KKTOpt == 0:
-        print("Karush-Kuhn-Tucker optimality criteria NOT fulfilled")
+        print('Karush-Kuhn-Tucker optimality criteria NOT fulfilled')
     # if self.Opt1Order:
-    print("First-order residual of Lagrangian function = " + str(self.Opt1Order))
+    print(
+        'First-order residual of Lagrangian function = ' + str(self.Opt1Order)
+    )
 
 
 def calcShadowPrices(self):
-    if not hasattr(self, "iActive"):
+    if not hasattr(self, 'iActive'):
         checkActiveConstraints(self)
-    if not hasattr(self, "Lambda"):
+    if not hasattr(self, 'Lambda'):
         LagrangianFunction(self)
     self.ShadowPrice = np.zeros_like(self.Lambda)
     for i in range(self.ng):
-        if self.gType[i] == "upper":
+        if self.gType[i] == 'upper':
             if self.gNorm[i]:
                 self.ShadowPrice[i] = -self.Lambda[i] / self.gLimit[i]
             else:
@@ -91,8 +93,8 @@ def calcShadowPrices(self):
     ]
 
 
-if __name__ == "__main__":
-    print("testing")
+if __name__ == '__main__':
+    print('testing')
 
     class test:
         pass

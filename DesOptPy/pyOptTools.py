@@ -8,13 +8,13 @@ def readHistory(self):
     import pyOpt
 
     # read values from history
-    OptHist = pyOpt.History(self.Name, "r")
-    xAll = OptHist.read([0, -1], ["x"])[0]["x"]
-    fAll = OptHist.read([0, -1], ["obj"])[0]["obj"]
-    gAll = OptHist.read([0, -1], ["con"])[0]["con"]
-    gNablaIt = OptHist.read([0, -1], ["grad_con"])[0]["grad_con"]
-    fNablaIt = OptHist.read([0, -1], ["grad_obj"])[0]["grad_obj"]
-    failIt = OptHist.read([0, -1], ["fail"])[0]["fail"]
+    OptHist = pyOpt.History(self.Name, 'r')
+    xAll = OptHist.read([0, -1], ['x'])[0]['x']
+    fAll = OptHist.read([0, -1], ['obj'])[0]['obj']
+    gAll = OptHist.read([0, -1], ['con'])[0]['con']
+    gNablaIt = OptHist.read([0, -1], ['grad_con'])[0]['grad_con']
+    fNablaIt = OptHist.read([0, -1], ['grad_obj'])[0]['grad_obj']
+    failIt = OptHist.read([0, -1], ['fail'])[0]['fail']
     OptHist.close()
 
     # denormalize design variable values
@@ -22,9 +22,11 @@ def readHistory(self):
     for ei in range(len(xAll)):
         for xi, xNormi in enumerate(self.xNorm):
             if xNormi:
-                xAll[ei][xi] = denormalize(xAll[ei][xi], self.xL[xi], self.xU[xi])
+                xAll[ei][xi] = denormalize(
+                    xAll[ei][xi], self.xL[xi], self.xU[xi]
+                )
     # NLPQLP g>0
-    if self.Alg == "NLPQLP":
+    if self.Alg == 'NLPQLP':
         gAll = [g * -1 for g in gAll]
 
     # convert to list
@@ -66,20 +68,22 @@ def readHistory(self):
     else:
 
         for ii in range(self.nIt):
-            Posdg = OptHist.cues["grad_con"][ii][0]
-            Posf = OptHist.cues["obj"][ii][0]
+            Posdg = OptHist.cues['grad_con'][ii][0]
+            Posf = OptHist.cues['obj'][ii][0]
             iii = 0
             while Posdg > Posf:
                 iii = iii + 1
                 try:
-                    Posf = OptHist.cues["obj"][iii][0]
+                    Posf = OptHist.cues['obj'][iii][0]
                 except:
                     Posf = Posdg + 1
             iii = iii - 1
             if self.fNorm[0]:
                 if self.f0 == 0:
                     self.fIt[ii] = (
-                        np.array(fAll[iii]) / self.fNormMultiplier * self.fMinMax
+                        np.array(fAll[iii])
+                        / self.fNormMultiplier
+                        * self.fMinMax
                     )
                 else:
                     self.fIt[ii] = (
@@ -112,8 +116,12 @@ def readHistory(self):
                 self.fNablaIt = self.fNablaIt / self.fNormMultiplier
                 self.fNablaOpt = self.fNablaOpt / self.fNormMultiplier
             else:
-                self.fNablaIt = self.fNablaIt / self.fNormMultiplier * abs(self.f0)
-                self.fNablaOpt = self.fNablaOpt / self.fNormMultiplier * abs(self.f0)
+                self.fNablaIt = (
+                    self.fNablaIt / self.fNormMultiplier * abs(self.f0)
+                )
+                self.fNablaOpt = (
+                    self.fNablaOpt / self.fNormMultiplier * abs(self.f0)
+                )
         self.gNablaOpt = np.array(self.gNablaIt[-1]).reshape(self.ng, self.nx)
     self.xAll = xAll
     self.xNormAll = xNormAll * self.fMinMax

@@ -6,9 +6,9 @@ import seaborn as sns
 
 plt.rcParams.update(
     {
-        "text.usetex": True,
-        "font.family": "serif",
-        "font.serif": ["Palatino"],
+        'text.usetex': True,
+        'font.family': 'serif',
+        'font.serif': ['Palatino'],
     }
 )
 
@@ -28,13 +28,13 @@ def plotConvergence(
 
     # TDO: if nEval then only dots!
     # TODO change x label!
-    def ConvergencePlot(r, legend, ylabel=[], plotType=1, xAxis="it"):
+    def ConvergencePlot(r, legend, ylabel=[], plotType=1, xAxis='it'):
         if self.xIt is None:
             xAxisVal = self.nEval
-            xLabel = "evaluation $i_{\\mathrm{eval}}$"
+            xLabel = 'evaluation $i_{\\mathrm{eval}}$'
         else:
             xAxisVal = self.nIt
-            xLabel = "iteration $i_{it}$"
+            xLabel = 'iteration $i_{it}$'
         if plotType == 1:
             fig, ax = plt.subplots()
             # if legend == 'g' and (np.max(r) - np.min(r)) > 1e3:
@@ -43,17 +43,17 @@ def plotConvergence(
                 for i in range(np.size(r) // xAxisVal):
                     ax.plot(
                         np.array(r)[:, i],
-                        linestyle="-",
+                        linestyle='-',
                         clip_on=False,
                         linewidth=lineThick,
                         zorder=1,
-                        label="$" + legend + "_{" + str(i + 1) + "}$",
+                        label='$' + legend + '_{' + str(i + 1) + '}$',
                     )
                     if xAxisVal < maxDots:
                         ax.scatter(
                             list(range(0, xAxisVal, 1)),
                             np.array(r)[:, i],
-                            color="white",
+                            color='white',
                             s=50,
                             zorder=2,
                         )
@@ -68,17 +68,17 @@ def plotConvergence(
                 ax.plot(
                     r,
                     # ".",
-                    linestyle="-",
+                    linestyle='-',
                     clip_on=False,
                     linewidth=lineThick,
                     zorder=1,
-                    label="$" + legend + "$",
+                    label='$' + legend + '$',
                 )
                 if xAxisVal < maxDots:
                     ax.scatter(
                         list(range(0, xAxisVal, 1)),
                         r,
-                        color="white",
+                        color='white',
                         s=50,
                         zorder=2,
                     )
@@ -100,8 +100,8 @@ def plotConvergence(
             xDelta = xAxisVal - 1
             yDelta = np.max(r) - np.min(r)
 
-            ax.spines["bottom"].set_bounds(0, xAxisVal - 1)
-            ax.spines["left"].set_bounds(np.min(r), np.max(r))
+            ax.spines['bottom'].set_bounds(0, xAxisVal - 1)
+            ax.spines['left'].set_bounds(np.min(r), np.max(r))
             if xAxisVal < 21:
                 x_ticks = list(range(0, xAxisVal, 1))
                 ax.xaxis.set_ticks(x_ticks)
@@ -122,30 +122,32 @@ def plotConvergence(
             ax.set_ylim([np.min(r) - buffer * yDelta, np.max(r)])
 
             # ticks inward
-            ax.tick_params(direction="in")
+            ax.tick_params(direction='in')
 
             # make space
             fig.tight_layout()
 
             plotName = (
-                str.split(self.RunDir, "/")[-1][6:]
-                + str.split(ylabel, " ")[0].title()
-                + "Convergence"
-            ).replace("\n", "")
+                str.split(self.RunDir, '/')[-1][6:]
+                + str.split(ylabel, ' ')[0].title()
+                + 'Convergence'
+            ).replace('\n', '')
 
         else:
 
             def adjust_spines(ax, spines, color):
                 for loc, spine in ax.spines.items():
                     if loc in spines:
-                        spine.set_position(("outward", 24))  # outward by 10 points
-                        if loc == "bottom":
-                            spine.set_color("black")
+                        spine.set_position(
+                            ('outward', 24)
+                        )  # outward by 10 points
+                        if loc == 'bottom':
+                            spine.set_color('black')
                         else:
                             spine.set_color(color)
 
                     else:
-                        spine.set_color("none")  # don't draw spine
+                        spine.set_color('none')  # don't draw spine
 
             fig = plt.figure(figsize=[6.2 * 1.666, 4.8])
             x = np.linspace(0, 6)
@@ -156,24 +158,24 @@ def plotConvergence(
             ax.plot(
                 r[0],
                 clip_on=False,
-                linestyle="-",
+                linestyle='-',
                 linewidth=lineThick,
-                color="tab:blue",
+                color='tab:blue',
                 zorder=1,
             )
             ax2.plot(
                 r[1],
                 clip_on=False,
-                linestyle="-",
+                linestyle='-',
                 linewidth=lineThick,
-                color="tab:red",
+                color='tab:red',
                 zorder=1,
             )
             if xAxisVal < maxDots:
                 ax.scatter(
                     list(range(0, xAxisVal, 1)),
                     r[0],
-                    color="white",
+                    color='white',
                     s=50,
                     zorder=2,
                 )
@@ -183,12 +185,12 @@ def plotConvergence(
                     s=5,
                     zorder=3,
                     clip_on=False,
-                    color="tab:blue",
+                    color='tab:blue',
                 )
                 ax2.scatter(
                     list(range(0, xAxisVal, 1)),
                     r[1],
-                    color="white",
+                    color='white',
                     s=50,
                     zorder=2,
                 )
@@ -198,10 +200,10 @@ def plotConvergence(
                     s=5,
                     zorder=3,
                     clip_on=False,
-                    color="tab:red",
+                    color='tab:red',
                 )
-            adjust_spines(ax, ["bottom", "left"], "tab:blue")
-            adjust_spines(ax2, ["right"], "tab:red")
+            adjust_spines(ax, ['bottom', 'left'], 'tab:blue')
+            adjust_spines(ax2, ['right'], 'tab:red')
             ax.set_xlim([0, xAxisVal - 1])
             ax2.set_xlim([0, xAxisVal - 1])
             if xAxisVal < 21:
@@ -219,15 +221,15 @@ def plotConvergence(
             # ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', position=(0, 1.09))
 
             ax.set_ylabel(
-                "objective function value $f$",
-                rotation="horizontal",
-                verticalalignment="baseline",
+                'objective function value $f$',
+                rotation='horizontal',
+                verticalalignment='baseline',
             )
             ax.yaxis.set_label_coords(-0.3, 1.05)
             ax2.set_ylabel(
-                "max constraint value $g_{\\max}$",
-                rotation="horizontal",
-                verticalalignment="baseline",
+                'max constraint value $g_{\\max}$',
+                rotation='horizontal',
+                verticalalignment='baseline',
             )
             ax2.yaxis.set_label_coords(1.3, 1.05)
 
@@ -235,88 +237,92 @@ def plotConvergence(
             # ax2.set_ylabel("max constraint value $g_{\max}$", rotation='horizontal', verticalalignment='baseline', loc="top")
 
             ax.set_xlabel(xLabel)
-            ax.tick_params(axis="y", colors="tab:blue")
-            ax2.tick_params(axis="y", colors="tab:red")
-            ax.yaxis.label.set_color("tab:blue")
-            ax2.yaxis.label.set_color("tab:red")
+            ax.tick_params(axis='y', colors='tab:blue')
+            ax2.tick_params(axis='y', colors='tab:red')
+            ax.yaxis.label.set_color('tab:blue')
+            ax2.yaxis.label.set_color('tab:red')
 
             # ticks inward
-            ax.tick_params(direction="in")
-            ax2.tick_params(direction="in")
+            ax.tick_params(direction='in')
+            ax2.tick_params(direction='in')
 
             # make space
             fig.tight_layout()
 
             plotName = (
-                str.split(self.RunDir, "/")[-1][6:]
-                + "ObjectiveMaxConstraintConvergence"
+                str.split(self.RunDir, '/')[-1][6:]
+                + 'ObjectiveMaxConstraintConvergence'
             )
 
         if savePNG:
             plt.savefig(
-                plotName + ".png",
+                plotName + '.png',
                 dpi=400,
                 transparent=True,
-                bbox_inches="tight",
+                bbox_inches='tight',
                 pad_inches=0,
             )
         if saveTikZ:
             import tikzplotlib
 
             tikzplotlib.save(
-                plotName + ".pgf",
+                plotName + '.pgf',
                 show_info=False,
                 strict=False,
                 extra_axis_parameters={
-                    "ylabel style={rotate=90.0}",
-                    "height=\\figureheight",
-                    "width=\\figurewidth",
-                    "xmin=0",
-                    "ymin=" + str(np.min(r)),
-                    "ymax=" + str(np.max(r)),
+                    'ylabel style={rotate=90.0}',
+                    'height=\\figureheight',
+                    'width=\\figurewidth',
+                    'xmin=0',
+                    'ymin=' + str(np.min(r)),
+                    'ymax=' + str(np.max(r)),
                 },
             )
             # plt.savefig(plotName + '.pgf', transparent=True)
         if saveSVG:
             plt.savefig(
-                plotName + ".svg",
+                plotName + '.svg',
                 transparent=True,
-                bbox_inches="tight",
+                bbox_inches='tight',
                 pad_inches=0,
             )
         if savePDF:
             plt.savefig(
-                plotName + ".pdf",
-                backend="pgf",
+                plotName + '.pdf',
+                backend='pgf',
                 transparent=True,
-                bbox_inches="tight",
+                bbox_inches='tight',
                 pad_inches=0,
             )
         if show:
             plt.show()
 
     if self.xIt is None:
-        ConvergencePlot(self.xAll, "x", "design variable value", xAxis="eval")
+        ConvergencePlot(self.xAll, 'x', 'design variable value', xAxis='eval')
         # ConvergencePlot(self.xNormAll,
         #                "\hat{x}",
         #                "normalized\ndesign variable value",
         #                xAxis="eval")
-        ConvergencePlot(self.fAll, "f", "objective function value", xAxis="eval")
+        ConvergencePlot(
+            self.fAll, 'f', 'objective function value', xAxis='eval'
+        )
         if self.g is not None:
             ConvergencePlot(
-                self.gAll, "g", "constraint function value", xAxis=self.nEval
+                self.gAll, 'g', 'constraint function value', xAxis=self.nEval
             )
             ConvergencePlot(
-                [self.fAll, self.gMax], ["f", "g"], plotType=2, xAxis="eval"
+                [self.fAll, self.gMax], ['f', 'g'], plotType=2, xAxis='eval'
             )
 
     else:
-        ConvergencePlot(self.xIt, "x", "design variable value")
-        ConvergencePlot(self.xNormIt, "\\hat{x}", "normalized\ndesign variable value")
-        ConvergencePlot(self.fIt, "f", "objective function value")
+        ConvergencePlot(self.xIt, 'x', 'design variable value')
+        ConvergencePlot(
+            self.xNormIt, '\\hat{x}', 'normalized\ndesign variable value'
+        )
+        ConvergencePlot(self.fIt, 'f', 'objective function value')
         if self.g is not None:
-            ConvergencePlot(self.gIt, "g", "constraint function value")
-            ConvergencePlot([self.fIt, self.gMaxIt], ["f", "g"], plotType=2)
+            ConvergencePlot(self.gIt, 'g', 'constraint function value')
+            ConvergencePlot([self.fIt, self.gMaxIt], ['f', 'g'], plotType=2)
 
     # # objective and max constraint convergence
     # fig, ax1 = plt.subplots()
@@ -338,9 +344,11 @@ def plotBeforeAfter(
     saveSVG=False,
     saveTikZ=False,
 ):
-    def BarPlot(r0, rOpt, legend, ylabel=[], xlabelextra="", color="blue"):
+    def BarPlot(r0, rOpt, legend, ylabel=[], xlabelextra='', color='blue'):
         nx = len(r0)
-        labels = ["$" + legend + "_{" + str(i) + " }$" for i in range(1, nx + 1)]
+        labels = [
+            '$' + legend + '_{' + str(i) + ' }$' for i in range(1, nx + 1)
+        ]
         labels = labels[::-1]
 
         index = list(range(1, nx + 1))
@@ -356,7 +364,7 @@ def plotBeforeAfter(
             y=index1,
             xmin=0,
             xmax=r0[::-1],
-            color="tab:" + color,
+            color='tab:' + color,
             alpha=0.25,
             linewidth=10,
             clip_on=False,
@@ -365,28 +373,28 @@ def plotBeforeAfter(
             y=index2,
             xmin=0,
             xmax=rOpt[::-1],
-            color="tab:" + color,
+            color='tab:' + color,
             linewidth=10,
             clip_on=False,
         )
 
-        ax.set_xlabel(xlabelextra + "value")
+        ax.set_xlabel(xlabelextra + 'value')
         ax.set_ylabel(
             ylabel,
-            rotation="horizontal",
-            verticalalignment="baseline",
-            loc="top",
+            rotation='horizontal',
+            verticalalignment='baseline',
+            loc='top',
         )
 
-        ax.tick_params(axis="both", which="major")
+        ax.tick_params(axis='both', which='major')
         plt.yticks(index, labels)
 
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
 
-        ax.spines["left"].set_bounds((1, len(index)))
+        ax.spines['left'].set_bounds((1, len(index)))
 
-        if xlabelextra == "":
+        if xlabelextra == '':
             val = 0
         else:
             val = 1
@@ -396,73 +404,73 @@ def plotBeforeAfter(
             np.max([0, np.max(r0), np.max(rOpt), val]),
         )
 
-        ax.spines["left"].set_position(("outward", 24))
-        ax.spines["bottom"].set_position(("outward", 14))
+        ax.spines['left'].set_position(('outward', 24))
+        ax.spines['bottom'].set_position(('outward', 14))
 
         # ticks inward
-        ax.tick_params(direction="in")
+        ax.tick_params(direction='in')
 
         # make space
         fig.tight_layout()
 
         plotName = (
-            str.split(self.RunDir, "/")[-1][6:]
-            + xlabelextra.replace(" ", "").title()
-            + str.split(ylabel, " ")[0].title()
-            + "Bar"
-        ).replace("\n", "")
+            str.split(self.RunDir, '/')[-1][6:]
+            + xlabelextra.replace(' ', '').title()
+            + str.split(ylabel, ' ')[0].title()
+            + 'Bar'
+        ).replace('\n', '')
 
         if savePNG:
             plt.savefig(
-                plotName + ".png",
+                plotName + '.png',
                 dpi=400,
                 transparent=True,
-                bbox_inches="tight",
+                bbox_inches='tight',
                 pad_inches=0,
             )
         if saveTikZ:
             import tikzplotlib
 
             tikzplotlib.save(
-                plotName + ".pgf",
+                plotName + '.pgf',
                 show_info=False,
                 strict=False,
                 extra_axis_parameters={
-                    "ylabel style={rotate=90.0}",
-                    "height=\\figureheight",
-                    "width=\\figurewidth",
+                    'ylabel style={rotate=90.0}',
+                    'height=\\figureheight',
+                    'width=\\figurewidth',
                 },
             )
             # plt.savefig(plotName + '.pgf', transparent=True)
         if saveSVG:
             plt.savefig(
-                plotName + ".svg",
+                plotName + '.svg',
                 transparent=True,
-                bbox_inches="tight",
+                bbox_inches='tight',
                 pad_inches=0,
             )
         if savePDF:
             plt.savefig(
-                plotName + ".pdf",
-                backend="pgf",
+                plotName + '.pdf',
+                backend='pgf',
                 transparent=True,
-                bbox_inches="tight",
+                bbox_inches='tight',
                 pad_inches=0,
             )
         if show:
             plt.show()
 
-    BarPlot(self.x0, self.xOpt, "x", "design variable")
+    BarPlot(self.x0, self.xOpt, 'x', 'design variable')
     BarPlot(
         np.array(self.xNorm0),
         self.xNormOpt,
-        "\\hat{x}",
-        "design variable",
-        "normalized ",
+        '\\hat{x}',
+        'design variable',
+        'normalized ',
     )
     # BarPlot(self.fIt, "f", "objective function value")
     if self.g is not None:
-        BarPlot(self.g0, self.gOpt, "g", "constraint function", color="red")
+        BarPlot(self.g0, self.gOpt, 'g', 'constraint function', color='red')
 
 
 def PrintTikZInfo():

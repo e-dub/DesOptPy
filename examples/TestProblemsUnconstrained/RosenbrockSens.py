@@ -57,13 +57,13 @@ xU = (
     * 5
 )
 gc = []
-Alg = "NLPQLP"
+Alg = 'NLPQLP'
 AlgOptions = OptAlgOptions.setDefault(Alg)
 AlgOptions.MAXIT = 1000
-SensEqList = [SensEq, "", ""]
-SensCalcList = ["", "FD", "AD"]
+SensEqList = [SensEq, '', '']
+SensCalcList = ['', 'FD', 'AD']
 Output = [[]] * len(SensEqList)
-Name = ["AnaSens", "NumSens", "AutoDiff"]
+Name = ['AnaSens', 'NumSens', 'AutoDiff']
 for ii in range(len(SensEqList)):
     xOpt, fOpt, Output[ii] = DesOpt(
         x0=x0,
@@ -79,10 +79,10 @@ for ii in range(len(SensEqList)):
         deltax=1e-4,
         ResultReport=False,
         StatusReport=False,
-        OptNameAdd="RosenSens" + Name[ii],
+        OptNameAdd='RosenSens' + Name[ii],
     )
 for ii in range(len(SensEqList)):
-    print(Name[ii] + ":")
-    print("nIter: " + str(Output[ii]["nIter"]))
-    print("nEval: " + str(Output[ii]["nEval"]))
-    print("")
+    print(Name[ii] + ':')
+    print('nIter: ' + str(Output[ii]['nIter']))
+    print('nEval: ' + str(Output[ii]['nEval']))
+    print('')

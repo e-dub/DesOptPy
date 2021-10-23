@@ -14,7 +14,7 @@ class Dyn(Model):
     F = 100
     q = 0
     qd = 1
-    DesVar = ["m", "k", "d"]
+    DesVar = ['m', 'k', 'd']
 
 
 class DynModelOpt:
@@ -40,10 +40,10 @@ class DynModelOpt:
         # self.qdMax = np.max(np.abs(simulation1.qd))
         # self.qddMax = np.max(np.abs(simulation1.qdd))
         if plot:
-            plt.plot(simulation1.tAll, simulation1.q, label="$q$")
-            plt.plot(simulation1.tAll, simulation1.qd, label="$\\dot{q}$")
-            plt.plot(simulation1.tAll, simulation1.qdd, label="$\\ddot{q}$")
-            plt.xlabel("time $t$")
+            plt.plot(simulation1.tAll, simulation1.q, label='$q$')
+            plt.plot(simulation1.tAll, simulation1.qd, label='$\\dot{q}$')
+            plt.plot(simulation1.tAll, simulation1.qdd, label='$\\ddot{q}$')
+            plt.xlabel('time $t$')
             plt.legend(frameon=False)
             plt.show()
 
@@ -60,28 +60,34 @@ class DynModelOpt:
         simulation1.run()
         self.qMaxNabla = KS2Sens(simulation1.q, simulation1.qNabla[:, 0, :])
         self.qdMaxNabla = KS2Sens(simulation1.qd, simulation1.qdNabla[:, 0, :])
-        self.qddMaxNabla = KS2Sens(simulation1.qdd, simulation1.qddNabla[:, 0, :])
+        self.qddMaxNabla = KS2Sens(
+            simulation1.qdd, simulation1.qddNabla[:, 0, :]
+        )
         if plot:
-            plt.plot(simulation1.tAll, simulation1.qNabla[:, 0, :], label="$\\nabla q$")
-            plt.xlabel("time $t$")
+            plt.plot(
+                simulation1.tAll,
+                simulation1.qNabla[:, 0, :],
+                label='$\\nabla q$',
+            )
+            plt.xlabel('time $t$')
             plt.legend(frameon=False)
             plt.show()
 
             plt.plot(
                 simulation1.tAll,
                 simulation1.qdNabla[:, 0, :],
-                label="$\\nabla \\dot{q}$",
+                label='$\\nabla \\dot{q}$',
             )
-            plt.xlabel("time $t$")
+            plt.xlabel('time $t$')
             plt.legend(frameon=False)
             plt.show()
 
             plt.plot(
                 simulation1.tAll,
                 simulation1.qddNabla[:, 0, :],
-                label="$\\nabla \\ddot{q}$",
+                label='$\\nabla \\ddot{q}$',
             )
-            plt.xlabel("time $t$")
+            plt.xlabel('time $t$')
             plt.legend(frameon=False)
             plt.show()
 
@@ -90,17 +96,17 @@ initialDesign = DynModelOpt()
 initialDesign.calc(plot=True)
 
 OptDyn = OptimizationProblem(DynModelOpt)
-OptDyn.Primal = "calc"
-OptDyn.x = ["m", "k", "d"]
+OptDyn.Primal = 'calc'
+OptDyn.x = ['m', 'k', 'd']
 OptDyn.x0 = [1, 1, 1]
 OptDyn.xL = [1, 1, 1]
 OptDyn.xU = [30, 30, 10]
-OptDyn.f = ["qddMax"]
+OptDyn.f = ['qddMax']
 # OptDyn.g = [""]
 # OptDyn.gLimit = [75]
-OptDyn.Sensitivity = "sens"
-OptDyn.fNabla = ["qddMaxNabla"]
-OptDyn.Alg = "NLPQLP"
+OptDyn.Sensitivity = 'sens'
+OptDyn.fNabla = ['qddMaxNabla']
+OptDyn.Alg = 'NLPQLP'
 OptDyn.optimize()
 OptDyn.plotConvergence()
 OptDyn.plotBeforeAfter()

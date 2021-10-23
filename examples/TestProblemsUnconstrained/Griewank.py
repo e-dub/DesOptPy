@@ -22,11 +22,11 @@ class Griewank:
 
 
 OptGriewank = OptimizationProblem(Griewank)
-OptGriewank.x = "x"
+OptGriewank.x = 'x'
 OptGriewank.x0 = [0] * 2
 OptGriewank.xL = -5
 OptGriewank.xU = 5
-OptGriewank.f = "f"
-OptGriewank.Primal = "SysEq"
+OptGriewank.f = 'f'
+OptGriewank.Primal = 'SysEq'
 OptGriewank.optimize()
 OptGriewank.plotConvergence()

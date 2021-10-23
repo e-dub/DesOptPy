@@ -40,10 +40,10 @@ class Bridge:
         mS = 4000 * 1e-9  # t/mm^2         # Schneelast
         Frame = Beam2D()
         Frame.Properties = [
-            ["1", rho, E, nu, "C", self.h1, self.bC, self.t],
-            ["2", rho, E, nu, "C", self.h2, self.bC, self.t],
-            ["3", rho, E, nu, "rect", self.bF, self.t],
-            ["4", rho, E, nu, "rect", self.bF, self.t],
+            ['1', rho, E, nu, 'C', self.h1, self.bC, self.t],
+            ['2', rho, E, nu, 'C', self.h2, self.bC, self.t],
+            ['3', rho, E, nu, 'rect', self.bF, self.t],
+            ['4', rho, E, nu, 'rect', self.bF, self.t],
         ]
         F = (mN + mS) * g * B * L / 2
         x = np.linspace(0, L, n)
@@ -60,21 +60,21 @@ class Bridge:
         Frame.PropID = []
         for i in range(n - 1):
             Frame.El.append([i + 1, i + 2])
-            Frame.PropID.append("1")
+            Frame.PropID.append('1')
         for i in range(n - 1):
             Frame.El.append([i + n, i + n + 1])
-            Frame.PropID.append("2")
+            Frame.PropID.append('2')
         Frame.El[n - 1][0] = 1
         Frame.El[2 * n - 3][1] = n
         for i in range((n - 2)):
             Frame.El.append([i + 2, i + n + 1])
-            Frame.PropID.append("3")
+            Frame.PropID.append('3')
         for i in range(int((n - 3) / 2)):
             Frame.El.append([2 * (i + 1) + 1, n + 2 * i + 1])
-            Frame.PropID.append("4")
+            Frame.PropID.append('4')
             Frame.El.append([2 * (i + 1) + 1, n + 2 * (i + 1) + 1])
-            Frame.PropID.append("4")
-        Frame.Disp = [[1, [0, 0, "f"]], [n, ["f", 0, "f"]]]
+            Frame.PropID.append('4')
+        Frame.Disp = [[1, [0, 0, 'f']], [n, ['f', 0, 'f']]]
         Frame.Load = [[]] * (n - 2)
         for i in range(n - 2):
             Frame.Load[i] = [i + 2, [0, -F / (n - 2), 0]]
@@ -88,8 +88,8 @@ class Bridge:
         self.g3 = self.bC / self.h2
         if plot:
             Frame.PlotMesh()
-            Frame.PlotStress(stress="all")
-            Frame.PlotDisplacement("mag")
+            Frame.PlotStress(stress='all')
+            Frame.PlotDisplacement('mag')
 
     # TODO implement analytical sensitivities
 
@@ -99,15 +99,16 @@ initialDesign.calc(plot=True)
 
 sigmaLim = 235  # MPa
 OptBridge = OptimizationProblem(Bridge)
-OptBridge.Primal = "calc"
-OptBridge.x = ["bC", "h1", "h2", "bF", "t"]
+OptBridge.RemoveRunFolder = False
+OptBridge.Primal = 'calc'
+OptBridge.x = ['bC', 'h1', 'h2', 'bF', 't']
 OptBridge.x0 = [60, 150, 150, 100, 10]
 OptBridge.xL = [50, 50, 50, 20, 2]
 OptBridge.xU = [300, 300, 300, 300, 10]
-OptBridge.f = ["m"]
-OptBridge.g = ["stressMax", "g2", "g3"]
+OptBridge.f = ['m']
+OptBridge.g = ['stressMax', 'g2', 'g3']
 OptBridge.gLimit = [sigmaLim, 1, 1]
-OptBridge.Alg = "NLPQLP"
+OptBridge.Alg = 'NLPQLP'
 OptBridge.optimize()
 OptBridge.plotConvergence()
 OptBridge.plotBeforeAfter()

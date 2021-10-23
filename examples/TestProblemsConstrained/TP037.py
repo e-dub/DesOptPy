@@ -28,13 +28,13 @@ class TP037:
 
 
 OptTP037 = OptimizationProblem(TP037)
-OptTP037.Primal = "SysEq"
-OptTP037.x = "x"
+OptTP037.Primal = 'SysEq'
+OptTP037.x = 'x'
 OptTP037.x0 = [20] * 3
 OptTP037.xL = [0] * 3
 OptTP037.xU = [40] * 3
-OptTP037.f = "f"
-OptTP037.g = ["g"]
+OptTP037.f = 'f'
+OptTP037.g = ['g']
 OptTP037.gLimit = [0] * 2
 OptTP037.optimize()
 OptTP037.plotConvergence()

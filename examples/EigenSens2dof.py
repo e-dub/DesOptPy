@@ -43,7 +43,12 @@ class System2DoF:
         kNabla4 = np.array([[1, -1], [-1, 1]])
         self.kNabla = np.array([kNabla1, kNabla2, kNabla3, kNabla4])
         self.massNabla = np.array(
-            [[[1, 0], [0, 0]], [[0, 0], [0, 1]], [[0, 0], [0, 0]], [[0, 0], [0, 0]]]
+            [
+                [[1, 0], [0, 0]],
+                [[0, 0], [0, 1]],
+                [[0, 0], [0, 0]],
+                [[0, 0], [0, 0]],
+            ]
         )
         self.eigNabla = [[]] * 2
         self.phiNabla = [[]] * 2
@@ -76,16 +81,16 @@ Sys.calcEigSens()
 
 # optimize system
 OptProb = OptimizationProblem(System2DoF)
-OptProb.Primal = "calc"
-OptProb.x = ["m1", "m2", "k1", "k2"]
+OptProb.Primal = 'calc'
+OptProb.x = ['m1', 'm2', 'k1', 'k2']
 OptProb.x0 = [1, 0.5, 1e7, 2e7]
 OptProb.xL = [0.1, 0.1, 1e5, 1e5]
 OptProb.xU = [10, 10, 1e8, 2e8]
-OptProb.f = "fLow"
-OptProb.fType = "max"
-OptProb.Alg = "NLPQLP"
-OptProb.Sensitivity = "calcEigSens"
-OptProb.fNabla = ["fLowNabla"]
+OptProb.f = 'fLow'
+OptProb.fType = 'max'
+OptProb.Alg = 'NLPQLP'
+OptProb.Sensitivity = 'calcEigSens'
+OptProb.fNabla = ['fLowNabla']
 OptProb.optimize()
 OptProb.plotConvergence()
 OptProb.plotBeforeAfter()

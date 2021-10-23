@@ -21,13 +21,14 @@ class Michalewicz:
         n = len(self.x)
         j = np.arange(1.0, n + 1)
         self.f = -np.sum(
-            np.sin(self.x) * np.sin(j * self.x ** 2 / np.pi) ** (2.0 * michalewicz_m)
+            np.sin(self.x)
+            * np.sin(j * self.x ** 2 / np.pi) ** (2.0 * michalewicz_m)
         )
 
 
 OptMichalewicz = OptimizationProblem(Michalewicz)
-OptMichalewicz.Primal = "SysEq"
-OptMichalewicz.x = "x"
+OptMichalewicz.Primal = 'SysEq'
+OptMichalewicz.x = 'x'
 OptMichalewicz.x0 = (
     np.ones(
         2,
@@ -46,7 +47,7 @@ OptMichalewicz.xU = (
     )
     * +5
 )
-OptMichalewicz.f = "f"
-OptMichalewicz.Alg = "PSQP"
+OptMichalewicz.f = 'f'
+OptMichalewicz.Alg = 'PSQP'
 OptMichalewicz.optimize()
 OptMichalewicz.plotConvergence()

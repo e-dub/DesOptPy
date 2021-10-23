@@ -24,12 +24,12 @@ nEval = [[]] * nPareto
 gamma = np.logspace(-1, 1, nPareto)
 for ii in range(nPareto):
     OptMultobj = OptimizationProblem(Multobj)
-    OptMultobj.Primal = "SysEq"
-    OptMultobj.x = "x"
+    OptMultobj.Primal = 'SysEq'
+    OptMultobj.x = 'x'
     OptMultobj.xL = np.ones((1,)) * 0
     OptMultobj.xU = np.ones((1,)) * 10
     OptMultobj.x0 = np.average((OptMultobj.xL, OptMultobj.xU), 0)
-    OptMultobj.f = "f"
+    OptMultobj.f = 'f'
     OptMultobj.optimize()
     xOpt[ii] = OptMultobj.xOpt
     OptMultobj.x0 = xOpt[ii]  # Better start value

@@ -45,7 +45,9 @@ class Oscillator2Mass:
         self.Lambda, self.Phi = eigh(self.k, self.m, eigvals=(0, 1))
         self.omegan = np.sqrt(self.Lambda)
         self.fn = self.omegan / (2 * np.pi)
-        self.gFreqParabala = BandConParabolicFn(self.fn, self.omegaBands, norm=False)
+        self.gFreqParabala = BandConParabolicFn(
+            self.fn, self.omegaBands, norm=False
+        )
         self.gFreqBallistic = BandConBallisticFn(
             self.fn, self.omegaBands, a=100, b=0, norm=True, infFilter=1e6
         )
@@ -67,7 +69,13 @@ class Oscillator2Mass:
                 omeganNabla[i, j] = -self.omegan[i] / 2 * self.Phi[j, i] ** 2
         self.fnNabla = omeganNabla / 2 / np.pi
         self.gFreqBallisticNabla = BandConBallisticSensFn(
-            self.fn, self.fnNabla, self.omegaBands, a=100, b=0, norm=True, infFilter=1e6
+            self.fn,
+            self.fnNabla,
+            self.omegaBands,
+            a=100,
+            b=0,
+            norm=True,
+            infFilter=1e6,
         )
         self.g1Nabla = self.gFreqBallisticNabla[0]
         self.g2Nabla = self.gFreqBallisticNabla[1]
@@ -86,37 +94,37 @@ print(Initial.fn)
 # print(Initial.omegan)
 
 Prob1 = OptimizationProblem(Oscillator2Mass)
-Prob1.x = ["mAdded1", "mAdded2"]
+Prob1.x = ['mAdded1', 'mAdded2']
 Prob1.x0 = [0, 0]
 Prob1.xL = [0.0, 0.0]
 Prob1.xU = [2.0, 2.0]
 Prob1.xNorm = [False] * 2
-Prob1.xType = ["continuous"] * 2
-Prob1.f = ["mAddedTot"]
+Prob1.xType = ['continuous'] * 2
+Prob1.f = ['mAddedTot']
 Prob1.fNorm = [True]
-Prob1.g = ["g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8"]
-Prob1.g = ["gFreqBallistic"]
+Prob1.g = ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8']
+Prob1.g = ['gFreqBallistic']
 Prob1.gLimit = [100] * 8
-Prob1.gType = ["upper"] * 8
+Prob1.gType = ['upper'] * 8
 Prob1.gNorm = [False] * 8
 Prob1.gLimit = [0] * 8
-Prob1.Alg = "SLSQP"
-Prob1.Primal = "primal"
+Prob1.Alg = 'SLSQP'
+Prob1.Primal = 'primal'
 
-Prob1.fNabla = ["mTotNabla"]
+Prob1.fNabla = ['mTotNabla']
 Prob1.gNabla = [
-    "g1Nabla",
-    "g2Nabla",
-    "g3Nabla",
-    "g4Nabla",
-    "g5Nabla",
-    "g6Nabla",
-    "g7Nabla",
-    "g8Nabla",
+    'g1Nabla',
+    'g2Nabla',
+    'g3Nabla',
+    'g4Nabla',
+    'g5Nabla',
+    'g6Nabla',
+    'g7Nabla',
+    'g8Nabla',
 ]
 # Prob1.gNabla = ["gFreqBallisticNabla"]
-Prob1.Sensitivity = "sensitivity"
-Prob1.Alg = "MMA"
+Prob1.Sensitivity = 'sensitivity'
+Prob1.Alg = 'MMA'
 Prob1.optimize()
 Prob1.plotConvergence()
 Prob1.plotBeforeAfter()

@@ -107,7 +107,9 @@ def BandConSawToothFn(omega, omegaBands, norm=True, c=[]):
     return g
 
 
-def BandConBallisticFn(omega, omegaBands, a=1e-8, b=0, norm=True, infFilter=False):
+def BandConBallisticFn(
+    omega, omegaBands, a=1e-8, b=0, norm=True, infFilter=False
+):
     g = np.zeros((np.shape(omegaBands)[0] * np.size(omega)))
     ig = 0
     if np.size(omega) == 1:
@@ -118,7 +120,8 @@ def BandConBallisticFn(omega, omegaBands, a=1e-8, b=0, norm=True, infFilter=Fals
                 (-1 - 2 * b)
                 / (omegaBands[ii][1] - omegaBands[ii][0])
                 * (
-                    lambertw(-1 / np.exp(1 + a), -1) - lambertw(-1 / np.exp(1 + a), 0)
+                    lambertw(-1 / np.exp(1 + a), -1)
+                    - lambertw(-1 / np.exp(1 + a), 0)
                 ).real
             )
             d = 1 / c * (-lambertw(-1 / np.exp(1 + a), b) - (1 + a)).real
@@ -148,7 +151,9 @@ def BandConBallisticSensFn(
     omega, domegadx, omegaBands, a=1e-8, b=0, norm=True, infFilter=False
 ):
 
-    dgdx = np.zeros([np.size(omega) * np.shape(omegaBands)[0], np.shape(domegadx)[1]])
+    dgdx = np.zeros(
+        [np.size(omega) * np.shape(omegaBands)[0], np.shape(domegadx)[1]]
+    )
 
     ig = 0
     for jj in range(np.size(omega)):
@@ -157,7 +162,8 @@ def BandConBallisticSensFn(
                 (-1 - 2 * b)
                 / (omegaBands[ii][1] - omegaBands[ii][0])
                 * (
-                    lambertw(-1 / np.exp(1 + a), -1) - lambertw(-1 / np.exp(1 + a), 0)
+                    lambertw(-1 / np.exp(1 + a), -1)
+                    - lambertw(-1 / np.exp(1 + a), 0)
                 ).real
             )
             d = 1 / c * (-lambertw(-1 / np.exp(1 + a), b) - (1 + a)).real

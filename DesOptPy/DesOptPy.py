@@ -15,18 +15,21 @@ from DesOptPy.printing import printResults
 
 # from DesOptPy import plotting
 import pickle
+
+
 def saveModel(obj):
     # f = open("test.pkl", 'wb')
     # pickle.dump(self.__dict__, f)
     # f.close()
     objWrite = copy.deepcopy(obj.__dict__)
-    del objWrite["Model"]
-    pickle.dump(objWrite, file = open(obj.Name+".pkl", "wb"))
+    del objWrite['Model']
+    pickle.dump(objWrite, file=open(obj.Name + '.pkl', 'wb'))
+
 
 def OptimizationProblem(Model):
     class Opt(Model):
         ModelName = str(Model.__name__)
-        fType = "min"
+        fType = 'min'
         x = None
         f = None
         g = None
@@ -51,7 +54,7 @@ def OptimizationProblem(Model):
         xNorm = True
         gNorm = True
 
-        fType = "min"
+        fType = 'min'
         gType = None
 
         f0 = None
@@ -66,7 +69,7 @@ def OptimizationProblem(Model):
 
         fNormMultiplier = 1e3
         xDelta = 1e-4
-        Alg = "SLSQP"
+        Alg = 'SLSQP'
 
         PrintOutput = True
         Alarm = False
@@ -83,7 +86,7 @@ def OptimizationProblem(Model):
         MainDir = None
 
         try:
-            cpu = cpuinfo.get_cpu_info()["brand"]
+            cpu = cpuinfo.get_cpu_info()['brand']
         except:
             cpu = None
 
@@ -99,18 +102,18 @@ def OptimizationProblem(Model):
             # check model
             checkProblem(self)
 
-            if self.fType[0:3].lower() == "max":
+            if self.fType[0:3].lower() == 'max':
                 self.fMinMax = -1
-            elif self.fType[0:3].lower() == "min":
+            elif self.fType[0:3].lower() == 'min':
                 self.fMinMax = 1
             else:
-                print("error")  # TODO raise real error here!
+                print('error')  # TODO raise real error here!
 
             # set model name and time
             self.Model = Model
             # self.ModelName = str(self.Model.__name__)
             self.t0 = datetime.datetime.now()
-            self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
+            self.t0str = self.t0.strftime('%Y%m%d%H%M%S')
             self.Name = self.ModelName + self.Alg + self.t0str
 
             # initialize function evaluations
@@ -151,12 +154,20 @@ def OptimizationProblem(Model):
                 self.xU = np.array([self.xU] * self.nx)
 
             # Reformat and set normalization (scaling)
-            if self.xNorm is None or self.xNorm is True or self.xNorm == [True]:
+            if (
+                self.xNorm is None
+                or self.xNorm is True
+                or self.xNorm == [True]
+            ):
                 self.xNorm = [True] * self.nx
             elif self.xNorm is False or self.xNorm == [False]:
                 self.xNorm = [False] * self.nx
 
-            if self.fNorm is None or self.fNorm is True or self.fNorm == [True]:
+            if (
+                self.fNorm is None
+                or self.fNorm is True
+                or self.fNorm == [True]
+            ):
                 self.fNorm = [True] * self.nf
                 # self.fNorm =
             elif self.fNorm is False or self.fNorm == [False]:
@@ -176,10 +187,14 @@ def OptimizationProblem(Model):
                 if gLimiti == 0:
                     self.gNorm[i] = False
 
-            if self.gType is None or self.gType == "upper" or self.gType == ["upper"]:
-                self.gType = ["upper"] * self.ng
-            elif self.gType == "lower" or self.gType == ["lower"]:
-                self.xNorm = ["lower"] * self.nx
+            if (
+                self.gType is None
+                or self.gType == 'upper'
+                or self.gType == ['upper']
+            ):
+                self.gType = ['upper'] * self.ng
+            elif self.gType == 'lower' or self.gType == ['lower']:
+                self.xNorm = ['lower'] * self.nx
             # TODO equality constraints?
 
             # TODO
@@ -192,86 +207,90 @@ def OptimizationProblem(Model):
             self.pyGmoAlg = False
             self.nloptAlg = False
             if (self.Alg).upper() in {
-                "ALGENCAN",
-                "ALHSO",
-                "ALPSO",
-                "COBYLA",
-                "CONMIN",
-                "FILTERSD",
-                "FSQP",
-                "GCMMA",
-                "IPOPT",
-                "KSOPT",
-                "MIDACO",
-                "MMA",
-                "MMFD",
-                "NLPQLP",
-                "NSGA2",
-                "PSQP",
-                "SDPEN",
-                "SLSQP",
-                "SOLVOPT",
+                'ALGENCAN',
+                'ALHSO',
+                'ALPSO',
+                'COBYLA',
+                'CONMIN',
+                'FILTERSD',
+                'FSQP',
+                'GCMMA',
+                'IPOPT',
+                'KSOPT',
+                'MIDACO',
+                'MMA',
+                'MMFD',
+                'NLPQLP',
+                'NSGA2',
+                'PSQP',
+                'SDPEN',
+                'SLSQP',
+                'SOLVOPT',
             }:
                 self.pyOptAlg = True
-            elif (self.Alg[:5]).upper() == "SCIPY" or (self.Alg[-5:]).upper == "SCIPY":
+            elif (self.Alg[:5]).upper() == 'SCIPY' or (
+                self.Alg[-5:]
+            ).upper == 'SCIPY':
                 self.SciPyAlg = True
-            elif (self.Alg[:5]).upper() == "PYGMO" or (self.Alg[-5:]).upper == "PYGMO":
+            elif (self.Alg[:5]).upper() == 'PYGMO' or (
+                self.Alg[-5:]
+            ).upper == 'PYGMO':
                 self.pyGmoAlg = True
-            elif (self.Alg[:5]).upper() == "NLOPT" or (self.Alg[-5:]).upper == "NLOPT":
+            elif (self.Alg[:5]).upper() == 'NLOPT' or (
+                self.Alg[-5:]
+            ).upper == 'NLOPT':
                 self.nloptAlg = True
             else:
-                raise Exception("Not a valid optimization algorithm")
+                raise Exception('Not a valid optimization algorithm')
 
             # File handling
             self.MainDir = os.getcwd()
             self.DesOptPyDir = os.path.dirname(os.path.realpath(__file__))
             if self.RunFolder:
-                self.RunDir = self.MainDir + os.sep + "DesOpt" + self.Name
+                self.RunDir = self.MainDir + os.sep + 'DesOpt' + self.Name
                 if os.path.isdir(self.RunDir):
                     datetime.time.wait(1)
                     self.t0 = datetime.datetime.now()
-                    self.t0str = self.t0.strftime("%Y%m%d%H%M%S")
+                    self.t0str = self.t0.strftime('%Y%m%d%H%M%S')
                     self.Name = self.ModelName + self.Alg + self.t0str
-                    self.RunDir = self.MainDir + os.sep + "DesOpt" + self.Name
+                    self.RunDir = self.MainDir + os.sep + 'DesOpt' + self.Name
                 shutil.copytree(
                     self.MainDir,
                     self.RunDir,
                     ignore=shutil.ignore_patterns(
-                        "DesOpt*", ".*", ".git*", "*.pyc", "tmp*", "__*"
+                        'DesOpt*', '.*', '.git*', '*.pyc', 'tmp*', '__*'
                     ),
                 )
                 os.chdir(self.RunDir)
 
             if self.Monitoring and self.RunFolder:
                 shutil.copyfile(
-                    self.DesOptPyDir + os.sep + "Monitor.py",
-                    self.RunDir + os.sep + "Monitor.py",
+                    self.DesOptPyDir + os.sep + 'Monitor.py',
+                    self.RunDir + os.sep + 'Monitor.py',
                 )
                 # TODO copy monitor.py to run folder
                 print(
-                    "\nTo start monitoring visualization,"
-                    + " enter the following command in terminal from run directory:"
-                    + "\n\n    bokeh serve --show Monitor.py \n\n"
-                    + "from the following folder:"
-                    "\n\n    " + self.RunDir + "\n\n"
+                    '\nTo start monitoring visualization,'
+                    + ' enter the following command in terminal from run directory:'
+                    + '\n\n    bokeh serve --show Monitor.py \n\n'
+                    + 'from the following folder:'
+                    '\n\n    ' + self.RunDir + '\n\n'
                 )
 
-
-
             saveModel(self)
-
-
 
             def SysEq(xVal):
                 # TODO tool for file handling and remove from here?
                 # create folder and change into it
                 if self.SaveEvaluations:
-                    EvalDir = self.RunDir + os.sep + str(self.nEval + 1).zfill(5)
+                    EvalDir = (
+                        self.RunDir + os.sep + str(self.nEval + 1).zfill(5)
+                    )
                     shutil.copytree(
                         self.MainDir,
                         EvalDir,
                         ignore=shutil.ignore_patterns(
-                            "DesOpt*", ".git*", ".*", "*.pyc", "tmp*", "__*"
+                            'DesOpt*', '.git*', '.*', '*.pyc', 'tmp*', '__*'
                         ),
                     )
                     os.chdir(EvalDir)
@@ -294,9 +313,9 @@ def OptimizationProblem(Model):
 
                 # Call
                 if self.x is None:
-                    eval("self." + self.Primal + "(xVal)")
+                    eval('self.' + self.Primal + '(xVal)')
                 else:
-                    eval("self.Model." + self.Primal + "(self.Model)")
+                    eval('self.Model.' + self.Primal + '(self.Model)')
 
                 # Objective and scaling (norm)
                 fVal = getattr(self.Model, self.f[0])
@@ -324,14 +343,18 @@ def OptimizationProblem(Model):
                         # for j in range(nr):
                         for j, rconval in enumerate(rconvalAll):
                             if self.gNorm[i + j]:
-                                if self.gType[i + j] == "upper":
-                                    gVal[i + j] = rconval / self.gLimit[i + j] - 1
-                                elif self.gType[i + j] == "lower":
-                                    gVal[i + j] = 1 - rconval / self.gLimit[i + j]
+                                if self.gType[i + j] == 'upper':
+                                    gVal[i + j] = (
+                                        rconval / self.gLimit[i + j] - 1
+                                    )
+                                elif self.gType[i + j] == 'lower':
+                                    gVal[i + j] = (
+                                        1 - rconval / self.gLimit[i + j]
+                                    )
                             else:
-                                if self.gType[i + j] == "upper":
+                                if self.gType[i + j] == 'upper':
                                     gVal[i + j] = rconval - self.gLimit[i + j]
-                                elif self.gType[i + j] == "lower":
+                                elif self.gType[i + j] == 'lower':
                                     gVal[i + j] = self.gLimit[i + j] - rconval
                 else:
                     gVal = []
@@ -342,7 +365,7 @@ def OptimizationProblem(Model):
 
                 # Move back into run folder
                 if self.SaveEvaluations:
-                    os.chdir("..")
+                    os.chdir('..')
 
                 self.nEval += 1
                 return (fVal * self.fMinMax, gVal, 0)
@@ -351,13 +374,16 @@ def OptimizationProblem(Model):
                 # create folder and change into it
                 if self.SaveEvaluations:
                     EvalDir = (
-                        self.RunDir + os.sep + str(self.nSensEval + 1).zfill(5) + "Sens"
+                        self.RunDir
+                        + os.sep
+                        + str(self.nSensEval + 1).zfill(5)
+                        + 'Sens'
                     )
                     shutil.copytree(
                         self.MainDir,
                         EvalDir,
                         ignore=shutil.ignore_patterns(
-                            "DesOpt*", ".git*", ".*", "*.pyc", "tmp*", "__*"
+                            'DesOpt*', '.git*', '.*', '*.pyc', 'tmp*', '__*'
                         ),
                     )
                     os.chdir(EvalDir)
@@ -378,9 +404,9 @@ def OptimizationProblem(Model):
 
                 # Call
                 if self.x is None:
-                    eval("self." + self.Sensitivity + "(xVal)")
+                    eval('self.' + self.Sensitivity + '(xVal)')
                 else:
-                    eval("self.Model." + self.Sensitivity + "(self.Model)")
+                    eval('self.Model.' + self.Sensitivity + '(self.Model)')
 
                 # Senstivity of objective
                 fNablaVal = getattr(self.Model, self.fNabla[0])
@@ -388,7 +414,9 @@ def OptimizationProblem(Model):
                     if self.f0 == 0:
                         fNablaVal = fNablaVal * self.fNormMultiplier
                     else:
-                        fNablaVal = fNablaVal / abs(self.f0) * self.fNormMultiplier
+                        fNablaVal = (
+                            fNablaVal / abs(self.f0) * self.fNormMultiplier
+                        )
                 for i in range(len(xVal)):
                     if self.xNorm[i]:
                         fNablaVal[i] *= self.xU[i] - self.xL[i]
@@ -407,14 +435,14 @@ def OptimizationProblem(Model):
                         #     rNablaVal = getattr(self.Model, gNablai)
                         rNablaVal = getattr(self.Model, gNablai)
                         if self.gNorm[i]:
-                            if self.gType[i] == "upper":
+                            if self.gType[i] == 'upper':
                                 gNablaVal[i] = rNablaVal / self.gLimit[i]
-                            elif self.gType[i] == "lower":
+                            elif self.gType[i] == 'lower':
                                 gNablaVal[i] = -rNablaVal / self.gLimit[i]
                         else:
-                            if self.gType[i] == "upper":
+                            if self.gType[i] == 'upper':
                                 gNablaVal[i] = rNablaVal
-                            elif self.gType[i] == "lower":
+                            elif self.gType[i] == 'lower':
                                 gNablaVal[i] = -rNablaVal
                     for i in range(len(self.x0)):
                         if self.xNorm[i]:
@@ -430,7 +458,7 @@ def OptimizationProblem(Model):
 
                 # Move back into run folder
                 if self.SaveEvaluations:
-                    os.chdir("..")
+                    os.chdir('..')
 
                 self.nSensEval += 1
                 return (np.array([fNablaVal]) * self.fMinMax, gNablaVal, 0)
@@ -467,14 +495,14 @@ def OptimizationProblem(Model):
                     gNablaVal = [None] * len(self.gNabla)
                     for i, gNablai in enumerate(self.gNabla):
                         if self.gNorm[i]:
-                            if self.gType[i] == "upper":
+                            if self.gType[i] == 'upper':
                                 gNablaVal[i] = rNablaVal[i] / self.gLimit[i]
-                            elif self.gType[i] == "lower":
+                            elif self.gType[i] == 'lower':
                                 gNablaVal[i] = -rNablaVal[i] / self.gLimit[i]
                         else:
-                            if self.gType[i] == "upper":
+                            if self.gType[i] == 'upper':
                                 gNablaVal[i] = rNablaVal[i]
-                            elif self.gType[i] == "lower":
+                            elif self.gType[i] == 'lower':
                                 gNablaVal[i] = -rNablaVal[i]
                     for i in range(len(self.x0)):
                         if self.xNorm[i]:
@@ -508,33 +536,37 @@ def OptimizationProblem(Model):
                 """
                 import pyOpt
 
-                Alg = eval("pyOpt." + self.Alg + "()")
+                Alg = eval('pyOpt.' + self.Alg + '()')
                 Problem = pyOpt.Optimization(self.ModelName, SysEq)
                 for i in range(self.nx):
                     Problem.addVar(
-                        "x" + str(i + 1), "c", value=x0[i], lower=xL[i], upper=xU[i]
+                        'x' + str(i + 1),
+                        'c',
+                        value=x0[i],
+                        lower=xL[i],
+                        upper=xU[i],
                     )
                 for i in range(self.nf):
-                    Problem.addObj("f" + str(i + 1))
+                    Problem.addObj('f' + str(i + 1))
                 if self.g:
                     for i in range(self.ng):
-                        Problem.addCon("g" + str(i + 1), "i")
+                        Problem.addCon('g' + str(i + 1), 'i')
                 if self.PrintOutput:
                     print(Problem)
 
                 # Call
                 if self.Sensitivity is None:
                     if self.Alg in [
-                        "NLPQLP",
-                        "MMA",
-                        "GCMMA",
-                        "IPOPT",
-                        "FSQP",
-                        "PSQP",
-                        "CONMIN",
-                        "MMFD",
-                        "SLSQP",
-                        "SOLVEOPT",
+                        'NLPQLP',
+                        'MMA',
+                        'GCMMA',
+                        'IPOPT',
+                        'FSQP',
+                        'PSQP',
+                        'CONMIN',
+                        'MMFD',
+                        'SLSQP',
+                        'SOLVEOPT',
                     ]:
                         fOpt, xOpt, inform = Alg(
                             Problem, sens_step=self.xDelta, store_hst=self.Name
@@ -543,7 +575,7 @@ def OptimizationProblem(Model):
                         fOpt, xOpt, inform = Alg(Problem, store_hst=self.Name)
                         # fOpt, xOpt, inform = Alg(Problem)
 
-                elif self.Sensitivity == "autograd":
+                elif self.Sensitivity == 'autograd':
                     fOpt, xOpt, inform = Alg(
                         Problem, sens_type=AutoSensEq, store_hst=self.Name
                     )
@@ -575,7 +607,9 @@ def OptimizationProblem(Model):
                 self.fNormOpt = fOpt
                 for i in range(self.nx):
                     if self.xNorm[i]:
-                        self.xOpt[i] = denormalize(xOpt[i], self.xL[i], self.xU[i])
+                        self.xOpt[i] = denormalize(
+                            xOpt[i], self.xL[i], self.xU[i]
+                        )
                     else:
                         self.xOpt[i] = xOpt[i]
                     self.xNormOpt[i] = xOpt[i]
@@ -619,10 +653,10 @@ def OptimizationProblem(Model):
             self.t1 = datetime.datetime.now()
             self.tOpt = self.t1 - self.t0
 
-            if self.Alarm and self.OS == "Linux":
+            if self.Alarm and self.OS == 'Linux':
                 os.system(
-                    "play --no-show-progress --null --channels 1 "
-                    + "-t alsa synth 2 sine 329.63 fade q 0.05 0.9 0.05"
+                    'play --no-show-progress --null --channels 1 '
+                    + '-t alsa synth 2 sine 329.63 fade q 0.05 0.9 0.05'
                 )
 
             if self.PrintOutput:

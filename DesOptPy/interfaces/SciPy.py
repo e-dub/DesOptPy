@@ -53,51 +53,51 @@ def OptSciPy(self, x0, xL, xU, SysEq):
     self.gAll = []
     self.fAll = []
     self.xAll = []
-    if "SLSQP" in (self.Alg).upper():
+    if 'SLSQP' in (self.Alg).upper():
         Results = spopt.minimize(
             ObjFnSciPy,
             x0,
             args=(),
-            method="SLSQP",
+            method='SLSQP',
             jac=None,
             bounds=spopt.Bounds(xL, xU),
             constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
             tol=None,
             callback=None,
             options={
-                "maxiter": 100,
-                "ftol": 1e-06,
-                "iprint": 1,
-                "disp": False,
-                "eps": self.xDelta,
-                "finite_diff_rel_step": None,
+                'maxiter': 100,
+                'ftol': 1e-06,
+                'iprint': 1,
+                'disp': False,
+                'eps': self.xDelta,
+                'finite_diff_rel_step': None,
             },
         )
-    elif "trust-constr" in (self.Alg).lower():
+    elif 'trust-constr' in (self.Alg).lower():
         Results = spopt.minimize(
             ObjFnSciPy,
             x0,
-            method="trust-constr",
+            method='trust-constr',
             bounds=spopt.Bounds(xL, xU),
             constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
             options={
-                "xtol": 1e-08,
-                "gtol": 1e-08,
-                "barrier_tol": 1e-08,
-                "sparse_jacobian": None,
-                "maxiter": 1000,
-                "verbose": 0,
-                "finite_diff_rel_step": None,
-                "initial_constr_penalty": 1.0,
-                "initial_tr_radius": 1.0,
-                "initial_barrier_parameter": 0.1,
-                "initial_barrier_tolerance": 0.1,
-                "factorization_method": None,
-                "disp": False,
+                'xtol': 1e-08,
+                'gtol': 1e-08,
+                'barrier_tol': 1e-08,
+                'sparse_jacobian': None,
+                'maxiter': 1000,
+                'verbose': 0,
+                'finite_diff_rel_step': None,
+                'initial_constr_penalty': 1.0,
+                'initial_tr_radius': 1.0,
+                'initial_barrier_parameter': 0.1,
+                'initial_barrier_tolerance': 0.1,
+                'factorization_method': None,
+                'disp': False,
             },
         )
         #'grad': None,
-    elif "differential_evolution" in (self.Alg).lower():
+    elif 'differential_evolution' in (self.Alg).lower():
         """
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolutionhttps://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution
         """
@@ -106,7 +106,7 @@ def OptSciPy(self, x0, xL, xU, SysEq):
             x0=x0,
             bounds=spopt.Bounds(xL, xU),
             args=(),
-            strategy="best1bin",
+            strategy='best1bin',
             maxiter=1000,
             popsize=15,
             tol=0.01,
@@ -115,9 +115,9 @@ def OptSciPy(self, x0, xL, xU, SysEq):
             seed=None,
             disp=False,
             polish=True,
-            init="latinhypercube",
+            init='latinhypercube',
             atol=0,
-            updating="immediate",
+            updating='immediate',
             workers=1,
             constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
         )
@@ -162,7 +162,7 @@ def OptSciPy(self, x0, xL, xU, SysEq):
     #                                    callback=None,
     #                                    x0=x0)
     #     Results.jac = None
-    elif "shgo" in (self.Alg).lower():
+    elif 'shgo' in (self.Alg).lower():
         """
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.shgo.html
         """
@@ -177,11 +177,11 @@ def OptSciPy(self, x0, xL, xU, SysEq):
             callback=None,
             minimizer_kwargs=None,
             options=None,
-            sampling_method="simplicial",
+            sampling_method='simplicial',
         )
     else:
         raise Exception(
-            "Not a valid SciPy algorithm for constrained nonlinear optimization"
+            'Not a valid SciPy algorithm for constrained nonlinear optimization'
         )
     xOpt = np.array(Results.x)
     fOpt = np.array([Results.fun])
@@ -204,9 +204,9 @@ def OptSciPy(self, x0, xL, xU, SysEq):
         self.nSensEval = None
     self.inform = Results.success
 
-    if "SLSQP" in (self.Alg).upper():
+    if 'SLSQP' in (self.Alg).upper():
         self.fNablaOpt = Results.jac
-    elif "trust-constr" in (self.Alg).lower():
+    elif 'trust-constr' in (self.Alg).lower():
         self.fNablaOpt = Results.grad
         self.gNablaOpt = Results.jac[0]
 
