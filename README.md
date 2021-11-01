@@ -16,6 +16,10 @@ DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for de
 
 ## Installation
 
+```bash
+sudo python setup.py install
+```
+
 
 ## Quick start
 Import OptimizationProblem from the library DesOpyPy
