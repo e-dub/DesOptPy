@@ -8,7 +8,6 @@
 [![Code style: blue](https://img.shields.io/badge/code%20style-blue-blue.svg)](https://blue.readthedocs.io/)
 
 # DesOptPy
-
 DESign OPTimization in PYthon
 
 ## Summary
@@ -17,6 +16,8 @@ DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for de
 ## Installation
 
 ```bash
+git clone https://github.com/e-dub/DesOptPy2
+cd DesOptPy2
 sudo python setup.py install
 ```
 
