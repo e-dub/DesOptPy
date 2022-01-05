@@ -129,8 +129,8 @@ Simuli
 
 ## Release history
 
-#### August ??, 2021
-Release of version 2021 released. Fully reworked version.
+#### January 5, 2022
+Release of version 2022 released. Fully reworked version.
 
 #### July 27, 2019
 Release of version 2019.
@@ -157,26 +157,7 @@ Initial public release of DesOptPy on GitHub and PyPI - the Python Package Index
 I would also appreciate feedback to any success (or unsuccess) stories with the use of this software.  If you should find errors in the code or documentation, have suggestions for improvements or wish a cooperation, please use the issue function in GitHub.
 
 ## Attribution
-
-If you make use of this code, please cite the `JOSS <http://joss.theoj.org>`_
-paper::
-
-    @article{DesOptPy2021,
-      doi = {},
-      url = {},
-      year = {},
-      publisher = {},
-      volume = {},
-      number = {},
-      author = {},
-      title = {'DesOptPy: DESign OPTimization in PYthon'},
-      journal = {The Journal of Open Source Software}
-    }
-
-Please also cite the Zenodo DOI |DOI| as a software citation - see the
-`documentation
-<http://gala.adrian.pw/en/latest/index.html#citation-and-attribution>`_ for up
-to date citation information.
+...
 
 ## Contributors
 
@@ -193,7 +174,7 @@ The work involved with the 2021 release is supported by the project RTD 2020 –
 
 ## Copyright
 
-Copyright (c) 2021
+Copyright (c) 2022
 Erich Wehrle
 All rights reserved.
 
