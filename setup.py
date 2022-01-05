@@ -1,4 +1,10 @@
 import os
+from pathlib import Path
+
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / 'README.md').read_text()
+
 
 
 def package_files(directory):
@@ -24,4 +30,6 @@ if __name__ == '__main__':
         license='???',
         url='https://github.com/e-dub/DesOptPy',
         packages=['DesOptPy'],
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     )
