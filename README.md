@@ -99,61 +99,6 @@ An example of the plots created:
 
 ## Application examples
 
-## Publications
-Wehrle, E. and Gufler, V. (2021)
-Lightweight engineering design of nonlinear dynamic systems with gradient-based structural design optimization
-Proceedings of the Munich Symposium on Lightweight Design 2020, Springer Berlin Heidelberg, 44-57,
-DOI: 10.1007/978-3-662-63143-0_5.
-
-Gufler, V., Wehrle, E. and Zwölfer, A. (2021)
-A review of flexible multibody dynamics for gradient-based design optimization
-Multibody System Dynamics, 53, 379-409,
-DOI: 10.1007/s11044-021-09802-z.
-
-Gufler, V., Wehrle, E. and Vidoni, R. (2021)
-Sensitivitätsanalyse flexibler Mehrkörpersysteme für die Unsicherheitsanalyse und Entwurfsoptimierung
-IFToMM D-A-CH 2021.
-
-Wehrle, E.; Gufler, V. & Vidoni, R.
-Optimal in-operation redesign of mechanical systems considering vibrations---A new methodology based on frequency-band constraint formulation and efficient sensitivity analysis
-Machines, 2020, 8, 11,
-DOI: 10.3390/machines8010011.
-
-Gufler, V., E. Wehrle, and R. Vidoni. (2020) Multiphysical design optimization of multibody systems: Application to a Tyrolean weir cleaning mechanism. In Mechanisms and Machine Science, pp. 459–467.
-DOI: 10.1007/978-3-030-55807-9_52
-
-Gufler, V., E. Wehrle, and R. Vidoni (2020). Mehrkörperdynamik und Entwurfsoptimierung unter Unsicherheit vom Rechenreinigungsmechanismus eines Tiroler Wehres. In IFToMM D-A-CH.
-
-Wehrle, E.; Palomba, I. & Vidoni, R. (2018)
-In-operation structural modification of planetary gear sets using design optimization methods
-Mechanism Design for Robotics, Springer International Publishing, 395-405,
-DOI: 10.1007/978-3-030-00365-4_47.
-
-Wehrle, E.; Palomba, I. & Vidoni, R. (2018)
-Vibrational behavior of epicyclic gear trains with lumped-parameter models: Analysis and design optimization under uncertainty
-ASME 2018 International Design Engineering Technical Conferences & Computers and Information in Engineering Conference IDETC/CIE 2018, American Society of Mechanical Engineers,
-DOI: 10.1115/detc2018-86427.
-
-Wehrle, E. (2018)
-Modeling and design optimization of dynamic structural systems under uncertainty: Application to epicyclic gearing
-World Congress in Computational Mechnanics.
-
-Boursier Niutta, C.; Wehrle, E. J.; Duddeck, F. & Belingardi, G. (2018)
-Surrogate modeling in design optimization of structures with discontinuous responses: A new approach for ill-posed problems in crashworthiness design
-Structural and Multidisciplinary Optimization, 57, 1857-1869,
-DOI: 10.1007/s00158-018-1958-7.
-
-Wehrle, E. J.; Concli, F.; Cortese, L. & Vidoni, R. (2017)
-Design optimization of planetary gear trains under dynamic constraints and parameter uncertainty
-ECCOMAS Thematic Conference on Multibody Dynamics.
-
-Wehrle, E. J. (2015). Design optimization of lightweight space frame structures considering crashworthiness and parameter uncertainty. Dr.-Ing. diss., Lehrstuhl für Leichtbau, Technische Universität München.
-
-Wehrle, E. J., Q. Xu, and H. Baier (2014). Investigation, optimal design and uncertainty analysis of crash-absorbing extruded aluminium structures. Procedia CIRP 18, 27–32.
-
-and a number of further master, bachelor and semester theses.
-
-
 
 ## Related software and developments
 
@@ -216,3 +161,57 @@ Copyright (c) 2022
 Erich Wehrle
 All rights reserved.
 
+
+## Publications
+Wehrle, E. and Gufler, V. (2021)
+Lightweight engineering design of nonlinear dynamic systems with gradient-based structural design optimization
+Proceedings of the Munich Symposium on Lightweight Design 2020, Springer Berlin Heidelberg, 44-57,
+DOI: 10.1007/978-3-662-63143-0_5.
+
+Gufler, V., Wehrle, E. and Zwölfer, A. (2021)
+A review of flexible multibody dynamics for gradient-based design optimization
+Multibody System Dynamics, 53, 379-409,
+DOI: 10.1007/s11044-021-09802-z.
+
+Gufler, V., Wehrle, E. and Vidoni, R. (2021)
+Sensitivitätsanalyse flexibler Mehrkörpersysteme für die Unsicherheitsanalyse und Entwurfsoptimierung
+IFToMM D-A-CH 2021.
+
+Wehrle, E.; Gufler, V. & Vidoni, R.
+Optimal in-operation redesign of mechanical systems considering vibrations---A new methodology based on frequency-band constraint formulation and efficient sensitivity analysis
+Machines, 2020, 8, 11,
+DOI: 10.3390/machines8010011.
+
+Gufler, V., E. Wehrle, and R. Vidoni. (2020) Multiphysical design optimization of multibody systems: Application to a Tyrolean weir cleaning mechanism. In Mechanisms and Machine Science, pp. 459–467.
+DOI: 10.1007/978-3-030-55807-9_52
+
+Gufler, V., E. Wehrle, and R. Vidoni (2020). Mehrkörperdynamik und Entwurfsoptimierung unter Unsicherheit vom Rechenreinigungsmechanismus eines Tiroler Wehres. In IFToMM D-A-CH.
+
+Wehrle, E.; Palomba, I. & Vidoni, R. (2018)
+In-operation structural modification of planetary gear sets using design optimization methods
+Mechanism Design for Robotics, Springer International Publishing, 395-405,
+DOI: 10.1007/978-3-030-00365-4_47.
+
+Wehrle, E.; Palomba, I. & Vidoni, R. (2018)
+Vibrational behavior of epicyclic gear trains with lumped-parameter models: Analysis and design optimization under uncertainty
+ASME 2018 International Design Engineering Technical Conferences & Computers and Information in Engineering Conference IDETC/CIE 2018, American Society of Mechanical Engineers,
+DOI: 10.1115/detc2018-86427.
+
+Wehrle, E. (2018)
+Modeling and design optimization of dynamic structural systems under uncertainty: Application to epicyclic gearing
+World Congress in Computational Mechnanics.
+
+Boursier Niutta, C.; Wehrle, E. J.; Duddeck, F. & Belingardi, G. (2018)
+Surrogate modeling in design optimization of structures with discontinuous responses: A new approach for ill-posed problems in crashworthiness design
+Structural and Multidisciplinary Optimization, 57, 1857-1869,
+DOI: 10.1007/s00158-018-1958-7.
+
+Wehrle, E. J.; Concli, F.; Cortese, L. & Vidoni, R. (2017)
+Design optimization of planetary gear trains under dynamic constraints and parameter uncertainty
+ECCOMAS Thematic Conference on Multibody Dynamics.
+
+Wehrle, E. J. (2015). Design optimization of lightweight space frame structures considering crashworthiness and parameter uncertainty. Dr.-Ing. diss., Lehrstuhl für Leichtbau, Technische Universität München.
+
+Wehrle, E. J., Q. Xu, and H. Baier (2014). Investigation, optimal design and uncertainty analysis of crash-absorbing extruded aluminium structures. Procedia CIRP 18, 27–32.
+
+and a number of further master, bachelor and semester theses.
