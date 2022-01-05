@@ -16,8 +16,8 @@ DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for de
 ## Installation
 
 ```bash
-git clone https://github.com/e-dub/DesOptPy2
-cd DesOptPy2
+git clone https://github.com/e-dub/DesOptPy
+cd DesOptPy
 sudo python setup.py install
 ```
 
@@ -131,6 +131,10 @@ Simuli
 
 #### January 5, 2022
 Release of version 2022 released. Fully reworked version.
+
+### Previous version (major)
+Found under
+https://github.com/e-dub/DesOptPy1
 
 #### July 27, 2019
 Release of version 2019.
