@@ -21,11 +21,11 @@ if __name__ == '__main__':
     extra_files = package_files('DesOptPy')
     setup(
         name='DesOptPy',
-        version='2021',
+        version='2022.1',
         description='DESign OPTimization in PYthon',
         author='E. J. Wehrle',
         author_email='Erich.Wehrle@unibz.it',
-        copyright='Copyright 2015-2021 E. J. Wehrle',
+        copyright='Copyright 2015-2022 E. J. Wehrle',
         package_data={'': extra_files},
         license='???',
         url='https://github.com/e-dub/DesOptPy',
