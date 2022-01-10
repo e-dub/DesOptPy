@@ -27,7 +27,7 @@ if __name__ == '__main__':
         author_email='Erich.Wehrle@unibz.it',
         copyright='Copyright 2015-2022 E. J. Wehrle',
         package_data={'': extra_files},
-        license='???',
+        license='GNU Lesser General Public License 3.0',
         url='https://github.com/e-dub/DesOptPy',
         packages=['DesOptPy'],
     long_description=long_description,

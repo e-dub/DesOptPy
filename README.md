@@ -1,5 +1,5 @@
 
-<p align=center><img height="50%" width="50%" src="figures/DesOptPy_20210725.svg"></p>
+<p align=center><img height="50%" width="50%" src="figures/DesOptPy.png"></p>
 
 [![PyPi Version](https://img.shields.io/pypi/v/desoptpy.svg?style=flat-square)](https://pypi.org/project/desoptpy)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/desoptpy.svg?style=flat-square)](https://pypi.org/project/DesOptPy/)
@@ -11,14 +11,14 @@
 DESign OPTimization in PYthon
 
 ## Summary
-DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for design optimization, especially of lightweight structures and mechancial systems. This package integrates optimization algorithms from pyOpt and pyGMO, with expansion to others being possible. This allows for complex handling of large-scale optimization problems typical of structural design optimization. The goal of this project is to design a versatile and general optimization toolbox for design optimization in which the setup of an optimization problem is easily, quickly, efficiently and effectively, allowing colleagues and students to dive into optimization problems without difficulty.  It is also meant to be modular and easily expanded.  Though developed for design optimization of mechanical structures, DesOptPy has been written to be flexible and, therefore, optimization problems of other disciplines can be applied.
+DesOptPy (DESign OPTimization in PYthon) was designed a Python-based tool for engineering design optimization, especially of lightweight structures and mechancial systems. This package integrates optimization algorithms from pyOpt and pyGMO, with expansion to others being possible. This allows for complex handling of large-scale optimization problems typical of structural design optimization. The goal of this project is to design a versatile and general optimization toolbox for design optimization in which the setup of an optimization problem is easily, quickly, efficiently and effectively, allowing colleagues and students to dive into optimization problems without difficulty.  It is also meant to be modular and easily expanded.  Though developed for design optimization of mechanical structures, DesOptPy has been written to be flexible and, therefore, optimization problems of other disciplines can be applied.
 
 ## Installation
 
 ```bash
 git clone https://github.com/e-dub/DesOptPy
 cd DesOptPy
-sudo python setup.py install
+python -m pip install -U .
 ```
 
 
@@ -28,7 +28,7 @@ Import OptimizationProblem from the library DesOpyPy
 ```python
 from DesOptPy import OptimizationProblem
 ```
-Define your model to be optimized as a class with a function where the design-variable-dependent system equations are evaluated. 
+Define your model to be optimized as a class with a function where the design-variable-dependent system equations are evaluated.
 
 ```python
 class Model:
@@ -106,34 +106,42 @@ pyUngewiss
 EasyBeam
 Simuli
 
-## Release history
 
-#### January 5, 2022
-Release of version 2022 released. Fully reworked version.
+## Release
 
-### Previous version (major)
+### History
+
+#### Current version (major)
+##### version 2022
+January 5, 2022 \
+Release of version 2022 released. \
+Fully reworked version.
+
+#### Previous version (major)
 Found under
 https://github.com/e-dub/DesOptPy1
 
-#### July 27, 2019
-Release of version 2019.
+##### 2019.1
+July 27, 2019
 
-#### July 30, 2016
-Release of version 1.3..
 
-#### June 26, 2016
-Release of version 1.2.
+##### 1.3
+July 30, 2016
 
-#### November 18, 2015
-Release of version 1.1.
+##### 1.2
+June 26, 2016
 
-#### November 16, 2015
-Release of version 1.02.
+##### 1.1
+November 18, 2015
 
-#### November 10, 2015
-Release of version 1.01.
+##### 1.02
+November 16, 2015
 
-#### October 18, 2015
+##### 1.01
+November 10, 2015
+
+##### Initial
+October 18, 2015 \
 Initial public release of DesOptPy on GitHub and PyPI - the Python Package Index.
 
 ## Contact
@@ -148,7 +156,7 @@ The file AUTHORS.rst has a complete list of contributors to the project.
 
 ## License
 
-DesOptPy is a free and open software released under the ??? license. See file LICENSE.
+DesOptPy is a free and open software released under the  license GNU General Public License Version 3. See file LICENSE.
 
 
 ## Acknowledgment
