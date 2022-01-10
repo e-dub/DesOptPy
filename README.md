@@ -147,9 +147,6 @@ Initial public release of DesOptPy on GitHub and PyPI - the Python Package Index
 ## Contact
 I would also appreciate feedback to any success (or unsuccess) stories with the use of this software.  If you should find errors in the code or documentation, have suggestions for improvements or wish a cooperation, please use the issue function in GitHub.
 
-## Attribution
-...
-
 ## Contributors
 
 The file AUTHORS.rst has a complete list of contributors to the project.
