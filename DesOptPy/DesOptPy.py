@@ -1,5 +1,6 @@
 import datetime
 import os
+import platform
 import copy
 import shutil
 import numpy as np
@@ -76,9 +77,10 @@ def OptimizationProblem(Model):
         RunFolder = True
         RemoveRunFolder = True
         SaveEvaluations = False
-        OS = os.uname()[0]
-        Computer = os.uname()[1]
-        architecture = os.uname()[4]
+
+        OS = platform.uname()[0]
+        Computer = platform.uname()[1]
+        architecture = platform.uname()[4]
         nProcessors = os.cpu_count()
         userName = os.getlogin()
         Monitoring = True
