@@ -21,7 +21,7 @@ if __name__ == '__main__':
     extra_files = package_files('DesOptPy')
     setup(
         name='DesOptPy',
-        version='2022.1',
+        version='2022.1.3',
         description='DESign OPTimization in PYthon',
         author='E. J. Wehrle',
         author_email='Erich.Wehrle@unibz.it',
