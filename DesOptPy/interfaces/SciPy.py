@@ -190,7 +190,8 @@ def OptSciPy(self, x0, xL, xU, SysEq):
     self.x0 = self.xAll[0]
     self.f0 = self.fAll[0]
     self.g0 = self.gAll[0]
-    self.fNablaOpt = Results.jac
+    if (self.Alg).upper() in ['slsqp', 'trust-constr']:
+        self.fNablaOpt = Results.jac
     self.nIt = Results.nit
     self.xIt = None
     self.fIt = None
@@ -204,7 +205,7 @@ def OptSciPy(self, x0, xL, xU, SysEq):
         self.nSensEval = None
     self.inform = Results.success
 
-    if 'SLSQP' in (self.Alg).upper():
+    if (self.Alg).upper() in ['slsqp', 'trust-constr']:
         self.fNablaOpt = Results.jac
     elif 'trust-constr' in (self.Alg).lower():
         self.fNablaOpt = Results.grad

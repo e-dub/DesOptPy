@@ -20,7 +20,6 @@ class Cantilever:
     stress = None
 
     def calc(self):
-        # time.sleep(1)
         self.area = self.w * self.t
         self.stress = (
             600 * self.fy / self.w / self.t ** 2

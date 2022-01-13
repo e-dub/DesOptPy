@@ -13,7 +13,6 @@ class Ackley:
     x = 10
 
     def SysEq(self):
-        print(self.x)
         a = 20
         b = 0.2
         c = 2 * np.pi
