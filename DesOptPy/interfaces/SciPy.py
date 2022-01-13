@@ -188,7 +188,7 @@ def OptSciPy(self, x0, xL, xU, SysEq):
 
     self.xNorm0 = x0
     self.x0 = self.xAll[0]
-    self.f0 = self.fAll[0]
+    #self.f0 = self.fAll[0]
     self.g0 = self.gAll[0]
     if (self.Alg).upper() in ['slsqp', 'trust-constr']:
         self.fNablaOpt = Results.jac
@@ -215,16 +215,24 @@ def OptSciPy(self, x0, xL, xU, SysEq):
         self.gMax = np.max(self.gAll, 1)
 
     # Denormalization
+    #TODO move to scaling!!
     self.xOpt = [None] * self.nx
     self.xNormOpt = xOpt
     self.fNormOpt = fOpt
     for i in range(self.nx):
         if self.xNorm[i]:
-            self.xOpt[i] = denormalize(xOpt[i], self.xL[i], self.xU[i])
+            self.xOpt[i] = denormalize(
+                xOpt[i], self.xL[i], self.xU[i]
+            )
         else:
             self.xOpt[i] = xOpt[i]
+        self.xNormOpt[i] = xOpt[i]
+    self.xOpt = np.array(self.xOpt)
     if self.fNorm[0]:
-        self.fOpt = fOpt * self.f0 / self.fNormMultiplier
+        if self.f0 == 0:
+            self.fOpt = fOpt / self.fNormMultiplier
+        else:
+            self.fOpt = fOpt * abs(self.f0) / self.fNormMultiplier
     else:
         self.fOpt = fOpt
     self.gOpt = self.gVal
