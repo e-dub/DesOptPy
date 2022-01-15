@@ -1,28 +1,34 @@
-"""
-horrible solution as calling syseq 2x, one obj, one constraint
-"""
 import numpy as np
-from DesOptPy.scaling import normalize, denormalize
+from DesOptPy.scaling import denormalize
 
 
 def OptSciPy(self, x0, xL, xU, SysEq):
+
     def ObjFnSciPy(xVal):
-        if np.array_equal(self.xLast, xVal) != True:
+        if xVal.tolist() in [ list(item) for item in self.xAll ]:
+            i = np.where((self.xAll == xVal).all(axis=1))[0][0]
+            fVal = self.fAll[i].copy()
+        else:
             self.fVal, self.gVal, flag = SysEq(xVal)
             self.xLast = xVal.copy()
-            self.fAll.append(self.fVal)
-            self.gAll.append(self.gVal)
-            self.xAll.append(xVal)
-        return self.fVal
+            self.fAll.append(self.fVal.copy())
+            self.gAll.append(self.gVal.copy())
+            self.xAll.append(xVal.copy())
+            fVal = self.fVal.copy()
+        return fVal
 
     def ConFnSciPy(xVal):
-        if np.array_equal(self.xLast, xVal) != True:
+        if xVal.tolist() in [ list(item) for item in self.xAll ]:
+            i = np.where((self.xAll == xVal).all(axis=1))[0][0]
+            gVal = self.gAll[i].copy()
+        else:
             self.fVal, self.gVal, flag = SysEq(xVal)
             self.xLast = xVal.copy()
-            self.fAll.append(self.fVal)
-            self.gAll.append(self.gVal)
-            self.xAll.append(xVal)
-        return self.gVal
+            self.fAll.append(self.fVal.copy())
+            self.gAll.append(self.gVal.copy())
+            self.xAll.append(xVal.copy())
+            gVal = self.gVal.copy()
+        return gVal
 
     """
     SciPy
@@ -59,16 +65,17 @@ def OptSciPy(self, x0, xL, xU, SysEq):
             x0,
             args=(),
             method='SLSQP',
-            jac=None,
+            jac='2-point',
+            hess='2-point',
             bounds=spopt.Bounds(xL, xU),
             constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
-            tol=None,
+            tol=1e-06,
             callback=None,
             options={
                 'maxiter': 100,
+                'disp': False,
                 'ftol': 1e-06,
                 'iprint': 1,
-                'disp': False,
                 'eps': self.xDelta,
                 'finite_diff_rel_step': None,
             },
@@ -122,25 +129,31 @@ def OptSciPy(self, x0, xL, xU, SysEq):
             constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
         )
 
-    # elif 'COBYLA' in (self.Alg).upper():
-    #     """
-    #     Not working, no bounds
-    #     https://docs.scipy.org/doc/scipy/reference/optimize.minimize-cobyla.html
-    #     """
-    #     Results = spopt.minimize(ObjFnSciPy, x0,
-    #                              args=(),
-    #                              bounds=spopt.Bounds(xL, xU),
-    #                              method='COBYLA',
-    #                              constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
-    #                              tol=None,
-    #                              callback=None,
-    #                              options={'rhobeg': 1.0,
-    #                                       'maxiter': 1000,
-    #                                       'disp': False,
-    #                                       'catol': 0.0002})
-    #     Results.nit = None
-    #     Results.njev = None
-    #     Results.jac = None
+    elif 'COBYLA' in (self.Alg).upper():
+        """
+        Not working, no bounds
+        https://docs.scipy.org/doc/scipy/reference/optimize.minimize-cobyla.html
+        need to have bounds as nonlinear constraints.
+        """
+        Results = spopt.minimize(
+            ObjFnSciPy,
+            x0,
+            args=(),
+            bounds=spopt.Bounds(xL, xU),
+            method='COBYLA',
+            constraints=spopt.NonlinearConstraint(ConFnSciPy, -np.inf, 0),
+            tol=None,
+            callback=None,
+            options={
+                'rhobeg': 1.0,
+                'maxiter': 1000,
+                'disp': False,
+                'catol': 0.0002,
+            },
+        )
+        Results.nit = None
+        Results.njev = None
+        Results.jac = None
     # elif 'dual_annealing' in (self.Alg).lower():
     #     """
     #     No constraint
@@ -188,9 +201,9 @@ def OptSciPy(self, x0, xL, xU, SysEq):
 
     self.xNorm0 = x0
     self.x0 = self.xAll[0]
-    #self.f0 = self.fAll[0]
+    # self.f0 = self.fAll[0]
     self.g0 = self.gAll[0]
-    if (self.Alg).upper() in ['slsqp', 'trust-constr']:
+    if (self.Alg).lower() in ['slsqp', 'trust-constr']:
         self.fNablaOpt = Results.jac
     self.nIt = Results.nit
     self.xIt = None
@@ -200,12 +213,13 @@ def OptSciPy(self, x0, xL, xU, SysEq):
     # Todo this is ugly
     self.nIt = Results.nfev
     try:
+        self.nIt = Results.njev
         self.nSensEval = Results.njev
     except:
         self.nSensEval = None
     self.inform = Results.success
 
-    if (self.Alg).upper() in ['slsqp', 'trust-constr']:
+    if (self.Alg).lower() in ['slsqp', 'trust-constr']:
         self.fNablaOpt = Results.jac
     elif 'trust-constr' in (self.Alg).lower():
         self.fNablaOpt = Results.grad
@@ -215,15 +229,13 @@ def OptSciPy(self, x0, xL, xU, SysEq):
         self.gMax = np.max(self.gAll, 1)
 
     # Denormalization
-    #TODO move to scaling!!
+    # TODO move to scaling!!
     self.xOpt = [None] * self.nx
     self.xNormOpt = xOpt
     self.fNormOpt = fOpt
     for i in range(self.nx):
         if self.xNorm[i]:
-            self.xOpt[i] = denormalize(
-                xOpt[i], self.xL[i], self.xU[i]
-            )
+            self.xOpt[i] = denormalize(xOpt[i], self.xL[i], self.xU[i])
         else:
             self.xOpt[i] = xOpt[i]
         self.xNormOpt[i] = xOpt[i]
