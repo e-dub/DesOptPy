@@ -4,7 +4,6 @@ horrible solution as calling syseq 2x, one obj, one constraint
 import numpy as np
 from DesOptPy.scaling import normalize, denormalize
 import pygmo as pg
-import copy
 
 
 def OptPyGmo(self, x0, xL, xU, SysEq):
@@ -15,11 +14,11 @@ def OptPyGmo(self, x0, xL, xU, SysEq):
                 gVal = gVal.tolist()
             except:
                 pass
-            fg = copy.deepcopy(gVal)
+            fg = gVal.copy()
             fg.insert(0, fVal)
-            self.fAll.append(fVal)
-            self.gAll.append(gVal)
-            self.xAll.append(xVal)
+            self.fAll.append(fVal.copy())
+            self.gAll.append(gVal.copy())
+            self.xAll.append(xVal.copy())
             return fg
 
         def get_bounds(self1):

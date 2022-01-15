@@ -538,7 +538,7 @@ def OptimizationProblem(Model):
                 """
                 import pyOpt
 
-                Alg = eval('pyOpt.' + self.Alg + '()')
+                Alg = eval('pyOpt.' + self.Alg.upper() + '()')
                 Problem = pyOpt.Optimization(self.ModelName, SysEq)
                 for i in range(self.nx):
                     Problem.addVar(
@@ -605,7 +605,6 @@ def OptimizationProblem(Model):
                 # Denormalization
                 self.xOpt = [None] * self.nx
                 self.xNormOpt = [None] * self.nx
-                # self.xNormOpt = copy.deepcopy(xOpt)
                 self.fNormOpt = fOpt
                 for i in range(self.nx):
                     if self.xNorm[i]:
