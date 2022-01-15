@@ -405,7 +405,7 @@ def plotBeforeAfter(
         )
 
         ax.spines['left'].set_position(('outward', 24))
-        ax.spines['bottom'].set_position(('outward', -10))
+        ax.spines['bottom'].set_position(('outward', 12))
 
         # ticks inward
         ax.tick_params(direction='in')
