@@ -114,8 +114,8 @@ An example of the plots created:
 
 ## Related software and developments
 
-pyUngewiss
-EasyBeam
+pyUngewiss\
+EasyBeam\
 Simuli
 
 
