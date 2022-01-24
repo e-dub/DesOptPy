@@ -305,7 +305,7 @@ def OptimizationProblem(Model):
                 if self.xVector:
                     if self.xNorm[0]:
                         xVal = denormalize(xVal, self.xL, self.xU)
-                    setattr(self.Model, self.x, xVal)
+                    setattr(self.Model, self.x[0], xVal)
                 else:
                     for i, xi in enumerate(xVal):
                         if self.xNorm[i]:
@@ -396,7 +396,7 @@ def OptimizationProblem(Model):
                 if self.xVector:
                     if self.xNorm[0]:
                         xVal = denormalize(xVal, self.xL, self.xU)
-                    setattr(self.Model, self.x, xVal)
+                    setattr(self.Model, self.x[0], xVal)
                 else:
                     for i, xi in enumerate(xVal):
                         if self.xNorm[i]:
