@@ -6,7 +6,6 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / 'README.md').read_text()
 
 
-
 def package_files(directory):
     paths = []
     for (path, directories, filenames) in os.walk(directory):
@@ -21,7 +20,7 @@ if __name__ == '__main__':
     extra_files = package_files('DesOptPy')
     setup(
         name='DesOptPy',
-        version='2022.1.3',
+        version='2022.1.5',
         description='DESign OPTimization in PYthon',
         author='E. J. Wehrle',
         author_email='Erich.Wehrle@unibz.it',
@@ -30,6 +29,6 @@ if __name__ == '__main__':
         license='GNU Lesser General Public License 3.0',
         url='https://github.com/e-dub/DesOptPy',
         packages=['DesOptPy'],
-    long_description=long_description,
-    long_description_content_type='text/markdown',
+        long_description=long_description,
+        long_description_content_type='text/markdown',
     )
