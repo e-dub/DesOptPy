@@ -1,6 +1,8 @@
 
 <p align=center><img height="50%" width="50%" src="figures/DesOptPy.png"></p>
 
+
+[![DOI](https://zenodo.org/badge/219295117.svg)](https://zenodo.org/badge/latestdoi/219295117)
 [![PyPi Version](https://img.shields.io/pypi/v/desoptpy.svg?style=flat-square)](https://pypi.org/project/desoptpy)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/desoptpy.svg?style=flat-square)](https://pypi.org/project/DesOptPy/)
 [![GitHub stars](https://img.shields.io/github/stars/e-dub/desoptpy.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/e-dub/desoptpy)
