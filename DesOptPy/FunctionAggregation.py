@@ -7,7 +7,7 @@ Function aggregation with
     Induced exponential (IE)
     Induced power (IP)
 
-Recommendation for use: KS2 with rho>100
+Recommendation for use: KS2 with p>100
 
 
 Literature:
@@ -48,44 +48,44 @@ TODO implement sensitivities for IP and IE
 import numpy as np
 
 
-def KS(f, rho=200):
+def KS(f, p=200):
     """
     Return returns scalar KS function from vector f.
 
-    # rho represents the closeness to the limit [1, 100] other papers [5, 50]
+    # p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
-    rho = float(rho)
-    return 1 / rho * (np.log(np.sum(np.exp(rho * f))))
+    p = float(p)
+    return 1 / p * (np.log(np.sum(np.exp(p * f))))
 
 
-def KSSens(f, dfdx, rho=200):
+def KSSens(f, dfdx, p=200):
     """
     Return vector sensitvities of KS function from vector f and matrix dfdx.
-    rho represents the closeness to the limit [1, 100] other papers [5, 50]
+    p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
-    rho = float(rho)
-    return 1 / np.sum(np.exp(rho * f)) * np.exp(rho * f) @ dfdx
+    p = float(p)
+    return 1 / np.sum(np.exp(p * f)) * np.exp(p * f) @ dfdx
 
 
-def KS2(f, rho=200):
+def KS2(f, p=200):
     """
     Return returns scalar KS function from vector f.
-    rho represents the closeness to the limit [1, 100] other papers [5, 50]
+    p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
-    rho = float(rho)
-    return np.max(f) + 1 / rho * np.log(np.sum(np.exp(rho * (f - np.max(f)))))
+    p = float(p)
+    return np.max(f) + 1 / p * np.log(np.sum(np.exp(p * (f - np.max(f)))))
 
 
-def KS2Sens(f, dfdx, rho=200):
+def KS2Sens(f, dfdx, p=200):
     """
     Return vector sensitvities of KS function from vector f and matrix dfdx.
-    rho represents the closeness to the limit [1, 100] other papers [5, 50]
+    p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
-    rho = float(rho)
+    p = float(p)
     return (
         1
-        / np.sum(np.exp(rho * (f - np.max(f))))
-        * np.exp(rho * (f - np.max(f)))
+        / np.sum(np.exp(p * (f - np.max(f))))
+        * np.exp(p * (f - np.max(f)))
         @ dfdx
     )
 
@@ -117,39 +117,52 @@ def pNorm2Sens(f, dfdx, p=200):
         @ dfdx
     )
 
-
-def IE(f, rho=200):
+def IE(f, p=200):
     """Return scalar induced exponential aggregation from vector f."""
-    rho = float(rho)
-    return np.sum(f * np.exp(rho * f)) / np.sum(np.exp(rho * f))
+    p = float(p)
+    return np.sum(f * np.exp(p * f)) / np.sum(np.exp(p * f))
+
+def IESens(f, dfdx, p=200):
+    """Return vector sensitvities of induced exponential from vector f and matrix dfdx."""
+    p = float(p)
+    return KSSens(f, dfdx, p)
 
 
-def IP(f, rho=200):
-    rho = float(rho)
-    return np.sum(f ** (rho + 1)) / np.sum(f ** rho)
+def IP(f, p=200):
+    """Return scalar induced power aggregation from vector f."""
+    p = float(p)
+    return np.sum(f ** (p + 1)) / np.sum(f ** p)
+
+def IPSens(f, dfdx, p=200):
+    """Return vector sensitvities of induced power from vector f and matrix dfdx."""
+    p = float(p)
+    #return ((1/f*np.sum(f ** (p + 1))) / np.sum(f ** p))@dfdx
+    return ((f ** p) / np.sum(f ** p))@dfdx
 
 
 if __name__ == '__main__':
     print('')
     print('Testing of functions:')
     print('')
-    p = rho = 200
+    p = 200
     print('-' * 50)
     print('Example 1 - simple example, small values, small number of values')
     print('-' * 50)
     f = np.array([1, 2, 3])
     dfdx = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]).T
     dfdx[-1, -1] = 0
-    print('fKS:', KS(f, rho))
-    print('nabla_fKS:', KSSens(f, dfdx, rho))
+    print('fKS:', KS(f, p))
+    print('nabla_fKS:', KSSens(f, dfdx, p))
     print('fp:', pNorm(f, p))
     print('nabla_fp:', pNormSens(f, dfdx, p))
-    print('fKS2:', KS2(f, rho))
-    print('nabla_fKS2:', KS2Sens(f, dfdx, rho))
+    print('fKS2:', KS2(f, p))
+    print('nabla_fKS2:', KS2Sens(f, dfdx, p))
     print('fp2:', pNorm2(f, p))
     print('nabla_fp2:', pNorm2Sens(f, dfdx, p))
-    print('fIE:', IE(f, rho))
-    print('fIP:', IP(f, rho))
+    print('fIE:', IE(f, p))
+    print('nabla_fIE:', IESens(f, dfdx, p))
+    print('fIP:', IP(f, p))
+    print('nabla_fIP:', IPSens(f, dfdx, p))
     print('')
     print('True values:')
     print('fMax :', np.max(f))
@@ -166,16 +179,16 @@ if __name__ == '__main__':
     f = np.linspace(1, fVal, nr2)
     dfdx = np.linspace(1, dfdxVal, nr2 * nx2).reshape(nr2, nx2)
     dfdx[0:-1, -1] = 0.0
-    print('fKS:', KS(f, rho))
-    print('nabla_fKS:', KSSens(f, dfdx, rho))
+    print('fKS:', KS(f, p))
+    print('nabla_fKS:', KSSens(f, dfdx, p))
     print('fp:', pNorm(f, p))
     print('nabla_fp:', pNormSens(f, dfdx, p))
-    print('fKS2:', KS2(f, rho))
-    print('nabla_fKS2:', KS2Sens(f, dfdx, rho))
+    print('fKS2:', KS2(f, p))
+    print('nabla_fKS2:', KS2Sens(f, dfdx, p))
     print('fp2:', pNorm2(f, p))
     print('nabla_fp2:', pNorm2Sens(f, dfdx, p))
-    print('fIE:', IE(f, rho))
-    print('fIP:', IP(f, rho))
+    print('fIE:', IE(f, p))
+    print('fIP:', IP(f, p))
     print('')
     print('True values:')
     print('fMax :', np.max(f))
@@ -188,16 +201,16 @@ if __name__ == '__main__':
     f = np.array([1, 2, 3])
     dfdx = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]).T
     dfdx[-1, -1] = 0
-    print('fKS:', -KS(-f, rho))
-    print('nabla_fKS:', -KSSens(-f, -dfdx, rho))
+    print('fKS:', -KS(-f, p))
+    print('nabla_fKS:', -KSSens(-f, -dfdx, p))
     print('fp:', -pNorm(-f, p))
     print('nabla_fp:', -pNormSens(-f, -dfdx, p))
-    print('fKS2:', -KS2(-f, rho))
-    print('nabla_fKS2:', -KS2Sens(-f, -dfdx, rho))
+    print('fKS2:', -KS2(-f, p))
+    print('nabla_fKS2:', -KS2Sens(-f, -dfdx, p))
     print('fp2:', -pNorm2(-f, p))
     print('nabla_fp2:', -pNorm2Sens(-f, -dfdx, p))
-    print('fIE:', -IE(-f, rho))
-    print('fIP:', -IP(-f, rho))
+    print('fIE:', -IE(-f, p))
+    print('fIP:', -IP(-f, p))
     print('')
     print('True values:')
     print('fMin:', np.min(f))
@@ -216,14 +229,14 @@ if __name__ == '__main__':
     fTop = np.linspace(1, fVal, nr)
     dfdxTop = sp.diags(fTop)
     # dfdxTop = np.diag(fTop)
-    print('fKS2:', KS2(fTop, rho))
-    dfdxTopKS2 = KS2Sens(fTop, dfdxTop, rho)
+    print('fKS2:', KS2(fTop, p))
+    dfdxTopKS2 = KS2Sens(fTop, dfdxTop, p)
     # print("max nabla_fKS2:", np.max(dfdxTopKS2))
     print('where nabla_fKS2>1:', np.argwhere(dfdxTopKS2 > 1e0))
     print('nabla_fKS2:', dfdxTopKS2[np.argwhere(dfdxTopKS2 > 1e0)])
     print('max nabla_fKS2:', np.max(dfdxTopKS2))
     print('fp2:', pNorm2(fTop, p))
-    dfdxToppNorm2 = KS2Sens(fTop, dfdxTop, rho)
+    dfdxToppNorm2 = KS2Sens(fTop, dfdxTop, p)
     print('n(nabla_fp2)>1.0:', np.size(np.argwhere(dfdxToppNorm2 > 1e0)))
     print('max nabla_fpNorm2:', np.max(dfdxToppNorm2))
     print('')
@@ -245,7 +258,7 @@ if __name__ == '__main__':
     f = np.linspace(1, fVal, nr2)
     dfdx = np.linspace(1, dfdxVal, nr2 * nx2).reshape(nx2, nr2)
     dfdx[0:-1, -1] = 0.0
-    rhoList = np.logspace(-3, 5, 1001)
+    pList = np.logspace(-3, 5, 1001)
 
     fKS = []
     fpNorm = []
@@ -253,27 +266,27 @@ if __name__ == '__main__':
     fpNorm2 = []
     fIE = []
     fIP = []
-    for rhoi in rhoList:
-        fKS.append(KS(f, rhoi))
-        fKS2.append(KS2(f, rhoi))
-        fpNorm.append(pNorm(f, rhoi))
-        fpNorm2.append(pNorm2(f, rhoi))
-        fIE.append(IE(f, rhoi))
-        fIP.append(IP(f, rhoi))
+    for pi in pList:
+        fKS.append(KS(f, pi))
+        fKS2.append(KS2(f, pi))
+        fpNorm.append(pNorm(f, pi))
+        fpNorm2.append(pNorm2(f, pi))
+        fIE.append(IE(f, pi))
+        fIP.append(IP(f, pi))
     plt.semilogx(
         [10 ** -3, 10 ** 5], [fVal, fVal], 'k', linewidth=0.5, label='true'
     )
-    plt.semilogx(rhoList, fKS, 'r', linestyle='dotted', label='KS')
-    plt.semilogx(rhoList, fKS2, 'r', linestyle=(0, (5, 10)), label='KS 2')
-    plt.semilogx(rhoList, fpNorm, 'b', linestyle='dotted', label='p-norm')
+    plt.semilogx(pList, fKS, 'r', linestyle='dotted', label='KS')
+    plt.semilogx(pList, fKS2, 'r', linestyle=(0, (5, 10)), label='modified KS')
+    plt.semilogx(pList, fpNorm, 'b', linestyle='dotted', label='$p$-norm')
     plt.semilogx(
-        rhoList, fpNorm2, 'b', linestyle=(0, (5, 10)), label='p-norm 2'
+        pList, fpNorm2, 'b', linestyle=(0, (5, 10)), label='modified $p$-norm'
     )
-    plt.semilogx(rhoList, fIE, 'g-', label='IE')
-    plt.semilogx(rhoList, fIP, 'y-', label='IP')
+    plt.semilogx(pList, fIE, 'g-', label='IE')
+    plt.semilogx(pList, fIP, 'y-', label='IP')
     plt.xlim((10 ** -3, 10 ** 5))
     plt.ylim((8000, 12000))
-    plt.xlabel('exponent value $\\rho$ (KS) or $p$ (p-norm)')
+    plt.xlabel('aggregation parameter $p$')
     plt.ylabel('approximated maximum value $\\max(f)$')
     plt.legend(frameon=False, loc='center left', bbox_to_anchor=(1, 0.5))
     plt.title('Example 5: large values, large number of values')
