@@ -51,8 +51,6 @@ import numpy as np
 def KS(f, p=200):
     """
     Return returns scalar KS function from vector f.
-
-    # p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
     p = float(p)
     return 1 / p * (np.log(np.sum(np.exp(p * f))))
@@ -61,7 +59,6 @@ def KS(f, p=200):
 def KSSens(f, dfdx, p=200):
     """
     Return vector sensitvities of KS function from vector f and matrix dfdx.
-    p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
     p = float(p)
     return 1 / np.sum(np.exp(p * f)) * np.exp(p * f) @ dfdx
@@ -70,7 +67,6 @@ def KSSens(f, dfdx, p=200):
 def KS2(f, p=200):
     """
     Return returns scalar KS function from vector f.
-    p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
     p = float(p)
     return np.max(f) + 1 / p * np.log(np.sum(np.exp(p * (f - np.max(f)))))
@@ -79,7 +75,6 @@ def KS2(f, p=200):
 def KS2Sens(f, dfdx, p=200):
     """
     Return vector sensitvities of KS function from vector f and matrix dfdx.
-    p represents the closeness to the limit [1, 100] other papers [5, 50]
     """
     p = float(p)
     return (
