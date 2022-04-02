@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from distutils.core import setup
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / 'README.md').read_text()
@@ -15,7 +15,6 @@ def package_files(directory):
 
 
 if __name__ == '__main__':
-    from distutils.core import setup
 
     extra_files = package_files('DesOptPy')
     setup(

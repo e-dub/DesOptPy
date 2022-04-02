@@ -28,9 +28,11 @@ def printResults(self):
         print('g* = ', end='')
         print(*np.array(self.gOpt), sep='\n     ', flush=True)
         print()
-    print('x* = ', end='')
-    print(*self.xNormOpt[0 : self.nx], sep='\n     ', flush=False)
-    print()
+
+    if len(self.xOpt) < 101:
+        print('x* = ', end='')
+        print(*self.xNormOpt[0 : self.nx], sep='\n     ', flush=False)
+        print()
 
     # add function to normalize and denormlaize constraints, change here.
     # print("Evaluation system values")
@@ -89,42 +91,43 @@ def printResults(self):
                     + ')'
                 )
         print()
-    print('design at optimum (lower bound, upper bound):')
-    if self.xVector:
-        print(
-            self.x
-            + ' = '
-            + str(self.xOpt[0])
-            + ' ('
-            + str(self.xL[0])
-            + ', '
-            + str(self.xU[0])
-            + ')'
-        )
-        for j in range(1, np.size(self.xOpt)):
+    if len(self.xOpt) < 101:
+        print('design at optimum (lower bound, upper bound):')
+        if self.xVector:
             print(
-                '    '
-                + str(self.xOpt[j])
-                + ' ('
-                + str(self.xL[j])
-                + ', '
-                + str(self.xU[j])
-                + ')'
-            )
-    else:
-        for i in range(self.nx):
-            print(
-                self.x[i]
+                self.x[0]
                 + ' = '
-                + str((self.xOpt[i]))
+                + str(self.xOpt[0])
                 + ' ('
-                + str(self.xL[i])
+                + str(self.xL[0])
                 + ', '
-                + str(self.xU[i])
+                + str(self.xU[0])
                 + ')'
             )
-    print()
-    print('t = ' + str(self.tOpt) + ' [h:mm:ss]')
+            for j in range(1, np.size(self.xOpt)):
+                print(
+                    '    '
+                    + str(self.xOpt[j])
+                    + ' ('
+                    + str(self.xL[j])
+                    + ', '
+                    + str(self.xU[j])
+                    + ')'
+                )
+        else:
+            for i in range(self.nx):
+                print(
+                    self.x[i]
+                    + ' = '
+                    + str((self.xOpt[i]))
+                    + ' ('
+                    + str(self.xL[i])
+                    + ', '
+                    + str(self.xU[i])
+                    + ')'
+                )
+        print()
+    print('t = ' + str(self.tOpt) + ' [h:m:s]')
     print()
     if self.nGen:
         print('nGen = ' + str(self.nGen))

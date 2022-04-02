@@ -13,6 +13,7 @@ from DesOptPy.scaling import normalize, denormalize
 from DesOptPy.tools import checkProblem
 from DesOptPy.pyOptTools import readHistory
 from DesOptPy.printing import printResults
+from DesOptPy import algOptions
 
 # from DesOptPy import plotting
 import pickle
@@ -86,6 +87,11 @@ def OptimizationProblem(Model):
         Monitoring = True
         RunDir = None
         MainDir = None
+        DefaultOptionsLoaded = False
+
+
+        def __init__(self):
+            self.AlgOptions = []
 
         try:
             cpu = cpuinfo.get_cpu_info()['brand']
@@ -99,6 +105,10 @@ def OptimizationProblem(Model):
             checkActiveConstraints,
             LagrangianFunction,
         )
+        from DesOptPy.tools import checkSensitivities
+
+        def loadDefaultAlgOptions(self):
+            self.AlgOptions = algOptions.setDefault(self.Alg)
 
         def optimize(self):
             # check model
@@ -130,7 +140,8 @@ def OptimizationProblem(Model):
             if self.g is None or self.g == []:
                 self.ng = 0
             else:
-                self.ng = max(np.size(self.g), np.size(self.gLimit))
+                self.ng = max(np.size(self.g),
+                              sum(np.size(x) for x in self.gLimit))
 
             # check if one parameter for all design variables, i.e. vector
             if np.size(self.x) == 1 and self.nx > 1:
@@ -539,6 +550,10 @@ def OptimizationProblem(Model):
                 import pyOpt
 
                 Alg = eval('pyOpt.' + self.Alg.upper() + '()')
+                if not self.AlgOptions:
+                    self.AlgOptions = algOptions.setDefault(self.Alg)
+                Alg = algOptions.setUserOptions(self.AlgOptions, self.Alg, self.Name, Alg)
+
                 Problem = pyOpt.Optimization(self.ModelName, SysEq)
                 for i in range(self.nx):
                     Problem.addVar(
@@ -557,6 +572,12 @@ def OptimizationProblem(Model):
                     print(Problem)
 
                 # Call
+                if self.Alg in ['NSGA2',
+                                'COBYLA',
+                                'ALHSO',
+                                'ALPSO']:
+                    self.Sensitivity = None
+
                 if self.Sensitivity is None:
                     if self.Alg in [
                         'NLPQLP',

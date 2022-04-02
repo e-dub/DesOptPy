@@ -104,3 +104,24 @@ def checkAlgorithms():
         print('\033[32m' + algAvail + '\033[0m')
     except:
         print('\033[31m' + 'pyGMO NOT INSTALLED' + '\033[0m')
+
+
+def checkSensitivities(self):
+    # Call
+    # if self.x is None:
+    #     eval('self.' + self.Sensitivity + '(xVal)')
+    # else:
+    #     eval('self.Model.' + self.Sensitivity + '(self.Model)')
+    eval('self.' + self.Primal + '()')
+    eval('self.' + self.Sensitivity + '()')
+    fNablaVal = getattr(self, self.fNabla[0])
+
+    if self.g:
+        gNablaVal = [None] * self.ng
+        if self.gVector:
+            rNablaValAll = getattr(self, self.gNabla[0])
+        for i, gNablai in enumerate(self.gNabla):
+            rNablaVal = getattr(self, gNablai)
+    else:
+        gNablaVal = []
+    print("pop")

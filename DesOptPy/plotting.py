@@ -29,7 +29,7 @@ def plotConvergence(
     # TDO: if nEval then only dots!
     # TODO change x label!
     def ConvergencePlot(r, legend, ylabel=[], plotType=1, xAxis='it'):
-        if self.xIt is None:
+        if self.xIt in [None, []]:
             xAxisVal = self.nEval
             xLabel = 'evaluation $i_{\\mathrm{eval}}$'
         else:
@@ -103,7 +103,7 @@ def plotConvergence(
             ax.spines['bottom'].set_bounds(0, xAxisVal - 1)
             ax.spines['left'].set_bounds(np.min(r), np.max(r))
             if xAxisVal < 21:
-                x_ticks = list(range(0, xAxisVal, 1))
+                x_ticks = list(range(0, xAxisVal, 1))            # axes shift
                 ax.xaxis.set_ticks(x_ticks)
             elif xAxisVal < 41:
                 x_ticks = list(range(0, xAxisVal, 2))
@@ -297,7 +297,7 @@ def plotConvergence(
         if show:
             plt.show()
 
-    if self.xIt is None:
+    if self.xIt in [None, []]:
         ConvergencePlot(self.xAll, 'x', 'design variable value', xAxis='eval')
         # ConvergencePlot(self.xNormAll,
         #                "\hat{x}",

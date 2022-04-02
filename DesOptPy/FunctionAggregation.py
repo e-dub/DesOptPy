@@ -86,25 +86,33 @@ def KS2Sens(f, dfdx, p=200):
 
 
 def pNorm(f, p=200):
-    """Return returns scalar p-norm from vector f."""
+    """
+    Return returns scalar p-norm from vector f.
+    """
     p = float(p)
     return np.sum(f ** p) ** (1 / p)
 
 
 def pNormSens(f, dfdx, p=200):
-    """Return vector sensitvities of p-norm from vector f and matrix dfdx."""
+    """
+    Return vector sensitvities of p-norm from vector f and matrix dfdx.
+    """
     p = float(p)
     return np.sum(f ** p) ** (1 / p - 1) * (f ** (p - 1)) @ dfdx
 
 
 def pNorm2(f, p=200):
-    """Return scalar p-norm from vector f."""
+    """
+    Return scalar p-norm from vector f.
+    """
     p = float(p)
     return np.max(f) * np.sum((f / np.max(f)) ** p) ** (1 / p)
 
 
 def pNorm2Sens(f, dfdx, p=200):
-    """Return vector sensitvities of p-norm from vector f and matrix dfdx."""
+    """
+    Return vector sensitvities of p-norm from vector f and matrix dfdx.
+    """
     p = float(p)
     return (
         np.sum((f / np.max(f)) ** p) ** (1 / p - 1)
@@ -112,27 +120,38 @@ def pNorm2Sens(f, dfdx, p=200):
         @ dfdx
     )
 
+
 def IE(f, p=200):
-    """Return scalar induced exponential aggregation from vector f."""
+    """
+    Return scalar induced exponential aggregation from vector f.
+    """
     p = float(p)
     return np.sum(f * np.exp(p * f)) / np.sum(np.exp(p * f))
 
+
 def IESens(f, dfdx, p=200):
-    """Return vector sensitvities of induced exponential from vector f and matrix dfdx."""
+    """
+    Return vector sensitvities of induced exponential from vector f and matrix dfdx.
+    """
     p = float(p)
     return KSSens(f, dfdx, p)
 
 
 def IP(f, p=200):
-    """Return scalar induced power aggregation from vector f."""
+    """
+    Return scalar induced power aggregation from vector f.
+    """
     p = float(p)
     return np.sum(f ** (p + 1)) / np.sum(f ** p)
 
+
 def IPSens(f, dfdx, p=200):
-    """Return vector sensitvities of induced power from vector f and matrix dfdx."""
+    """
+    Return vector sensitvities of induced power from vector f and matrix dfdx.
+    """
     p = float(p)
-    #return ((1/f*np.sum(f ** (p + 1))) / np.sum(f ** p))@dfdx
-    return ((f ** p) / np.sum(f ** p))@dfdx
+    # return ((1/f*np.sum(f ** (p + 1))) / np.sum(f ** p))@dfdx
+    return ((f ** p) / np.sum(f ** p)) @ dfdx
 
 
 if __name__ == '__main__':
